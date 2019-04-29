@@ -1,25 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import React from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Navbar from "./components/layout/Navbar";
+import Team from "./components/team/Team";
+import Teams from "./components/team/Teams";
+import "./App.scss";
+import { MuiThemeProvider } from "@material-ui/core/styles";
+import { CssBaseline } from "@material-ui/core";
+import theme from "./material-ui-theme/theme";
+import Dashboard from "./components/layout/Dashboard";
+import Footer from "./components/layout/Footer";
+import * as ROUTES from "./constants/routes";
+import Players from "./components/players/Players";
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <MuiThemeProvider theme={theme}>
+        <CssBaseline />
+        <div className="App">
+          <Navbar />
+          <Switch>
+            <Route exact path={ROUTES.DASHBOARD} component={Dashboard} />
+            <Route exact path={ROUTES.TEAMS} component={Teams} />
+            <Route exact path={ROUTES.TEAM} component={Team} />
+            <Route exact path={ROUTES.PLAYERS} component={Players} />
+          </Switch>
+          <div className="footer-grow" />
+          <Footer />
+        </div>
+      </MuiThemeProvider>
+    </BrowserRouter>
   );
 }
 
