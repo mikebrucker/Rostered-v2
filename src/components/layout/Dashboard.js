@@ -1,6 +1,10 @@
 import React from "react";
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 
-const Dashboard = () => {
+const Dashboard = ({ unauthorized }) => {
+  if (unauthorized) return <Redirect to="/login" />;
+
   return (
     <div className="Dashboard">
       <h1>DASHBOARD</h1>
@@ -65,4 +69,8 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+const mapStateToProps = state => ({
+  unauthorized: state.firebase.auth.isEmpty
+});
+
+export default connect(mapStateToProps)(Dashboard);

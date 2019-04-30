@@ -1,6 +1,6 @@
 export const DASHBOARD = "/";
 export const SIGN_UP = "/signup";
-export const SIGN_IN = "/signin";
+export const LOG_IN = "/login";
 export const TEAMS = "/teams";
 export const TEAM = "/teams/:id";
 export const PLAYERS = "/players";

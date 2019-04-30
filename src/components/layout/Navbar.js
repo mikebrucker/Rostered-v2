@@ -1,5 +1,11 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router";
 import { NavLink } from "react-router-dom";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { firebaseConnect } from "react-redux-firebase";
+// import { signOut } from "../../store/actions/authActions";
+
 import NavbarTabs from "./nav-components/NavbarTabs";
 import NavbarDrawer from "./nav-components/NavbarDrawer";
 
@@ -9,7 +15,13 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Link from "@material-ui/core/Link";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
-import { FaHockeyPuck, FaUsers } from "react-icons/fa";
+import {
+  FaHockeyPuck,
+  FaUsers,
+  FaSignOutAlt,
+  FaSignInAlt,
+  FaUserCheck
+} from "react-icons/fa";
 import { GiHockey, GiThreeFriends } from "react-icons/gi";
 
 const styles = theme => ({
@@ -71,13 +83,37 @@ class Navbar extends Component {
     });
   };
 
+  signOutUser = () => {
+    this.props.firebase.logout();
+    this.setState({ value: 0 });
+    this.props.history.push("/login");
+  };
+
   render() {
-    const { classes } = this.props;
-    const navbarLinks = [
-      { to: "/", label: "Dashboard", icon: GiHockey },
-      { to: "/teams", label: "Teams", icon: GiThreeFriends },
-      { to: "/players", label: "Players", icon: FaUsers }
-    ];
+    const { classes, unauthorized } = this.props;
+
+    const navbarLinks = unauthorized
+      ? [
+          { to: "/login", label: "Login", icon: FaSignInAlt },
+          { to: "/signup", label: "Sign Up", icon: FaUserCheck }
+        ]
+      : [
+          { to: "/", label: "Dashboard", icon: GiHockey },
+          { to: "/teams", label: "Teams", icon: GiThreeFriends },
+          { to: "/players", label: "Players", icon: FaUsers }
+        ];
+
+    const signOutButton = (
+      <IconButton
+        className={classes.navMenuLink}
+        onClick={this.signOutUser}
+        color="secondary"
+        aria-label="Sign Out"
+      >
+        <FaSignOutAlt className={classes.navMenuSVG} />
+      </IconButton>
+    );
+
     return (
       <nav className={classes.appBar}>
         <AppBar position="static" color="primary">
@@ -99,6 +135,7 @@ class Navbar extends Component {
               value={this.state.value}
               handleChange={this.handleChange}
             />
+            {signOutButton}
             <IconButton
               // Menu Icon opens Sidebar
               className={classes.navMenuLink}
@@ -123,4 +160,15 @@ class Navbar extends Component {
   }
 }
 
-export default withStyles(styles)(Navbar);
+const mapStateToProps = state => ({
+  unauthorized: state.firebase.auth.isEmpty
+});
+
+export default compose(
+  firebaseConnect(),
+
+  connect(
+    mapStateToProps,
+    null
+  )
+)(withStyles(styles)(withRouter(Navbar)));
