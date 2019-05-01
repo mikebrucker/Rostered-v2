@@ -12,12 +12,18 @@ class SignUp extends Component {
     passwordConfirm: "",
     firstName: "",
     lastName: "",
-    errors: {}
+    number: "",
+    position: "C",
+    shoots: "Right",
+    addToPlayerList: true
   };
 
   handleChange = e => {
+    const value =
+      e.target.type === "checkbox" ? e.target.checked : e.target.value;
+
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: value
     });
   };
 
@@ -39,66 +45,145 @@ class SignUp extends Component {
           passwordConfirm: "",
           firstName: "",
           lastName: "",
-          errors: {}
+          number: "",
+          position: "C",
+          shoots: "Right",
+          addToPlayerList: true
         },
         () => {
           this.props.firebase.createUser(newUser, newProfile);
-          this.props.history.push("/");
         }
       );
-    } else {
-      this.setState({ errors: { nomatch: "Passwords Do Not Match" } });
     }
   };
 
   render() {
-    // const { auth, authError } = this.props;
-    // if (auth.uid) return <Redirect to="/" />;
-
-    const showError =
-      this.state.errors && this.state.errors.nomatch ? (
-        <span>{this.state.errors.nomatch}</span>
-      ) : null;
+    const { unauthorized, loaded, authError } = this.props;
+    if (loaded && !unauthorized) return <Redirect to="/" />;
 
     return (
-      <div className="container">
-        <form onSubmit={this.handleSubmit} className="blue-grey lighten-4">
-          <h5 className="grey-text text-darken-3">Sign Up</h5>
-          <div className="input-field">
+      <div className="SignUp">
+        <form onSubmit={this.handleSubmit} className="">
+          <h3 className="">Sign Up</h3>
+          <div className="">
             <label htmlFor="email">Email</label>
-            <input type="email" name="email" onChange={this.handleChange} />
+            <input
+              placeholder="Email"
+              type="email"
+              name="email"
+              value={this.state.email}
+              onChange={this.handleChange}
+            />
           </div>
-          <div className="input-field">
+
+          <div className="">
             <label htmlFor="password">Password</label>
             <input
+              placeholder="Password"
               type="password"
               name="password"
+              value={this.state.password}
               onChange={this.handleChange}
             />
           </div>
-          <div className="input-field">
+
+          <div className="">
             <label htmlFor="passwordConfirm">Confirm Password</label>
             <input
+              placeholder="Confirm Password"
               type="password"
               name="passwordConfirm"
+              value={this.state.passwordConfirm}
               onChange={this.handleChange}
             />
           </div>
-          <div className="input-field">
+
+          <div className="">
             <label htmlFor="firstName">First Name</label>
-            <input type="text" name="firstName" onChange={this.handleChange} />
+            <input
+              placeholder="First Name"
+              type="text"
+              name="firstName"
+              value={this.state.firstName}
+              onChange={this.handleChange}
+            />
           </div>
-          <div className="input-field">
+
+          <div className="">
             <label htmlFor="lastName">Last Name</label>
-            <input type="text" name="lastName" onChange={this.handleChange} />
+            <input
+              placeholder="Last Name"
+              type="text"
+              name="lastName"
+              value={this.state.lastName}
+              onChange={this.handleChange}
+            />
           </div>
-          <div className="input-field">
-            <button className="btn yellow btn-grey-text z-depth-0">
+
+          <div className="">
+            <label htmlFor="number">Number</label>
+            <input
+              placeholder="Number"
+              type="number"
+              name="number"
+              value={this.state.number}
+              max="99"
+              min="0"
+              onChange={this.handleChange}
+            />
+          </div>
+
+          <div>
+            <label className="" htmlFor="position">
+              Position
+            </label>
+            <select
+              className=""
+              name="position"
+              value={this.state.position}
+              onChange={this.handleChange}
+            >
+              <option defaultValue="C">C</option>
+              <option value="RW">RW</option>
+              <option value="LW">LW</option>
+              <option value="D">D</option>
+              <option value="G">G</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="" htmlFor="shoots">
+              Shoots
+            </label>
+            <select
+              className=""
+              name="shoots"
+              value={this.state.shoots}
+              onChange={this.handleChange}
+            >
+              <option defaultValue="Right">Right</option>
+              <option value="Left">Left</option>
+            </select>
+          </div>
+
+          <div>
+            <input
+              type="checkbox"
+              name="addToPlayerList"
+              value={this.state.addToPlayerList}
+              onChange={this.handleChange}
+            />
+            <label htmlFor="current">
+              <span>addToPlayerList</span>
+            </label>
+          </div>
+
+          <div className="">
+            <button type="submit" className="">
               Sign Up
             </button>
-            <div className="red-text center">
-              {/* {authError ? <p>{authError}</p> : null}
-              {showError} */}
+            <div className="">
+              {authError ? <p>{authError.message}</p> : null}
             </div>
           </div>
         </form>
@@ -107,9 +192,10 @@ class SignUp extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  // auth: state.firebase.auth,
-  // authError: state.auth.authError
+const mapStateToProps = ({ firebase: { auth, authError } }) => ({
+  loaded: auth.isLoaded,
+  unauthorized: auth.isEmpty,
+  authError
 });
 
 const mapDispatchToProps = dispatch => ({

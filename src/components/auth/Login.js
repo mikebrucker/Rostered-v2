@@ -7,8 +7,7 @@ import { Redirect } from "react-router-dom";
 class Login extends Component {
   state = {
     email: "",
-    password: "",
-    errors: {}
+    password: ""
   };
 
   handleChange = e => {
@@ -20,13 +19,13 @@ class Login extends Component {
   handleSubmit = e => {
     e.preventDefault();
     const creds = { email: this.state.email, password: this.state.password };
+    this.setState({ email: "", password: "" });
     this.props.firebase.login(creds);
-    // this.props.history.push("/");
   };
 
   render() {
-    const { auth, authError } = this.props;
-    if (!auth.isEmpty) return <Redirect to="/" />;
+    const { unauthorized, loaded, authError } = this.props;
+    if (loaded && !unauthorized) return <Redirect to="/" />;
 
     return (
       <div className="Login">
@@ -34,13 +33,21 @@ class Login extends Component {
           <h5 className="">Login</h5>
           <div className="">
             <label htmlFor="email">Email</label>
-            <input type="email" name="email" onChange={this.handleChange} />
+            <input
+              placeholder="Email"
+              type="email"
+              name="email"
+              value={this.state.email}
+              onChange={this.handleChange}
+            />
           </div>
           <div className="">
             <label htmlFor="password">Password</label>
             <input
+              placeholder="Password"
               type="password"
               name="password"
+              value={this.state.password}
               onChange={this.handleChange}
             />
           </div>
@@ -56,9 +63,10 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  auth: state.firebase.auth,
-  authError: state.firebase.authError
+const mapStateToProps = ({ firebase: { auth, authError } }) => ({
+  loaded: auth.isLoaded,
+  unauthorized: auth.isEmpty,
+  authError
 });
 
 const mapDispatchToProps = dispatch => ({

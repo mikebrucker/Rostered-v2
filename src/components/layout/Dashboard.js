@@ -2,8 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 
-const Dashboard = ({ unauthorized }) => {
-  if (unauthorized) return <Redirect to="/login" />;
+const Dashboard = ({ unauthorized, loaded }) => {
+  if (loaded && unauthorized) return <Redirect to="/login" />;
 
   return (
     <div className="Dashboard">
@@ -69,8 +69,11 @@ const Dashboard = ({ unauthorized }) => {
   );
 };
 
-const mapStateToProps = state => ({
-  unauthorized: state.firebase.auth.isEmpty
+const mapStateToProps = ({ firebase: { auth }, firestore: { ordered } }) => ({
+  auth,
+  loaded: auth.isLoaded,
+  unauthorized: auth.isEmpty,
+  user: ordered.users && ordered.users[0]
 });
 
 export default connect(mapStateToProps)(Dashboard);
