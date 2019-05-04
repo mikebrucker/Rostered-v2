@@ -3,8 +3,10 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { Redirect } from "react-router-dom";
 import { firestoreConnect } from "react-redux-firebase";
+import Schedules from "./schedule/Schedules";
+import AddSchedule from "./schedule/AddSchedule";
 
-const Team = ({ team, unauthorized, loaded, requesting }) => {
+const Team = ({ team, user, unauthorized, loaded, requesting }) => {
   if (loaded && unauthorized) return <Redirect to="/login" />;
 
   if (loaded && team) {
@@ -14,6 +16,8 @@ const Team = ({ team, unauthorized, loaded, requesting }) => {
         <div>{team.league}</div>
         <div>{team.arena}</div>
         <div>{team.sport}</div>
+        <Schedules user={user} team={team} />
+        <AddSchedule user={user} team={team} />
       </div>
     );
   } else if (requesting === false) {
@@ -27,7 +31,7 @@ const mapStateToProps = (
   { firebase: { auth }, firestore: { ordered, status } },
   ownProps
 ) => {
-  const user = ordered.users && ordered.users[0];
+  const user = ordered && ordered.users ? ordered.users[0] : null;
   const team =
     user && user.teams
       ? user.teams.filter(team => team.id === ownProps.match.params.id)[0]

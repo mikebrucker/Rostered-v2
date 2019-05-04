@@ -1,8 +1,4 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-// import { addTeam } from "../../../store/actions/teamActions";
-import { compose } from "redux";
-import { Redirect } from "react-router-dom";
 import { firestoreConnect } from "react-redux-firebase";
 import { createId } from "../../../helpers/createId";
 
@@ -22,20 +18,19 @@ class AddTeam extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
+    const userId = this.props.user ? this.props.user.id : null;
+
     if (
+      userId &&
       this.state.teamName.length > 0 &&
       this.state.league.length > 0 &&
       this.state.arena.length > 0
     ) {
-      const userId = this.props.user ? this.props.user.id : null;
       const teamId = createId();
 
       const teamToBeAdded = {
         id: teamId,
-        teamName: this.state.teamName,
-        league: this.state.league,
-        arena: this.state.arena,
-        sport: this.state.sport
+        ...this.state
       };
 
       this.props.firestore
@@ -44,21 +39,20 @@ class AddTeam extends Component {
         .update({
           teams: this.props.firestore.FieldValue.arrayUnion(teamToBeAdded)
         });
-    }
 
-    this.setState({
-      teamName: "",
-      league: "",
-      arena: "",
-      sport: "Hockey"
-    });
+      this.setState({
+        teamName: "",
+        league: "",
+        arena: "",
+        sport: "Hockey"
+      });
+    }
   };
 
   render() {
-    const { unauthorized, loaded } = this.props;
-    if (loaded && unauthorized) return <Redirect to="/login" />;
+    const { user } = this.props;
 
-    if (loaded) {
+    if (user) {
       return (
         <div className="AddTeam">
           <h1>ADDTEAM</h1>
@@ -96,9 +90,7 @@ class AddTeam extends Component {
               />
             </div>
 
-            <label className="" htmlFor="sport">
-              Sport
-            </label>
+            <label htmlFor="sport">Sport</label>
             <select
               className=""
               name="sport"
@@ -120,16 +112,4 @@ class AddTeam extends Component {
   }
 }
 
-const mapStateToProps = ({ firebase: { auth }, firestore: { ordered } }) => ({
-  auth,
-  loaded: auth.isLoaded,
-  unauthorized: auth.isEmpty,
-  user: ordered.users && ordered.users[0]
-});
-
-export default compose(
-  connect(mapStateToProps),
-  firestoreConnect(props => {
-    return [{ collection: "users", doc: props.auth.uid }];
-  })
-)(AddTeam);
+export default firestoreConnect()(AddTeam);

@@ -3,13 +3,34 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { Redirect } from "react-router-dom";
 import { firestoreConnect } from "react-redux-firebase";
+import AddPlayer from "./AddPlayer";
 
 const Players = ({ unauthorized, loaded, user }) => {
   if (loaded && unauthorized) return <Redirect to="/login" />;
-  console.log(user);
+
+  const players =
+    user && user.players
+      ? user.players.map(player => {
+          return (
+            <div key={player.id} className="PlayerSummary">
+              <div>
+                {player.firstName} {player.lastName}
+              </div>
+              <div>{player.number}</div>
+              <div>{player.position}</div>
+              <div>
+                {player.position === "G" ? "Catches" : "Shoots"} {player.shoots}
+              </div>
+            </div>
+          );
+        })
+      : null;
+
   return (
     <div>
       <h1>PLAYERS</h1>
+      {players}
+      <AddPlayer />
     </div>
   );
 };
