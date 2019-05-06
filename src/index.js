@@ -17,6 +17,9 @@ import {
 import { createFirestoreInstance, firestoreReducer } from "redux-firestore";
 import { fbConfig } from "./config/fbConfig";
 
+import { MuiPickersUtilsProvider } from "material-ui-pickers";
+import MomentUtils from "@date-io/moment";
+
 const rrfConfig = {
   userProfile: "users",
   useFirestoreForProfile: true
@@ -59,7 +62,9 @@ const rrfProps = {
 const FirebaseApp = () => (
   <Provider store={store}>
     <ReactReduxFirebaseProvider {...rrfProps}>
-      <App />
+      <MuiPickersUtilsProvider utils={MomentUtils}>
+        <App />
+      </MuiPickersUtilsProvider>
     </ReactReduxFirebaseProvider>
   </Provider>
 );

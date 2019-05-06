@@ -2,6 +2,22 @@ import React, { Component } from "react";
 import { firestoreConnect } from "react-redux-firebase";
 import { createId } from "../../../helpers/createId";
 
+import { withStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+
+const styles = theme => ({
+  root: {
+    padding: theme.spacing.unit
+  },
+  textField: {
+    padding: theme.spacing.unit
+  },
+  button: {
+    padding: theme.spacing.unit
+  }
+});
+
 class AddTeam extends Component {
   state = {
     teamName: "",
@@ -26,7 +42,7 @@ class AddTeam extends Component {
       this.state.league.length > 0 &&
       this.state.arena.length > 0
     ) {
-      const teamId = createId();
+      const teamId = "team" + createId();
 
       const teamToBeAdded = {
         id: teamId,
@@ -50,58 +66,67 @@ class AddTeam extends Component {
   };
 
   render() {
-    const { user } = this.props;
+    const { user, classes } = this.props;
 
     if (user) {
       return (
         <div className="AddTeam">
           <h1>ADDTEAM</h1>
-          <form onSubmit={this.handleSubmit} className="">
-            <div className="">
-              <label htmlFor="teamName">Team Name</label>
-              <input
+          <form onSubmit={this.handleSubmit}>
+            <div className={classes.textField}>
+              <TextField
+                label="Team Name"
                 placeholder="Team Name"
                 type="text"
                 name="teamName"
+                variant="outlined"
                 value={this.state.teamName}
                 onChange={this.handleChange}
               />
             </div>
 
-            <div className="">
-              <label htmlFor="league">League</label>
-              <input
+            <div className={classes.textField}>
+              <TextField
+                label="League"
                 placeholder="League"
                 type="text"
                 name="league"
+                variant="outlined"
                 value={this.state.league}
                 onChange={this.handleChange}
               />
             </div>
 
-            <div className="">
-              <label htmlFor="arena">Arena</label>
-              <input
+            <div className={classes.textField}>
+              <TextField
+                label="Arena"
                 placeholder="Arena"
                 type="text"
                 name="arena"
+                variant="outlined"
                 value={this.state.arena}
                 onChange={this.handleChange}
               />
             </div>
 
-            <label htmlFor="sport">Sport</label>
-            <select
-              className=""
-              name="sport"
-              value={this.state.sport}
-              onChange={this.handleChange}
-            >
-              <option defaultValue="Hockey">Hockey</option>
-            </select>
+            <div className={classes.textField}>
+              <TextField
+                label="Sport"
+                name="sport"
+                variant="outlined"
+                select
+                SelectProps={{ native: true }}
+                value={this.state.sport}
+                onChange={this.handleChange}
+              >
+                <option defaultValue="Hockey">Hockey</option>
+              </TextField>
+            </div>
 
-            <div className="">
-              <button className="">Submit</button>
+            <div className={classes.button}>
+              <Button type="submit" color="primary" variant="outlined">
+                Add Team
+              </Button>
             </div>
           </form>
         </div>
@@ -112,4 +137,4 @@ class AddTeam extends Component {
   }
 }
 
-export default firestoreConnect()(AddTeam);
+export default firestoreConnect()(withStyles(styles)(AddTeam));

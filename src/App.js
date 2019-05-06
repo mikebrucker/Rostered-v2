@@ -12,7 +12,7 @@ import Login from "./components/auth/Login";
 import SignUp from "./components/auth/SignUp";
 import Team from "./components/routes/team/Team";
 import Teams from "./components/routes/team/Teams";
-import Players from "./components/routes/players/Players";
+import Players from "./components/routes/player/Players";
 
 function App() {
   return (

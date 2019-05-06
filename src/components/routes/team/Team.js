@@ -3,11 +3,23 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { Redirect } from "react-router-dom";
 import { firestoreConnect } from "react-redux-firebase";
-import Schedules from "./schedule/Schedules";
-import AddSchedule from "./schedule/AddSchedule";
+import Schedules from "../schedule/Schedules";
+import AddSchedule from "../schedule/AddSchedule";
+import Players from "../player/Players";
+import AddPlayer from "../player/AddPlayer";
 
 const Team = ({ team, user, unauthorized, loaded, requesting }) => {
   if (loaded && unauthorized) return <Redirect to="/login" />;
+
+  const mySchedules =
+    user && user.schedules
+      ? user.schedules.filter(schedule => schedule.teamId === team.id)
+      : null;
+
+  const myPlayers =
+    user && user.players
+      ? user.players.filter(player => player.teamId.indexOf(team.id) > -1)
+      : null;
 
   if (loaded && team) {
     return (
@@ -16,7 +28,9 @@ const Team = ({ team, user, unauthorized, loaded, requesting }) => {
         <div>{team.league}</div>
         <div>{team.arena}</div>
         <div>{team.sport}</div>
-        <Schedules user={user} team={team} />
+        <Players players={myPlayers} user={user} team={team} />
+        <AddPlayer user={user} team={team} />
+        <Schedules schedules={mySchedules} user={user} team={team} />
         <AddSchedule user={user} team={team} />
       </div>
     );

@@ -5,7 +5,23 @@ import { Redirect } from "react-router-dom";
 import { firestoreConnect } from "react-redux-firebase";
 import { createId } from "../../../helpers/createId";
 
-class AddPlayerToBank extends Component {
+import { withStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+
+const styles = theme => ({
+  root: {
+    padding: theme.spacing.unit
+  },
+  textField: {
+    padding: theme.spacing.unit
+  },
+  button: {
+    padding: theme.spacing.unit
+  }
+});
+
+class AddPlayer extends Component {
   state = {
     firstName: "",
     lastName: "",
@@ -23,6 +39,7 @@ class AddPlayerToBank extends Component {
   handleSubmit = e => {
     e.preventDefault();
     const userId = this.props.user ? this.props.user.id : null;
+    const teamId = this.props.team ? [this.props.team.id] : null;
 
     if (
       userId &&
@@ -32,10 +49,16 @@ class AddPlayerToBank extends Component {
     ) {
       const playerId = createId();
 
-      const playerToBeAdded = {
-        id: playerId,
-        ...this.state
-      };
+      const playerToBeAdded = teamId
+        ? {
+            id: playerId,
+            teamId,
+            ...this.state
+          }
+        : {
+            id: playerId,
+            ...this.state
+          };
 
       this.props.firestore
         .collection("users")
@@ -55,17 +78,21 @@ class AddPlayerToBank extends Component {
   };
 
   render() {
-    const { unauthorized, loaded } = this.props;
+    const { unauthorized, loaded, team, classes } = this.props;
     if (loaded && unauthorized) return <Redirect to="/login" />;
 
+    const whereToAddPlayer = team
+      ? `Add Player to ${team.teamName}`
+      : "Add Player to Player Bank";
+
     return (
-      <div className="AddPlayerToBank">
-        <h1>ADDPLAYERTOBANK</h1>
-        <h2>Add Player to Player Bank</h2>
+      <div className={`AddPlayer ${classes.root}`}>
+        <h2>{whereToAddPlayer}</h2>
         <form onSubmit={this.handleSubmit} className="">
-          <div className="">
-            <label htmlFor="firstName">First Name</label>
-            <input
+          <div className={classes.textField}>
+            <TextField
+              label="First Name"
+              variant="outlined"
               placeholder="First Name"
               type="text"
               name="firstName"
@@ -74,9 +101,10 @@ class AddPlayerToBank extends Component {
             />
           </div>
 
-          <div className="">
-            <label htmlFor="lastName">Last Name</label>
-            <input
+          <div className={classes.textField}>
+            <TextField
+              label="Last Name"
+              variant="outlined"
               placeholder="Last Name"
               type="text"
               name="lastName"
@@ -85,9 +113,10 @@ class AddPlayerToBank extends Component {
             />
           </div>
 
-          <div className="">
-            <label htmlFor="number">Number</label>
-            <input
+          <div className={classes.textField}>
+            <TextField
+              label="Number"
+              variant="outlined"
               placeholder="Number"
               type="number"
               name="number"
@@ -98,11 +127,14 @@ class AddPlayerToBank extends Component {
             />
           </div>
 
-          <div>
-            <label htmlFor="position">Position</label>
-            <select
-              className=""
+          <div className={classes.textField}>
+            <TextField
+              label="Position"
               name="position"
+              variant="outlined"
+              helperText="Select Position"
+              select
+              SelectProps={{ native: true }}
               value={this.state.position}
               onChange={this.handleChange}
             >
@@ -111,24 +143,29 @@ class AddPlayerToBank extends Component {
               <option value="LW">LW</option>
               <option value="D">D</option>
               <option value="G">G</option>
-            </select>
+            </TextField>
           </div>
 
-          <div>
-            <label htmlFor="shoots">Shoots</label>
-            <select
-              className=""
+          <div className={classes.textField}>
+            <TextField
+              label="Shoots"
               name="shoots"
+              variant="outlined"
+              helperText="Right-handed or Left-handed"
+              select
+              SelectProps={{ native: true }}
               value={this.state.shoots}
               onChange={this.handleChange}
             >
               <option defaultValue="Right">Right</option>
               <option value="Left">Left</option>
-            </select>
+            </TextField>
           </div>
 
-          <div className="">
-            <button className="">Submit</button>
+          <div className={classes.button}>
+            <Button type="submit" color="primary" variant="outlined">
+              Add Player
+            </Button>
           </div>
         </form>
       </div>
@@ -148,4 +185,4 @@ export default compose(
   firestoreConnect(props => {
     return [{ collection: "users", doc: props.auth.uid }];
   })
-)(AddPlayerToBank);
+)(withStyles(styles)(AddPlayer));

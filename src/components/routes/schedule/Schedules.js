@@ -1,10 +1,10 @@
 import React from "react";
 import Schedule from "./Schedule";
 
-const Schedules = ({ user, team }) => {
-  const schedules =
-    team && team.schedules && team.schedules.length > 0
-      ? team.schedules.map(schedule => (
+const Schedules = ({ user, team, schedules }) => {
+  const mySchedules =
+    schedules && schedules.length > 0
+      ? schedules.map(schedule => (
           <Schedule
             key={schedule.id}
             user={user}
@@ -17,7 +17,7 @@ const Schedules = ({ user, team }) => {
   return (
     <div className="Schedules">
       <h2>{team.teamName}'s schedules</h2>
-      {schedules}
+      {mySchedules}
     </div>
   );
 };

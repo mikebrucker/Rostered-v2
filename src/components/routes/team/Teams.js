@@ -14,15 +14,17 @@ const Teams = ({ user, unauthorized, loaded, requesting }) => {
     user && user.teams && user.teams.length > 0
       ? user.teams.map(team => {
           return (
-            <Link
-              key={team.id}
-              color="secondary"
-              component={RouterLink}
-              underline="none"
-              to={`/teams/${team.id}`}
-            >
-              <div className="TeamSummary">{team.teamName}</div>
-            </Link>
+            <div key={team.id} className="TeamSummary">
+              <Link
+                key={team.id}
+                color="secondary"
+                component={RouterLink}
+                underline="none"
+                to={`/teams/${team.id}`}
+              >
+                {team.teamName}
+              </Link>
+            </div>
           );
         })
       : null;
@@ -39,7 +41,7 @@ const Teams = ({ user, unauthorized, loaded, requesting }) => {
     return (
       <div className="Teams">
         No Teams Added Yet
-        <AddTeam />
+        <AddTeam user={user} />
       </div>
     );
   } else {

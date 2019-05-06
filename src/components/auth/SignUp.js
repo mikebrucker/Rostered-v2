@@ -3,7 +3,25 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { firebaseConnect } from "react-redux-firebase";
 import { Redirect } from "react-router-dom";
-// import { signUp } from "../../store/actions/authActions";
+
+import { withStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Checkbox from "@material-ui/core/Checkbox";
+import Button from "@material-ui/core/Button";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+
+const styles = theme => ({
+  root: {
+    padding: theme.spacing.unit
+  },
+  textField: {
+    padding: theme.spacing.unit,
+    display: "inline-block"
+  },
+  button: {
+    padding: theme.spacing.unit
+  }
+});
 
 class SignUp extends Component {
   state = {
@@ -58,74 +76,94 @@ class SignUp extends Component {
   };
 
   render() {
-    const { unauthorized, loaded, authError } = this.props;
+    const { unauthorized, loaded, authError, classes } = this.props;
     if (loaded && !unauthorized) return <Redirect to="/" />;
 
     return (
-      <div className="SignUp">
-        <form onSubmit={this.handleSubmit} className="">
-          <h3 className="">Sign Up</h3>
-          <div className="">
-            <label htmlFor="email">Email</label>
-            <input
-              placeholder="Email"
-              type="email"
-              name="email"
-              value={this.state.email}
-              onChange={this.handleChange}
-            />
-          </div>
-
-          <div className="">
-            <label htmlFor="password">Password</label>
-            <input
-              placeholder="Password"
-              type="password"
-              name="password"
-              value={this.state.password}
-              onChange={this.handleChange}
-            />
-          </div>
-
-          <div className="">
-            <label htmlFor="passwordConfirm">Confirm Password</label>
-            <input
-              placeholder="Confirm Password"
-              type="password"
-              name="passwordConfirm"
-              value={this.state.passwordConfirm}
-              onChange={this.handleChange}
-            />
-          </div>
-
-          <div className="">
-            <label htmlFor="firstName">First Name</label>
-            <input
+      <div className={`SignUp ${classes.root}`}>
+        <form onSubmit={this.handleSubmit}>
+          <h2>Sign Up</h2>
+          <div className={classes.textField}>
+            <TextField
+              label="First Name"
               placeholder="First Name"
               type="text"
               name="firstName"
+              variant="outlined"
               value={this.state.firstName}
               onChange={this.handleChange}
             />
           </div>
 
-          <div className="">
-            <label htmlFor="lastName">Last Name</label>
-            <input
+          <div className={classes.textField}>
+            <TextField
+              label="Last Name"
               placeholder="Last Name"
               type="text"
               name="lastName"
+              variant="outlined"
               value={this.state.lastName}
               onChange={this.handleChange}
             />
           </div>
 
-          <div className="">
-            <label htmlFor="number">Number</label>
-            <input
+          <div className={classes.textField}>
+            <TextField
+              label="Email"
+              placeholder="Email"
+              type="email"
+              name="email"
+              variant="outlined"
+              value={this.state.email}
+              onChange={this.handleChange}
+            />
+          </div>
+
+          <div className={classes.textField}>
+            <TextField
+              label="Password"
+              placeholder="Password"
+              type="password"
+              name="password"
+              variant="outlined"
+              value={this.state.password}
+              onChange={this.handleChange}
+            />
+          </div>
+
+          <div className={classes.textField}>
+            <TextField
+              label="Confirm Password"
+              placeholder="Confirm Password"
+              type="password"
+              name="passwordConfirm"
+              variant="outlined"
+              value={this.state.passwordConfirm}
+              onChange={this.handleChange}
+            />
+          </div>
+
+          <div>
+            <FormControlLabel
+              label="Add to Player List"
+              control={
+                <Checkbox
+                  type="checkbox"
+                  name="addToPlayerList"
+                  color="primary"
+                  checked={this.state.addToPlayerList}
+                  onChange={this.handleChange}
+                />
+              }
+            />
+          </div>
+
+          <div className={classes.textField}>
+            <TextField
               placeholder="Number"
               type="number"
               name="number"
+              variant="outlined"
               value={this.state.number}
               max="99"
               min="0"
@@ -133,13 +171,13 @@ class SignUp extends Component {
             />
           </div>
 
-          <div>
-            <label className="" htmlFor="position">
-              Position
-            </label>
-            <select
-              className=""
+          <div className={classes.textField}>
+            <TextField
+              label="Position"
+              select
+              SelectProps={{ native: true }}
               name="position"
+              variant="outlined"
               value={this.state.position}
               onChange={this.handleChange}
             >
@@ -148,43 +186,29 @@ class SignUp extends Component {
               <option value="LW">LW</option>
               <option value="D">D</option>
               <option value="G">G</option>
-            </select>
+            </TextField>
           </div>
 
-          <div>
-            <label className="" htmlFor="shoots">
-              Shoots
-            </label>
-            <select
-              className=""
+          <div className={classes.textField}>
+            <TextField
+              label="Shoots"
+              select
+              SelectProps={{ native: true }}
               name="shoots"
+              variant="outlined"
               value={this.state.shoots}
               onChange={this.handleChange}
             >
               <option defaultValue="Right">Right</option>
               <option value="Left">Left</option>
-            </select>
+            </TextField>
           </div>
 
-          <div>
-            <input
-              type="checkbox"
-              name="addToPlayerList"
-              value={this.state.addToPlayerList}
-              onChange={this.handleChange}
-            />
-            <label htmlFor="current">
-              <span>addToPlayerList</span>
-            </label>
-          </div>
-
-          <div className="">
-            <button type="submit" className="">
+          <div className={classes.button}>
+            <Button type="submit" color="primary" variant="outlined">
               Sign Up
-            </button>
-            <div className="">
-              {authError ? <p>{authError.message}</p> : null}
-            </div>
+            </Button>
+            <div>{authError ? <p>{authError.message}</p> : null}</div>
           </div>
         </form>
       </div>
@@ -198,14 +222,7 @@ const mapStateToProps = ({ firebase: { auth, authError } }) => ({
   authError
 });
 
-const mapDispatchToProps = dispatch => ({
-  // signUp: newUser => dispatch(signUp(newUser))
-});
-
 export default compose(
   firebaseConnect(),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
-)(SignUp);
+  connect(mapStateToProps)
+)(withStyles(styles)(SignUp));

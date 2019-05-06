@@ -1,6 +1,7 @@
 import React from "react";
-import AddGame from "./games/AddGame";
 import Moment from "react-moment";
+import AddGame from "../game/AddGame";
+import Games from "../game/Games";
 
 const Schedule = ({ user, team, schedule }) => {
   if (schedule) {
@@ -10,8 +11,11 @@ const Schedule = ({ user, team, schedule }) => {
         <h6>{schedule.current ? "Current Season" : "Not Current Season"}</h6>
         <div>
           Season Starts{" "}
-          <Moment format="MMM Do, YYYY">{schedule.startDate}</Moment>
+          <Moment format="MMM Do, YYYY">
+            {schedule.startDate.seconds * 1000}
+          </Moment>
         </div>
+        <Games user={user} team={team} schedule={schedule} />
         <AddGame user={user} team={team} schedule={schedule} />
       </div>
     );
