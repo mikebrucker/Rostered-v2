@@ -13,7 +13,9 @@ const styles = theme => ({
     padding: theme.spacing.unit
   },
   textField: {
-    padding: theme.spacing.unit
+    margin: "0 auto",
+    padding: theme.spacing.unit,
+    maxWidth: 520
   },
   button: {
     padding: theme.spacing.unit
@@ -46,10 +48,11 @@ class Login extends Component {
 
     return (
       <div className={`Login ${classes.root}`}>
-        <form onSubmit={this.handleSubmit}>
-          <h2>Login</h2>
+        <h2>Login</h2>
+        <form ref={this.showForm} onSubmit={this.handleSubmit}>
           <div className={classes.textField}>
             <TextField
+              fullWidth
               label="Email"
               placeholder="Email"
               type="email"
@@ -62,6 +65,7 @@ class Login extends Component {
 
           <div className={classes.textField}>
             <TextField
+              fullWidth
               label="Password"
               placeholder="Password"
               type="password"
@@ -73,7 +77,7 @@ class Login extends Component {
           </div>
 
           <div className={classes.button}>
-            <Button type="submit" color="primary" variant="outlined">
+            <Button type="submit" color="primary" variant="contained">
               Login
             </Button>
             <div>{authError ? <p>{authError.message}</p> : null}</div>

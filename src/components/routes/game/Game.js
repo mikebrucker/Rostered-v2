@@ -1,7 +1,8 @@
 import React from "react";
 import Moment from "react-moment";
+import DeleteItem from "../delete/DeleteItem";
 
-const Game = ({ game, team }) => {
+const Game = ({ game, team, user }) => {
   if (game) {
     return (
       <div className="Game">
@@ -13,6 +14,7 @@ const Game = ({ game, team }) => {
             {game.dateTime.seconds * 1000}
           </Moment>
         </div>
+        <DeleteItem user={user} item={game} />
       </div>
     );
   } else {

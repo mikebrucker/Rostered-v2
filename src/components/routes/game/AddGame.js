@@ -12,7 +12,14 @@ const styles = theme => ({
     padding: theme.spacing.unit
   },
   textField: {
-    padding: theme.spacing.unit
+    margin: "0 auto",
+    padding: theme.spacing.unit,
+    maxWidth: 520
+  },
+  form: {
+    "& label": {
+      // backgroundColor: "inherit"
+    }
   },
   button: {
     padding: theme.spacing.unit
@@ -22,8 +29,10 @@ const styles = theme => ({
 class AddGame extends Component {
   state = {
     opponent: "",
-    dateTime: new Date()
+    dateTime: null
   };
+
+  showForm = React.createRef();
 
   handleChange = e => {
     const value = e.target ? e.target.value : e._d;
@@ -42,7 +51,7 @@ class AddGame extends Component {
     const scheduleId = this.props.schedule ? this.props.schedule.id : null;
 
     if (userId && teamId && scheduleId && this.state.opponent.length > 0) {
-      const gameId = "game" + createId();
+      const gameId = createId("game-");
 
       const gameToBeAdded = {
         id: gameId,
@@ -58,10 +67,25 @@ class AddGame extends Component {
           games: this.props.firestore.FieldValue.arrayUnion(gameToBeAdded)
         });
 
+      this.setState(
+        {
+          opponent: "",
+          dateTime: null
+        },
+        () => this.handleShowForm()
+      );
+    }
+  };
+
+  handleShowForm = () => {
+    if (this.showForm.current.style.display === "none") {
+      this.showForm.current.style.display = "block";
       this.setState({
         opponent: "",
-        dateTime: new Date()
+        dateTime: null
       });
+    } else {
+      this.showForm.current.style.display = "none";
     }
   };
 
@@ -71,10 +95,21 @@ class AddGame extends Component {
     if (schedule) {
       return (
         <div className={`AddGame ${classes.root}`}>
-          <h3>ADDGAME</h3>
-          <form onSubmit={this.handleSubmit}>
+          <Button
+            onClick={this.handleShowForm}
+            color="secondary"
+            variant="outlined"
+          >
+            Add Game
+          </Button>
+          <form
+            style={{ display: "none" }}
+            ref={this.showForm}
+            onSubmit={this.handleSubmit}
+          >
             <div className={classes.textField}>
               <TextField
+                fullWidth
                 label="Opponent"
                 placeholder="Opponent"
                 type="text"
@@ -87,6 +122,7 @@ class AddGame extends Component {
 
             <div className={classes.textField}>
               <DateTimePicker
+                fullWidth
                 autoOk
                 keyboard
                 label="Date and Time"
@@ -100,7 +136,7 @@ class AddGame extends Component {
             </div>
 
             <div className={classes.button}>
-              <Button type="submit" color="primary" variant="outlined">
+              <Button type="submit" color="primary" variant="contained">
                 Add Game
               </Button>
             </div>

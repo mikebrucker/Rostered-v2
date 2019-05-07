@@ -14,7 +14,9 @@ const styles = theme => ({
     padding: theme.spacing.unit
   },
   textField: {
-    padding: theme.spacing.unit
+    margin: "0 auto",
+    padding: theme.spacing.unit,
+    maxWidth: 520
   },
   button: {
     padding: theme.spacing.unit
@@ -24,9 +26,11 @@ const styles = theme => ({
 class AddSchedule extends Component {
   state = {
     season: "",
-    startDate: new Date(),
+    startDate: null,
     current: false
   };
+
+  showForm = React.createRef();
 
   handleChange = e => {
     const value = e.target
@@ -48,7 +52,7 @@ class AddSchedule extends Component {
     const teamId = this.props.team ? this.props.team.id : null;
 
     if (userId && teamId && this.state.season.length > 0) {
-      const scheduleId = "sche" + createId();
+      const scheduleId = createId("schedule-");
 
       const scheduleToBeAdded = {
         id: scheduleId,
@@ -65,11 +69,27 @@ class AddSchedule extends Component {
           )
         });
 
+      this.setState(
+        {
+          season: "",
+          startDate: null,
+          current: false
+        },
+        () => this.handleShowForm()
+      );
+    }
+  };
+
+  handleShowForm = () => {
+    if (this.showForm.current.style.display === "none") {
+      this.showForm.current.style.display = "block";
       this.setState({
         season: "",
-        startDate: "",
+        startDate: null,
         current: false
       });
+    } else {
+      this.showForm.current.style.display = "none";
     }
   };
 
@@ -79,10 +99,21 @@ class AddSchedule extends Component {
     if (team) {
       return (
         <div className={`AddSchedule ${classes.root}`}>
-          <h2>ADDSCHEDULE</h2>
-          <form onSubmit={this.handleSubmit}>
+          <Button
+            onClick={this.handleShowForm}
+            color="secondary"
+            variant="outlined"
+          >
+            Add Schedule
+          </Button>
+          <form
+            style={{ display: "none" }}
+            ref={this.showForm}
+            onSubmit={this.handleSubmit}
+          >
             <div className={classes.textField}>
               <TextField
+                fullWidth
                 label="Season Name"
                 placeholder="Season Name"
                 type="text"
@@ -95,6 +126,7 @@ class AddSchedule extends Component {
 
             <div className={classes.textField}>
               <DatePicker
+                fullWidth
                 keyboard
                 autoOk
                 label="Start Date"
@@ -122,7 +154,7 @@ class AddSchedule extends Component {
             </div>
 
             <div className={classes.button}>
-              <Button type="submit" color="primary" variant="outlined">
+              <Button type="submit" color="primary" variant="contained">
                 Add Schedule
               </Button>
             </div>

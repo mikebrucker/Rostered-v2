@@ -11,7 +11,9 @@ const styles = theme => ({
     padding: theme.spacing.unit
   },
   textField: {
-    padding: theme.spacing.unit
+    margin: "0 auto",
+    padding: theme.spacing.unit,
+    maxWidth: 520
   },
   button: {
     padding: theme.spacing.unit
@@ -25,6 +27,8 @@ class AddTeam extends Component {
     arena: "",
     sport: "Hockey"
   };
+
+  showForm = React.createRef();
 
   handleChange = e => {
     this.setState({
@@ -42,7 +46,7 @@ class AddTeam extends Component {
       this.state.league.length > 0 &&
       this.state.arena.length > 0
     ) {
-      const teamId = "team" + createId();
+      const teamId = createId("team-");
 
       const teamToBeAdded = {
         id: teamId,
@@ -56,12 +60,30 @@ class AddTeam extends Component {
           teams: this.props.firestore.FieldValue.arrayUnion(teamToBeAdded)
         });
 
+      this.setState(
+        {
+          teamName: "",
+          league: "",
+          arena: "",
+          sport: "Hockey"
+        },
+        () => this.handleShowForm()
+      );
+    }
+  };
+
+  handleShowForm = () => {
+    if (this.showForm.current.style.display === "none") {
+      this.showForm.current.style.display = "block";
+      // Setting state when showing form is only way to make MUI labels work correctly on TextFields if display is initially none
       this.setState({
         teamName: "",
         league: "",
         arena: "",
         sport: "Hockey"
       });
+    } else {
+      this.showForm.current.style.display = "none";
     }
   };
 
@@ -71,10 +93,21 @@ class AddTeam extends Component {
     if (user) {
       return (
         <div className="AddTeam">
-          <h1>ADDTEAM</h1>
-          <form onSubmit={this.handleSubmit}>
+          <Button
+            onClick={this.handleShowForm}
+            color="secondary"
+            variant="outlined"
+          >
+            Add Team
+          </Button>
+          <form
+            style={{ display: "none" }}
+            ref={this.showForm}
+            onSubmit={this.handleSubmit}
+          >
             <div className={classes.textField}>
               <TextField
+                fullWidth
                 label="Team Name"
                 placeholder="Team Name"
                 type="text"
@@ -87,6 +120,7 @@ class AddTeam extends Component {
 
             <div className={classes.textField}>
               <TextField
+                fullWidth
                 label="League"
                 placeholder="League"
                 type="text"
@@ -99,6 +133,7 @@ class AddTeam extends Component {
 
             <div className={classes.textField}>
               <TextField
+                fullWidth
                 label="Arena"
                 placeholder="Arena"
                 type="text"
@@ -111,6 +146,7 @@ class AddTeam extends Component {
 
             <div className={classes.textField}>
               <TextField
+                fullWidth
                 label="Sport"
                 name="sport"
                 variant="outlined"
@@ -124,7 +160,7 @@ class AddTeam extends Component {
             </div>
 
             <div className={classes.button}>
-              <Button type="submit" color="primary" variant="outlined">
+              <Button type="submit" color="primary" variant="contained">
                 Add Team
               </Button>
             </div>

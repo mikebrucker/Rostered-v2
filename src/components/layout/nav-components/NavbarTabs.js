@@ -1,8 +1,9 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
+// import Tabs from "@material-ui/core/Tabs";
+// import Tab from "@material-ui/core/Tab";
+import Link from "@material-ui/core/Link";
 
 const styles = theme => ({
   navBarLinks: {
@@ -12,25 +13,26 @@ const styles = theme => ({
   },
   navBarLink: {
     zIndex: "10",
+    fontSize: "1.3em",
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 12,
+    paddingRight: 12,
     "& svg": {
-      fontSize: "2em"
+      // fontSize: "1em"
+      verticalAlign: "text-bottom"
     },
     "&:hover": {
-      "& span": {
-        color: "antiquewhite"
-      }
+      color: "antiquewhite"
     }
   },
   activePage: {
-    "& span": {
-      color: "antiquewhite"
-    },
+    color: "antiquewhite",
+    backgroundColor: theme.palette.secondary.main,
+    display: "inline-block",
     "& svg": {
       fill: "antiquewhite"
     }
-  },
-  tabIndicator: {
-    height: "100%"
   }
 });
 
@@ -38,31 +40,33 @@ const NavbarTabs = ({ classes, links, color, handleChange, value }) => {
   const tabLinks = links
     ? links.map(link => {
         return (
-          <Tab
+          <Link
+            color="secondary"
             key={link.to}
             className={classes.navBarLink}
             exact
             activeClassName={classes.activePage}
             to={link.to}
             component={NavLink}
-            icon={<link.icon />}
-            label={link.label}
-          />
+            underline="none"
+          >
+            <link.icon /> {link.label}
+          </Link>
         );
       })
     : null;
 
   return (
-    <Tabs
-      value={value}
-      onChange={handleChange}
-      variant="fullWidth"
-      indicatorColor={color}
-      textColor={color}
-      classes={{ root: classes.navBarLinks, indicator: classes.tabIndicator }}
-    >
-      {tabLinks}
-    </Tabs>
+    // <Tabs
+    //   value={value}
+    //   onChange={handleChange}
+    //   variant="fullWidth"
+    //   indicatorColor={color}
+    //   textColor={color}
+    //   classes={{ root: classes.navBarLinks, indicator: classes.tabIndicator }}
+    // >
+    <div>{tabLinks}</div>
+    // </Tabs>
   );
 };
 

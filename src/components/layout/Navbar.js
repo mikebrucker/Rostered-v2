@@ -4,7 +4,6 @@ import { NavLink } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { firebaseConnect } from "react-redux-firebase";
-// import { signOut } from "../../store/actions/authActions";
 
 import NavbarTabs from "./nav-components/NavbarTabs";
 import NavbarDrawer from "./nav-components/NavbarDrawer";

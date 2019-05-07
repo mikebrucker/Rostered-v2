@@ -1,6 +1,7 @@
 import React from "react";
+import DeleteItem from "../delete/DeleteItem";
 
-const Player = ({ player }) => {
+const Player = ({ player, user }) => {
   if (player) {
     return (
       <div className="Player">
@@ -11,6 +12,7 @@ const Player = ({ player }) => {
         <div>
           {player.position === "G" ? "Catches" : "Shoots"} {player.shoots}
         </div>
+        <DeleteItem user={user} item={player} />
       </div>
     );
   } else {

@@ -15,8 +15,9 @@ const styles = theme => ({
     padding: theme.spacing.unit
   },
   textField: {
+    margin: "0 auto",
     padding: theme.spacing.unit,
-    display: "inline-block"
+    maxWidth: 520
   },
   button: {
     padding: theme.spacing.unit
@@ -30,48 +31,73 @@ class SignUp extends Component {
     passwordConfirm: "",
     firstName: "",
     lastName: "",
-    number: "",
-    position: "C",
-    shoots: "Right",
-    addToPlayerList: true
+    theme: "orangeRed",
+    setTheme: true,
+    error: null
   };
 
   handleChange = e => {
     const value =
       e.target.type === "checkbox" ? e.target.checked : e.target.value;
 
-    this.setState({
-      [e.target.name]: value
-    });
+    if (
+      e.target.name !== "number" ||
+      (e.target.name === "number" &&
+        e.target.value < 100 &&
+        e.target.value > -1 &&
+        e.target.value !== "000")
+    ) {
+      this.setState({
+        [e.target.name]: value
+      });
+    }
   };
 
   handleSubmit = e => {
     e.preventDefault();
-    if (this.state.password === this.state.passwordConfirm) {
-      const newUser = {
-        email: this.state.email,
-        password: this.state.password
-      };
-      const newProfile = {
-        firstName: this.state.firstName,
-        lastName: this.state.lastName
-      };
-      this.setState(
-        {
-          email: "",
-          password: "",
-          passwordConfirm: "",
-          firstName: "",
-          lastName: "",
-          number: "",
-          position: "C",
-          shoots: "Right",
-          addToPlayerList: true
-        },
-        () => {
-          this.props.firebase.createUser(newUser, newProfile);
-        }
-      );
+    if (
+      this.state.password === this.state.passwordConfirm &&
+      this.state.email.length > 0 &&
+      this.state.firstName.length > 0 &&
+      this.state.lastName.length > 0
+    ) {
+      if (this.state.setTheme && this.state.number.length === 0) {
+        this.setState({
+          error: "Player Needs A Number"
+        });
+      } else {
+        const newUser = {
+          email: this.state.email,
+          password: this.state.password
+        };
+
+        const newProfile = {
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          theme: this.state.theme,
+          setTheme: this.state.setTheme
+        };
+
+        this.setState(
+          {
+            email: "",
+            password: "",
+            passwordConfirm: "",
+            firstName: "",
+            lastName: "",
+            theme: "orangeRed",
+            setTheme: true,
+            error: null
+          },
+          () => {
+            this.props.firebase.createUser(newUser, newProfile);
+          }
+        );
+      }
+    } else {
+      this.setState({
+        error: "Passwords Do Not Match"
+      });
     }
   };
 
@@ -79,12 +105,24 @@ class SignUp extends Component {
     const { unauthorized, loaded, authError, classes } = this.props;
     if (loaded && !unauthorized) return <Redirect to="/" />;
 
+    const themeColors = [
+      { value: "orange", label: "Orange" },
+      { value: "red", label: "Red" },
+      { value: "blue", label: "Blue" },
+      { value: "green", label: "Green" },
+      { value: "yellow", label: "Yellow" },
+      { value: "gold", label: "Gold" },
+      { value: "cyan", label: "Cyan" },
+      { value: "purple", label: "Purple" }
+    ];
+
     return (
       <div className={`SignUp ${classes.root}`}>
         <form onSubmit={this.handleSubmit}>
           <h2>Sign Up</h2>
           <div className={classes.textField}>
             <TextField
+              fullWidth
               label="First Name"
               placeholder="First Name"
               type="text"
@@ -97,6 +135,7 @@ class SignUp extends Component {
 
           <div className={classes.textField}>
             <TextField
+              fullWidth
               label="Last Name"
               placeholder="Last Name"
               type="text"
@@ -109,6 +148,7 @@ class SignUp extends Component {
 
           <div className={classes.textField}>
             <TextField
+              fullWidth
               label="Email"
               placeholder="Email"
               type="email"
@@ -121,6 +161,7 @@ class SignUp extends Component {
 
           <div className={classes.textField}>
             <TextField
+              fullWidth
               label="Password"
               placeholder="Password"
               type="password"
@@ -133,6 +174,7 @@ class SignUp extends Component {
 
           <div className={classes.textField}>
             <TextField
+              fullWidth
               label="Confirm Password"
               placeholder="Confirm Password"
               type="password"
@@ -145,13 +187,13 @@ class SignUp extends Component {
 
           <div>
             <FormControlLabel
-              label="Add to Player List"
+              label="Tough Guy"
               control={
                 <Checkbox
                   type="checkbox"
-                  name="addToPlayerList"
+                  name="setTheme"
                   color="primary"
-                  checked={this.state.addToPlayerList}
+                  checked={this.state.setTheme}
                   onChange={this.handleChange}
                 />
               }
@@ -160,55 +202,33 @@ class SignUp extends Component {
 
           <div className={classes.textField}>
             <TextField
-              placeholder="Number"
-              type="number"
-              name="number"
+              fullWidth
+              label="Theme Color"
+              name="theme"
               variant="outlined"
-              value={this.state.number}
-              max="99"
-              min="0"
-              onChange={this.handleChange}
-            />
-          </div>
-
-          <div className={classes.textField}>
-            <TextField
-              label="Position"
               select
               SelectProps={{ native: true }}
-              name="position"
-              variant="outlined"
-              value={this.state.position}
+              value={this.state.theme}
               onChange={this.handleChange}
             >
-              <option defaultValue="C">C</option>
-              <option value="RW">RW</option>
-              <option value="LW">LW</option>
-              <option value="D">D</option>
-              <option value="G">G</option>
-            </TextField>
-          </div>
-
-          <div className={classes.textField}>
-            <TextField
-              label="Shoots"
-              select
-              SelectProps={{ native: true }}
-              name="shoots"
-              variant="outlined"
-              value={this.state.shoots}
-              onChange={this.handleChange}
-            >
-              <option defaultValue="Right">Right</option>
-              <option value="Left">Left</option>
+              {themeColors
+                ? themeColors.map(color => (
+                    <option key={color.value} value={color.value}>
+                      {color.label}
+                    </option>
+                  ))
+                : null}
             </TextField>
           </div>
 
           <div className={classes.button}>
-            <Button type="submit" color="primary" variant="outlined">
+            <Button type="submit" color="primary" variant="contained">
               Sign Up
             </Button>
-            <div>{authError ? <p>{authError.message}</p> : null}</div>
+            <div>
+              {authError ? <p>{authError.message}</p> : null}
+              {this.state.error ? <p>{this.state.error}</p> : null}
+            </div>
           </div>
         </form>
       </div>

@@ -8,23 +8,16 @@ import Player from "./Player";
 const Players = ({ unauthorized, loaded, user, players }) => {
   if (loaded && unauthorized) return <Redirect to="/login" />;
 
-  const allPlayers =
-    user && user.players
-      ? user.players.map(player => {
-          return <Player key={player.id} player={player} />;
-        })
-      : null;
-
   const myPlayers = players
     ? players.map(player => {
-        return <Player key={player.id} player={player} />;
+        return <Player key={player.id} player={player} user={user} />;
       })
     : null;
 
   return (
     <div>
       <h1>PLAYERS</h1>
-      {myPlayers ? myPlayers : allPlayers}
+      {myPlayers}
     </div>
   );
 };

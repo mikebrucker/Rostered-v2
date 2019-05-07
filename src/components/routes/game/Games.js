@@ -14,7 +14,9 @@ const Games = ({ user, team, schedule }) => {
       : null;
 
   const myGames = games
-    ? games.map(game => <Game key={game.id} team={team} game={game} />)
+    ? games.map(game => (
+        <Game key={game.id} game={game} team={team} user={user} />
+      ))
     : "No Games Added Yet";
 
   return <div className="Games">{myGames}</div>;
