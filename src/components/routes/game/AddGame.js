@@ -16,13 +16,8 @@ const styles = theme => ({
     padding: theme.spacing.unit,
     maxWidth: 520
   },
-  form: {
-    "& label": {
-      // backgroundColor: "inherit"
-    }
-  },
   button: {
-    padding: theme.spacing.unit
+    margin: theme.spacing.unit
   }
 });
 
@@ -96,6 +91,7 @@ class AddGame extends Component {
       return (
         <div className={`AddGame ${classes.root}`}>
           <Button
+            className={classes.button}
             onClick={this.handleShowForm}
             color="secondary"
             variant="outlined"
@@ -135,8 +131,13 @@ class AddGame extends Component {
               />
             </div>
 
-            <div className={classes.button}>
-              <Button type="submit" color="primary" variant="contained">
+            <div>
+              <Button
+                className={classes.button}
+                type="submit"
+                color="primary"
+                variant="contained"
+              >
                 Add Game
               </Button>
             </div>

@@ -16,7 +16,7 @@ const styles = theme => ({
     maxWidth: 520
   },
   button: {
-    padding: theme.spacing.unit
+    margin: theme.spacing.unit
   }
 });
 
@@ -94,6 +94,7 @@ class AddTeam extends Component {
       return (
         <div className="AddTeam">
           <Button
+            className={classes.button}
             onClick={this.handleShowForm}
             color="secondary"
             variant="outlined"
@@ -159,8 +160,13 @@ class AddTeam extends Component {
               </TextField>
             </div>
 
-            <div className={classes.button}>
-              <Button type="submit" color="primary" variant="contained">
+            <div>
+              <Button
+                className={classes.button}
+                type="submit"
+                color="primary"
+                variant="contained"
+              >
                 Add Team
               </Button>
             </div>

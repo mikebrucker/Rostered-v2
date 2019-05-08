@@ -16,7 +16,7 @@ const styles = theme => ({
     maxWidth: 520
   },
   button: {
-    padding: theme.spacing.unit
+    margin: theme.spacing.unit
   }
 });
 
@@ -32,9 +32,34 @@ class AddPlayer extends Component {
   showForm = React.createRef();
 
   handleChange = e => {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
+    // This is only done to make the label on material ui component not overlap outline
+    // label on position input is either catches or shoots depending on if player is goalie or not
+    // if Goalie is selected "Shoots" switches to "Catches" and will overlap if this is not done
+    if (e.target.name === "position" && e.target.value === "G") {
+      this.setState(
+        {
+          [e.target.name]: e.target.value
+        },
+        () =>
+          this.setState({
+            shoots: this.state.shoots
+          })
+      );
+    } else if (e.target.name === "position" && e.target.value !== "G") {
+      this.setState(
+        {
+          [e.target.name]: e.target.value
+        },
+        () =>
+          this.setState({
+            shoots: this.state.shoots
+          })
+      );
+    } else {
+      this.setState({
+        [e.target.name]: e.target.value
+      });
+    }
   };
 
   handleSubmit = e => {
@@ -82,6 +107,8 @@ class AddPlayer extends Component {
   };
 
   handleShowForm = () => {
+    // state is set here because labels will overlap outlined component
+    // if form is not hidden from the start this behavior does not happen
     if (this.showForm.current.style.display === "none") {
       this.showForm.current.style.display = "block";
       this.setState({
@@ -96,13 +123,58 @@ class AddPlayer extends Component {
     }
   };
 
+  handleImportPlayerFromAnotherTeam = e => {
+    if (e.target.value !== "default") {
+      const importedPlayer = JSON.parse(e.target.value);
+
+      this.setState({
+        firstName: importedPlayer.firstName,
+        lastName: importedPlayer.lastName,
+        number: importedPlayer.number,
+        position: importedPlayer.position,
+        shoots: importedPlayer.shoots
+      });
+      e.target.value = "default";
+    }
+  };
+
   render() {
-    const { team, classes } = this.props;
+    const { team, importablePlayers, classes } = this.props;
+
+    const importPlayerFromAnotherTeam = (
+      <div className={classes.textField}>
+        <TextField
+          fullWidth
+          label="Import Player"
+          name="import"
+          variant="outlined"
+          helperText="Import Player From Another Team"
+          select
+          SelectProps={{ native: true }}
+          defaultValue="default"
+          onChange={this.handleImportPlayerFromAnotherTeam}
+        >
+          <option value="default">Import Other Player</option>
+          {importablePlayers && importablePlayers.length > 0 ? (
+            importablePlayers.map(player => (
+              <option key={player.id} value={JSON.stringify(player)}>
+                {player.firstName} {player.lastName}
+              </option>
+            ))
+          ) : (
+            <option value="none" disabled>
+              No Other Players
+            </option>
+          )}
+        </TextField>
+      </div>
+    );
 
     if (team) {
       return (
         <div className={`AddPlayer ${classes.root}`}>
           <Button
+            className={classes.button}
             onClick={this.handleShowForm}
             color="secondary"
             variant="outlined"
@@ -192,11 +264,17 @@ class AddPlayer extends Component {
               </TextField>
             </div>
 
-            <div className={classes.button}>
-              <Button type="submit" color="primary" variant="contained">
+            <div>
+              <Button
+                className={classes.button}
+                type="submit"
+                color="primary"
+                variant="contained"
+              >
                 Add New Player
               </Button>
             </div>
+            {importPlayerFromAnotherTeam}
           </form>
         </div>
       );

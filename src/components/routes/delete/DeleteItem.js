@@ -75,6 +75,7 @@ const DeleteItem = props => {
           color="primary"
           variant="extended"
           aria-label="Delete"
+          size="small"
         >
           <DeleteIcon /> {type}
         </Fab>
@@ -85,6 +86,7 @@ const DeleteItem = props => {
             color="secondary"
             variant="extended"
             aria-label="Delete"
+            size="small"
           >
             Delete this {type} Permanently?
           </Fab>

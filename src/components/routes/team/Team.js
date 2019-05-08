@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { Redirect } from "react-router-dom";
 import { firestoreConnect } from "react-redux-firebase";
-import Schedule from "../schedule/Schedule";
 import Schedules from "../schedule/Schedules";
 import AddSchedule from "../schedule/AddSchedule";
 import Players from "../player/Players";
@@ -18,9 +17,9 @@ const Team = ({ team, user, unauthorized, loaded, requesting }) => {
       ? user.schedules.filter(schedule => schedule.teamId === team.id)
       : null;
 
-  const currentSchedule =
+  const currentSchedules =
     team && mySchedules
-      ? mySchedules.filter(schedule => schedule.current)[0]
+      ? mySchedules.filter(schedule => schedule.current)
       : null;
 
   const notCurrentSchedules =
@@ -33,6 +32,24 @@ const Team = ({ team, user, unauthorized, loaded, requesting }) => {
       ? user.players.filter(player => player.teamId === team.id)
       : null;
 
+  const allOtherPlayers =
+    team && user && user.players
+      ? user.players.filter(player => player.teamId !== team.id)
+      : null;
+
+  const importablePlayers =
+    myPlayers && allOtherPlayers
+      ? allOtherPlayers.filter(other =>
+          myPlayers.filter(
+            myPlayer =>
+              myPlayer.firstName === other.firstName &&
+              myPlayer.lastName === other.lastName
+          ).length > 0
+            ? false
+            : true
+        )
+      : null;
+
   if (loaded && team) {
     return (
       <div className="Team">
@@ -40,10 +57,24 @@ const Team = ({ team, user, unauthorized, loaded, requesting }) => {
         <div>{team.league}</div>
         <div>{team.arena}</div>
         <div>{team.sport}</div>
-        <Schedule schedule={currentSchedule} user={user} team={team} />
+        <Schedules
+          schedules={currentSchedules}
+          user={user}
+          team={team}
+          current={true}
+        />
         <Players players={myPlayers} user={user} team={team} />
-        <AddPlayer user={user} team={team} />
-        <Schedules schedules={notCurrentSchedules} user={user} team={team} />
+        <AddPlayer
+          importablePlayers={importablePlayers}
+          user={user}
+          team={team}
+        />
+        <Schedules
+          schedules={notCurrentSchedules}
+          user={user}
+          team={team}
+          current={false}
+        />
         <AddSchedule user={user} team={team} />
         <DeleteItem user={user} item={team} />
       </div>
