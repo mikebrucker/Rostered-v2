@@ -5,6 +5,7 @@ import { createId } from "../../../helpers/createId";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import Collapse from "@material-ui/core/Collapse";
 import { DateTimePicker } from "material-ui-pickers";
 
 const styles = theme => ({
@@ -24,10 +25,11 @@ const styles = theme => ({
 class AddGame extends Component {
   state = {
     opponent: "",
-    dateTime: null
+    dateTime: new Date(),
+    showForm: false
   };
 
-  showForm = React.createRef();
+  focusInput = React.createRef();
 
   handleChange = e => {
     const value = e.target ? e.target.value : e._d;
@@ -52,7 +54,8 @@ class AddGame extends Component {
         id: gameId,
         teamId,
         scheduleId,
-        ...this.state
+        opponent: this.state.opponent,
+        dateTime: this.state.dateTime
       };
 
       this.props.firestore
@@ -65,7 +68,8 @@ class AddGame extends Component {
       this.setState(
         {
           opponent: "",
-          dateTime: null
+          dateTime: new Date(),
+          showForm: false
         },
         () => this.handleShowForm()
       );
@@ -73,14 +77,18 @@ class AddGame extends Component {
   };
 
   handleShowForm = () => {
-    if (this.showForm.current.style.display === "none") {
-      this.showForm.current.style.display = "block";
+    if (this.state.showForm) {
       this.setState({
-        opponent: "",
-        dateTime: null
+        showForm: false
       });
     } else {
-      this.showForm.current.style.display = "none";
+      this.focusInput.current.focus();
+
+      this.setState({
+        opponent: "",
+        dateTime: new Date(),
+        showForm: true
+      });
     }
   };
 
@@ -98,50 +106,49 @@ class AddGame extends Component {
           >
             Add Game
           </Button>
-          <form
-            style={{ display: "none" }}
-            ref={this.showForm}
-            onSubmit={this.handleSubmit}
-          >
-            <div className={classes.textField}>
-              <TextField
-                fullWidth
-                label="Opponent"
-                placeholder="Opponent"
-                type="text"
-                name="opponent"
-                variant="outlined"
-                value={this.state.opponent}
-                onChange={this.handleChange}
-              />
-            </div>
+          <Collapse in={this.state.showForm}>
+            <form onSubmit={this.handleSubmit}>
+              <div className={classes.textField}>
+                <TextField
+                  inputProps={{ ref: this.focusInput }}
+                  fullWidth
+                  label="Opponent"
+                  placeholder="Opponent"
+                  type="text"
+                  name="opponent"
+                  variant="outlined"
+                  value={this.state.opponent}
+                  onChange={this.handleChange}
+                />
+              </div>
 
-            <div className={classes.textField}>
-              <DateTimePicker
-                fullWidth
-                autoOk
-                keyboard
-                label="Date and Time"
-                name="time"
-                format="MM-DD-YYYY hh:mm A"
-                variant="outlined"
-                minutesStep={5}
-                value={this.state.dateTime}
-                onChange={this.handleChange}
-              />
-            </div>
+              <div className={classes.textField}>
+                <DateTimePicker
+                  fullWidth
+                  autoOk
+                  keyboard
+                  label="Date and Time"
+                  name="time"
+                  format="MM-DD-YYYY hh:mm A"
+                  variant="outlined"
+                  minutesStep={5}
+                  value={this.state.dateTime}
+                  onChange={this.handleChange}
+                />
+              </div>
 
-            <div>
-              <Button
-                className={classes.button}
-                type="submit"
-                color="primary"
-                variant="contained"
-              >
-                Add Game
-              </Button>
-            </div>
-          </form>
+              <div>
+                <Button
+                  className={classes.button}
+                  type="submit"
+                  color="primary"
+                  variant="contained"
+                >
+                  Add Game
+                </Button>
+              </div>
+            </form>
+          </Collapse>
         </div>
       );
     } else {

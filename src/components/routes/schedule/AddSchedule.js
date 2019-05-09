@@ -7,6 +7,7 @@ import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Collapse from "@material-ui/core/Collapse";
 import { DatePicker } from "material-ui-pickers";
 
 const styles = theme => ({
@@ -26,11 +27,12 @@ const styles = theme => ({
 class AddSchedule extends Component {
   state = {
     season: "",
-    startDate: null,
-    current: false
+    startDate: new Date(),
+    current: false,
+    showForm: false
   };
 
-  showForm = React.createRef();
+  focusInput = React.createRef();
 
   handleChange = e => {
     const value = e.target
@@ -57,7 +59,9 @@ class AddSchedule extends Component {
       const scheduleToBeAdded = {
         id: scheduleId,
         teamId,
-        ...this.state
+        season: this.state.season,
+        startDate: this.state.startDate,
+        current: this.state.current
       };
 
       this.props.firestore
@@ -69,11 +73,15 @@ class AddSchedule extends Component {
           )
         });
 
+      const today = new Date();
+      today.setHours(12, 0, 0, 0);
+
       this.setState(
         {
           season: "",
-          startDate: null,
-          current: false
+          startDate: today,
+          current: false,
+          showForm: false
         },
         () => this.handleShowForm()
       );
@@ -81,15 +89,22 @@ class AddSchedule extends Component {
   };
 
   handleShowForm = () => {
-    if (this.showForm.current.style.display === "none") {
-      this.showForm.current.style.display = "block";
+    if (this.state.showForm) {
       this.setState({
-        season: "",
-        startDate: null,
-        current: false
+        showForm: false
       });
     } else {
-      this.showForm.current.style.display = "none";
+      this.focusInput.current.focus();
+
+      const today = new Date();
+      today.setHours(12, 0, 0, 0);
+
+      this.setState({
+        season: "",
+        startDate: today,
+        current: false,
+        showForm: true
+      });
     }
   };
 
@@ -107,64 +122,63 @@ class AddSchedule extends Component {
           >
             Add Schedule
           </Button>
-          <form
-            style={{ display: "none" }}
-            ref={this.showForm}
-            onSubmit={this.handleSubmit}
-          >
-            <div className={classes.textField}>
-              <TextField
-                fullWidth
-                label="Season Name"
-                placeholder="Season Name"
-                type="text"
-                name="season"
-                variant="outlined"
-                value={this.state.season}
-                onChange={this.handleChange}
-              />
-            </div>
+          <Collapse in={this.state.showForm}>
+            <form onSubmit={this.handleSubmit}>
+              <div className={classes.textField}>
+                <TextField
+                  inputProps={{ ref: this.focusInput }}
+                  fullWidth
+                  label="Season Name"
+                  placeholder="Season Name"
+                  type="text"
+                  name="season"
+                  variant="outlined"
+                  value={this.state.season}
+                  onChange={this.handleChange}
+                />
+              </div>
 
-            <div className={classes.textField}>
-              <DatePicker
-                fullWidth
-                keyboard
-                autoOk
-                label="Start Date"
-                name="startDate"
-                format="MM-DD-YYYY"
-                variant="outlined"
-                value={this.state.startDate}
-                onChange={this.handleChange}
-              />
-            </div>
+              <div className={classes.textField}>
+                <DatePicker
+                  fullWidth
+                  keyboard
+                  autoOk
+                  label="Start Date"
+                  name="startDate"
+                  format="MM-DD-YYYY"
+                  variant="outlined"
+                  value={this.state.startDate}
+                  onChange={this.handleChange}
+                />
+              </div>
 
-            <div className={classes.textField}>
-              <FormControlLabel
-                label="Current Season"
-                control={
-                  <Checkbox
-                    color="primary"
-                    type="checkbox"
-                    name="current"
-                    checked={this.state.current}
-                    onChange={this.handleChange}
-                  />
-                }
-              />
-            </div>
+              <div className={classes.textField}>
+                <FormControlLabel
+                  label="Current Season"
+                  control={
+                    <Checkbox
+                      color="primary"
+                      type="checkbox"
+                      name="current"
+                      checked={this.state.current}
+                      onChange={this.handleChange}
+                    />
+                  }
+                />
+              </div>
 
-            <div>
-              <Button
-                className={classes.button}
-                type="submit"
-                color="primary"
-                variant="contained"
-              >
-                Add Schedule
-              </Button>
-            </div>
-          </form>
+              <div>
+                <Button
+                  className={classes.button}
+                  type="submit"
+                  color="primary"
+                  variant="contained"
+                >
+                  Add Schedule
+                </Button>
+              </div>
+            </form>
+          </Collapse>
         </div>
       );
     } else {

@@ -65,7 +65,7 @@ const NavbarTabs = ({ classes, links, color, handleChange, value }) => {
     //   textColor={color}
     //   classes={{ root: classes.navBarLinks, indicator: classes.tabIndicator }}
     // >
-    <div>{tabLinks}</div>
+    <div className={classes.navBarLinks}>{tabLinks}</div>
     // </Tabs>
   );
 };

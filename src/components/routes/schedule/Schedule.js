@@ -2,76 +2,86 @@ import React, { useState } from "react";
 import Moment from "react-moment";
 import AddGame from "../game/AddGame";
 import Games from "../game/Games";
-import DeleteItem from "../delete/DeleteItem";
+import DeleteItem from "../utils/DeleteItem";
+import Loading from "../utils/Loading";
 
 import { withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import Collapse from "@material-ui/core/Collapse";
+import CardContent from "@material-ui/core/CardContent";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import CardActions from "@material-ui/core/CardActions";
 
 const styles = theme => ({
   button: {
-    margin: theme.spacing.unit,
-    background: "linear-gradient(45deg, orange, green)"
+    marginLeft: "auto"
+  },
+  actions: {
+    display: "flex"
+  },
+  expand: {
+    transform: "rotate(0deg)",
+    transition: theme.transitions.create("transform", {
+      duration: theme.transitions.duration.shortest
+    })
+  },
+  expandOpen: {
+    transform: "rotate(180deg)"
   }
 });
 
 const Schedule = ({ user, team, schedule, classes }) => {
   const [showOrHideText, setShowOrHideText] = useState("Show");
+  const [showGames, setShowGames] = useState(schedule.current);
 
-  const showGames = () => {
-    if (
-      document.getElementById(`showGames-${schedule.id}`).style.display ===
-      "none"
-    ) {
-      document.getElementById(`showGames-${schedule.id}`).style.display =
-        "block";
-      setShowOrHideText("Hide");
-    } else {
-      document.getElementById(`showGames-${schedule.id}`).style.display =
-        "none";
-      setShowOrHideText("Show");
-    }
+  const handleShowGames = () => {
+    setShowGames(!showGames);
+    showOrHideText === "Show"
+      ? setShowOrHideText("Hide")
+      : setShowOrHideText("Show");
   };
-
-  const showGamesIfCurrent = schedule && schedule.current ? "block" : "none";
-
-  const showGamesButton =
-    schedule && schedule.current ? null : (
-      <Button
-        className={classes.button}
-        onClick={showGames}
-        color="secondary"
-        variant="outlined"
-        aria-label="Show Games For this Schedule"
-      >
-        {showOrHideText} Games
-      </Button>
-    );
 
   if (schedule) {
     return (
-      <div className="Schedule">
-        <h3>
-          {schedule.season} Season{schedule.current ? " - Current" : null}
-          {showGamesButton}
-        </h3>
-        <div>
-          Season Starts{" "}
+      <CardContent className="Schedule">
+        <Typography variant="h6">
+          {schedule.current
+            ? `Current Season - ${schedule.season}`
+            : `${schedule.season} Season`}
+        </Typography>
+        <Typography variant="subtitle1">
+          Starts{" "}
           <Moment format="MMM Do, YYYY">
             {schedule.startDate.seconds * 1000}
           </Moment>
-        </div>
-        <div
-          style={{ display: showGamesIfCurrent }}
-          id={`showGames-${schedule.id}`}
-        >
+        </Typography>
+        <CardActions className={classes.actions}>
+          <DeleteItem user={user} item={schedule} />
+          <Button
+            className={classes.button}
+            onClick={handleShowGames}
+            color="secondary"
+            variant="contained"
+            aria-label="Show Games For this Schedule"
+            size="small"
+          >
+            Games
+            <ExpandMoreIcon
+              className={`${classes.expand} ${
+                showGames ? classes.expandOpen : null
+              }`}
+            />
+          </Button>
+        </CardActions>
+        <Collapse in={showGames}>
           <Games user={user} team={team} schedule={schedule} />
           <AddGame user={user} team={team} schedule={schedule} />
-        </div>
-        <DeleteItem user={user} item={schedule} />
-      </div>
+        </Collapse>
+      </CardContent>
     );
   } else {
-    return <div className="Schedule">Loading...</div>;
+    return <Loading />;
   }
 };
 

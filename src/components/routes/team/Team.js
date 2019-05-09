@@ -4,12 +4,38 @@ import { compose } from "redux";
 import { Redirect } from "react-router-dom";
 import { firestoreConnect } from "react-redux-firebase";
 import Schedules from "../schedule/Schedules";
-import AddSchedule from "../schedule/AddSchedule";
 import Players from "../player/Players";
-import AddPlayer from "../player/AddPlayer";
-import DeleteItem from "../delete/DeleteItem";
+import DeleteItem from "../utils/DeleteItem";
+import Loading from "../utils/Loading";
 
-const Team = ({ team, user, unauthorized, loaded, requesting }) => {
+import { withStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+// import CardMedia from "@material-ui/core/CardMedia";
+import CardContent from "@material-ui/core/CardContent";
+import CardActions from "@material-ui/core/CardActions";
+// import CardActionArea from "@material-ui/core/CardActionArea";
+
+const styles = theme => ({
+  root: {
+    margin: "0 auto",
+    maxWidth: 756,
+    width: "100%"
+  },
+  card: {
+    margin: theme.spacing.unit
+  },
+  deleteItem: {
+    marginTop: theme.spacing.unit * 10
+  },
+  loading: {
+    position: "fixed",
+    height: "100vh",
+    width: "100vw"
+  }
+});
+
+const Team = ({ team, user, unauthorized, loaded, requesting, classes }) => {
   if (loaded && unauthorized) return <Redirect to="/login" />;
 
   const mySchedules =
@@ -52,37 +78,38 @@ const Team = ({ team, user, unauthorized, loaded, requesting }) => {
 
   if (loaded && team) {
     return (
-      <div className="Team">
-        <h1>{team.teamName}</h1>
-        <div>{team.league}</div>
-        <div>{team.arena}</div>
-        <div>{team.sport}</div>
-        <Schedules
-          schedules={currentSchedules}
-          user={user}
-          team={team}
-          current={true}
-        />
-        <Players players={myPlayers} user={user} team={team} />
-        <AddPlayer
-          importablePlayers={importablePlayers}
-          user={user}
-          team={team}
-        />
-        <Schedules
-          schedules={notCurrentSchedules}
-          user={user}
-          team={team}
-          current={false}
-        />
-        <AddSchedule user={user} team={team} />
-        <DeleteItem user={user} item={team} />
+      <div className={`Team ${classes.root}`}>
+        <Card raised className={classes.card}>
+          <CardHeader
+            titleTypographyProps={{ variant: "h4" }}
+            title={team.teamName}
+            subheader={`Division ${team.division} at ${team.arena}`}
+          />
+          <Schedules
+            schedules={currentSchedules}
+            user={user}
+            team={team}
+            current
+          />
+          <Players
+            importablePlayers={importablePlayers}
+            players={myPlayers}
+            user={user}
+            team={team}
+          />
+          <Schedules schedules={notCurrentSchedules} user={user} team={team} />
+          <CardContent>
+            <CardActions className={classes.deleteItem}>
+              <DeleteItem user={user} item={team} />
+            </CardActions>
+          </CardContent>
+        </Card>
       </div>
     );
   } else if (requesting === false) {
     return <div className="Team">No Team Exists With That Id</div>;
   } else {
-    return <div className="Team">Loading...</div>;
+    return <Loading fixed />;
   }
 };
 
@@ -113,4 +140,4 @@ export default compose(
   firestoreConnect(props => {
     return [{ collection: "users", doc: props.auth.uid }];
   })
-)(Team);
+)(withStyles(styles)(Team));

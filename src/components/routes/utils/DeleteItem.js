@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { firestoreConnect } from "react-redux-firebase";
 
 import { withStyles } from "@material-ui/core/styles";
+import Modal from "@material-ui/core/Modal";
+import Button from "@material-ui/core/Button";
 import Fab from "@material-ui/core/Fab";
 import DeleteIcon from "@material-ui/icons/Delete";
 
@@ -9,21 +11,32 @@ const styles = theme => ({
   button: {
     margin: theme.spacing.unit,
     background: "linear-gradient(45deg, maroon, crimson)"
+  },
+  paper: {
+    position: "absolute",
+    minWidth: 260,
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    paddingTop: theme.spacing.unit * 4,
+    paddingBottom: theme.spacing.unit * 4,
+    paddingLeft: theme.spacing.unit,
+    paddingRight: theme.spacing.unit,
+    outline: "none",
+    border: `${theme.spacing.unit}px solid maroon`,
+    borderRadius: theme.spacing.unit * 2
   }
 });
 
+const getModalStyle = () => ({
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)"
+});
+
 const DeleteItem = props => {
+  const [modalOpen, setModalOpen] = useState(false);
   const { item, user, classes } = props;
   const type = item.id.split("-")[0];
-
-  const showDeleteButton = () => {
-    if (document.getElementById(`delete-${item.id}`).style.display === "none") {
-      document.getElementById(`delete-${item.id}`).style.display =
-        "inline-block";
-    } else {
-      document.getElementById(`delete-${item.id}`).style.display = "none";
-    }
-  };
 
   const deleteItem = () => {
     const userId = user ? user.id : null;
@@ -69,28 +82,34 @@ const DeleteItem = props => {
   if (item) {
     return (
       <div className="DeleteItem">
-        <Fab
+        <Button
           className={classes.button}
-          onClick={showDeleteButton}
-          color="primary"
-          variant="extended"
+          onClick={() => setModalOpen(true)}
+          color="secondary"
+          variant="outlined"
           aria-label="Delete"
           size="small"
         >
           <DeleteIcon /> {type}
-        </Fab>
-        <div style={{ display: "none" }} id={`delete-${item.id}`}>
-          <Fab
-            className={classes.button}
-            onClick={deleteItem}
-            color="secondary"
-            variant="extended"
-            aria-label="Delete"
-            size="small"
-          >
-            Delete this {type} Permanently?
-          </Fab>
-        </div>
+        </Button>
+        <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+          <div style={getModalStyle()} className={classes.paper}>
+            <div>
+              Are You Sure You Want To Permanently Delete This{" "}
+              {type.charAt(0).toUpperCase() + type.slice(1)}?
+            </div>
+            <Fab
+              className={classes.button}
+              onClick={deleteItem}
+              color="secondary"
+              variant="extended"
+              aria-label="Delete"
+              size="medium"
+            >
+              <DeleteIcon /> Delete {type}
+            </Fab>
+          </div>
+        </Modal>
       </div>
     );
   }

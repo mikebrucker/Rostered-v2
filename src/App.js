@@ -12,7 +12,6 @@ import Login from "./components/auth/Login";
 import SignUp from "./components/auth/SignUp";
 import Team from "./components/routes/team/Team";
 import Teams from "./components/routes/team/Teams";
-import Players from "./components/routes/player/Players";
 
 function App() {
   return (
@@ -25,7 +24,6 @@ function App() {
             <Route exact path="/" component={Dashboard} />
             <Route exact path="/teams" component={Teams} />
             <Route exact path="/teams/:id" component={Team} />
-            <Route exact path="/players" component={Players} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/signup" component={SignUp} />
           </Switch>
