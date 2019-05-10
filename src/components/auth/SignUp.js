@@ -61,39 +61,33 @@ class SignUp extends Component {
       this.state.firstName.length > 0 &&
       this.state.lastName.length > 0
     ) {
-      if (this.state.setTheme && this.state.number.length === 0) {
-        this.setState({
-          error: "Player Needs A Number"
-        });
-      } else {
-        const newUser = {
-          email: this.state.email,
-          password: this.state.password
-        };
+      const newUser = {
+        email: this.state.email,
+        password: this.state.password
+      };
 
-        const newProfile = {
-          firstName: this.state.firstName,
-          lastName: this.state.lastName,
-          theme: this.state.theme,
-          setTheme: this.state.setTheme
-        };
+      const newProfile = {
+        firstName: this.state.firstName,
+        lastName: this.state.lastName,
+        theme: this.state.theme,
+        setTheme: this.state.setTheme
+      };
 
-        this.setState(
-          {
-            email: "",
-            password: "",
-            passwordConfirm: "",
-            firstName: "",
-            lastName: "",
-            theme: "orangeRed",
-            setTheme: true,
-            error: null
-          },
-          () => {
-            this.props.firebase.createUser(newUser, newProfile);
-          }
-        );
-      }
+      this.setState(
+        {
+          email: "",
+          password: "",
+          passwordConfirm: "",
+          firstName: "",
+          lastName: "",
+          theme: "orangeRed",
+          setTheme: true,
+          error: null
+        },
+        () => {
+          this.props.firebase.createUser(newUser, newProfile);
+        }
+      );
     } else {
       this.setState({
         error: "Passwords Do Not Match"

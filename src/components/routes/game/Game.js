@@ -33,7 +33,7 @@ const Game = ({ game, team, user, classes }) => {
     return (
       <div className={`Game ${classes.game}`}>
         <div onClick={() => setshowActions(!showActions)}>
-          <Typography className={classes.title} variant="h6">
+          <Typography variant="h6">
             {team.teamName} vs {game.opponent}
           </Typography>
           <Typography variant="subtitle1">

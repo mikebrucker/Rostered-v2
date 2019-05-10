@@ -1,7 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { Redirect } from "react-router-dom";
 import { firestoreConnect } from "react-redux-firebase";
 import Schedules from "../schedule/Schedules";
 import Players from "../player/Players";
@@ -11,10 +8,8 @@ import Loading from "../utils/Loading";
 import { withStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
-// import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
-// import CardActionArea from "@material-ui/core/CardActionArea";
 
 const styles = theme => ({
   root: {
@@ -25,19 +20,14 @@ const styles = theme => ({
   card: {
     margin: theme.spacing.unit
   },
-  deleteItem: {
-    marginTop: theme.spacing.unit * 10
-  },
-  loading: {
-    position: "fixed",
-    height: "100vh",
-    width: "100vw"
+  deleteItem: {},
+  deleteItemArea: {
+    marginTop: theme.spacing.unit * 20,
+    backgroundColor: theme.palette.error[300]
   }
 });
 
-const Team = ({ team, user, unauthorized, loaded, requesting, classes }) => {
-  if (loaded && unauthorized) return <Redirect to="/login" />;
-
+const Team = ({ team, user, setValue, currentValue, classes }) => {
   const mySchedules =
     team && user && user.schedules
       ? user.schedules.filter(schedule => schedule.teamId === team.id)
@@ -53,9 +43,53 @@ const Team = ({ team, user, unauthorized, loaded, requesting, classes }) => {
       ? mySchedules.filter(schedule => !schedule.current)
       : null;
 
-  const myPlayers =
+  // Separate players by position and then sorts by number
+  const myPlayersToBeSorted =
     team && user && user.players
       ? user.players.filter(player => player.teamId === team.id)
+      : null;
+
+  const sortPlayersByNumber = players =>
+    players.sort((a, b) => a.number - b.number);
+
+  const centers = myPlayersToBeSorted
+    ? sortPlayersByNumber(
+        myPlayersToBeSorted.filter(center => center.position === "C")
+      )
+    : null;
+
+  const leftwings = myPlayersToBeSorted
+    ? sortPlayersByNumber(
+        myPlayersToBeSorted.filter(leftwing => leftwing.position === "LW")
+      )
+    : null;
+
+  const rightwings = myPlayersToBeSorted
+    ? sortPlayersByNumber(
+        myPlayersToBeSorted.filter(rightwing => rightwing.position === "RW")
+      )
+    : null;
+
+  const defensemans = myPlayersToBeSorted
+    ? sortPlayersByNumber(
+        myPlayersToBeSorted.filter(defenseman => defenseman.position === "D")
+      )
+    : null;
+
+  const goalies = myPlayersToBeSorted
+    ? sortPlayersByNumber(
+        myPlayersToBeSorted.filter(goalie => goalie.position === "G")
+      )
+    : null;
+
+  // All players for this team sorted and put back into list
+  const myPlayers =
+    centers && leftwings && rightwings && defensemans && goalies
+      ? centers
+          .concat(leftwings)
+          .concat(rightwings)
+          .concat(defensemans)
+          .concat(goalies)
       : null;
 
   const allOtherPlayers =
@@ -63,6 +97,10 @@ const Team = ({ team, user, unauthorized, loaded, requesting, classes }) => {
       ? user.players.filter(player => player.teamId !== team.id)
       : null;
 
+  // If user creates players on another team
+  // That does not share names with players on this team
+  // They can be selected for import in <AddPlayer />
+  // Selecting only fills input fields in <AddPlayer />
   const importablePlayers =
     myPlayers && allOtherPlayers
       ? allOtherPlayers.filter(other =>
@@ -76,7 +114,7 @@ const Team = ({ team, user, unauthorized, loaded, requesting, classes }) => {
         )
       : null;
 
-  if (loaded && team) {
+  if (team) {
     return (
       <div className={`Team ${classes.root}`}>
         <Card raised className={classes.card}>
@@ -98,46 +136,22 @@ const Team = ({ team, user, unauthorized, loaded, requesting, classes }) => {
             team={team}
           />
           <Schedules schedules={notCurrentSchedules} user={user} team={team} />
-          <CardContent>
+          <CardContent className={classes.deleteItemArea}>
             <CardActions className={classes.deleteItem}>
-              <DeleteItem user={user} item={team} />
+              <DeleteItem
+                user={user}
+                item={team}
+                setValue={setValue}
+                currentValue={currentValue}
+              />
             </CardActions>
           </CardContent>
         </Card>
       </div>
     );
-  } else if (requesting === false) {
-    return <div className="Team">No Team Exists With That Id</div>;
   } else {
     return <Loading fixed />;
   }
 };
 
-const mapStateToProps = (
-  { firebase: { auth }, firestore: { ordered, status } },
-  ownProps
-) => {
-  const user = ordered && ordered.users ? ordered.users[0] : null;
-  const team =
-    user && user.teams
-      ? user.teams.filter(team => team.id === ownProps.match.params.id)[0]
-      : null;
-  // Check if firestore is requesting. It is false when done.
-  // If done and no team with that id display No Team With That Id text
-  const requesting = user ? status.requesting[`users/${user.id}`] : null;
-  return {
-    auth,
-    loaded: auth.isLoaded,
-    unauthorized: auth.isEmpty,
-    user,
-    team,
-    requesting
-  };
-};
-
-export default compose(
-  connect(mapStateToProps),
-  firestoreConnect(props => {
-    return [{ collection: "users", doc: props.auth.uid }];
-  })
-)(withStyles(styles)(Team));
+export default firestoreConnect()(withStyles(styles)(Team));

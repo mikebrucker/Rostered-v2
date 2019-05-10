@@ -5,12 +5,15 @@ import { createId } from "../../../helpers/createId";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from "@material-ui/icons/Add";
 import Collapse from "@material-ui/core/Collapse";
 import { DateTimePicker } from "material-ui-pickers";
 
 const styles = theme => ({
   root: {
-    padding: theme.spacing.unit
+    padding: theme.spacing.unit,
+    backgroundColor: theme.palette.secondary[50]
   },
   textField: {
     margin: "0 auto",
@@ -138,14 +141,14 @@ class AddGame extends Component {
               </div>
 
               <div>
-                <Button
+                <Fab
                   className={classes.button}
                   type="submit"
                   color="primary"
-                  variant="contained"
+                  variant="extended"
                 >
-                  Add Game
-                </Button>
+                  <AddIcon /> Add Game
+                </Fab>
               </div>
             </form>
           </Collapse>

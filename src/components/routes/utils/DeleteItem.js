@@ -35,7 +35,7 @@ const getModalStyle = () => ({
 
 const DeleteItem = props => {
   const [modalOpen, setModalOpen] = useState(false);
-  const { item, user, classes } = props;
+  const { item, user, setValue, currentValue, classes } = props;
   const type = item.id.split("-")[0];
 
   const deleteItem = () => {
@@ -66,6 +66,7 @@ const DeleteItem = props => {
     if (type === "schedule" && userId) {
       removeAssociatedData(["games"]);
     } else if (type === "team" && userId) {
+      if (setValue && currentValue) setValue(currentValue - 1);
       removeAssociatedData(["players", "schedules", "games"]);
     }
 

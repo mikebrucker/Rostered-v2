@@ -8,6 +8,7 @@ import Collapse from "@material-ui/core/Collapse";
 import Button from "@material-ui/core/Button";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
 
 const styles = theme => ({
   button: {
@@ -18,15 +19,15 @@ const styles = theme => ({
   },
 
   card: {
-    "&:nth-child(even)": {
-      backgroundColor: theme.palette.background.schedule
-    },
     "&:nth-child(odd)": {
-      backgroundColor: theme.palette.background.schedule2
+      backgroundColor: theme.palette.secondary[400]
+    },
+    "&:nth-child(even)": {
+      backgroundColor: theme.palette.secondary[200]
     }
   },
   title: {
-    backgroundColor: theme.palette.background.schedule2
+    backgroundColor: theme.palette.secondary[400]
   },
 
   expand: {
@@ -41,21 +42,29 @@ const styles = theme => ({
 });
 
 const Schedules = ({ user, team, schedules, current, classes }) => {
-  const [showSchedules, setshowSchedules] = useState(false);
+  const [showSchedules, setshowSchedules] = useState(
+    schedules && schedules.length === 0 ? true : false
+  );
 
   const mySchedules =
-    schedules && schedules.length > 0
-      ? schedules.map(schedule => (
-          <div key={schedule.id} className={classes.card}>
-            <Schedule user={user} team={team} schedule={schedule} />
-          </div>
-        ))
-      : current
-      ? "No Current Schedule"
-      : "No Other Schedules";
+    schedules && schedules.length > 0 ? (
+      schedules.map(schedule => (
+        <div key={schedule.id} className={classes.card}>
+          <Schedule user={user} team={team} schedule={schedule} />
+        </div>
+      ))
+    ) : current ? (
+      <Typography className={classes.title} variant="h6">
+        No Current Schedule
+      </Typography>
+    ) : (
+      <Typography className={classes.title} variant="h6">
+        No Other Schedules
+      </Typography>
+    );
 
   if (current) {
-    return <div className="Schedules">{mySchedules}</div>;
+    return <div className={`Schedules ${classes.title}`}>{mySchedules}</div>;
   } else {
     return (
       <div className="Schedules">
@@ -69,11 +78,7 @@ const Schedules = ({ user, team, schedules, current, classes }) => {
               aria-label="Show Schedules"
               size="small"
             >
-              {`${team.teamName}${
-                ["s", "S"].includes(team.teamName[team.teamName.length - 1])
-                  ? "'"
-                  : "'s"
-              } Other Schedules`}
+              Schedules
               <ExpandMoreIcon
                 className={`${classes.expand} ${
                   showSchedules ? classes.expandOpen : null

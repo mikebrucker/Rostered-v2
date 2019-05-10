@@ -35,19 +35,20 @@ const NavbarDrawer = ({
   links,
   color,
   anchor,
-  handleChange,
   toggleDrawer,
-  isDrawerOpen
+  isDrawerOpen,
+  logoutUser
 }) => {
   const drawerLinks = links
-    ? links.map((link, index) => {
+    ? links.map(link => {
+        const func = link.func ? link.func : null;
         return (
           <Link
             key={link.to}
             to={link.to}
+            onClick={func}
             component={NavLink}
             color={color}
-            onClick={handleChange.bind(this, null, index)}
           >
             <ListItem className={classes.sideMenuItem}>
               <link.icon />
@@ -67,10 +68,7 @@ const NavbarDrawer = ({
         onClick={toggleDrawer}
         onKeyDown={toggleDrawer}
       >
-        <List>
-          <h6>Teams</h6>
-          {drawerLinks}
-        </List>
+        <List>{drawerLinks}</List>
       </div>
     </Drawer>
   );

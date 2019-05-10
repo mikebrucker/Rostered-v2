@@ -3,6 +3,8 @@ import Player from "./Player";
 import AddPlayer from "./AddPlayer";
 
 import { withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Collapse from "@material-ui/core/Collapse";
@@ -17,13 +19,17 @@ const styles = theme => ({
     display: "flex"
   },
   card: {
-    "&:nth-child(even)": {
-      backgroundColor: theme.palette.background.player
-    },
     "&:nth-child(odd)": {
-      backgroundColor: theme.palette.background.player2
+      backgroundColor: theme.palette.primary[600]
+    },
+    "&:nth-child(even)": {
+      backgroundColor: theme.palette.primary[900]
     }
   },
+  text: {
+    color: theme.palette.secondary[50]
+  },
+
   expand: {
     transform: "rotate(0deg)",
     transition: theme.transitions.create("transform", {
@@ -38,15 +44,25 @@ const styles = theme => ({
 const Players = ({ user, team, players, importablePlayers, classes }) => {
   const [showPlayers, setShowPlayers] = useState(true);
 
-  const myPlayers = players
-    ? players.map(player => {
+  const myPlayers =
+    players && players.length > 0 ? (
+      players.map(player => {
         return (
           <div key={player.id} className={classes.card}>
             <Player player={player} user={user} />
           </div>
         );
       })
-    : null;
+    ) : (
+      <div className={classes.card}>
+        <Typography classes={{ root: classes.text }} variant="h6">
+          No Players Added
+        </Typography>
+        <Typography classes={{ root: classes.text }} variant="body1">
+          Add Player Below
+        </Typography>
+      </div>
+    );
 
   return (
     <CardContent className="Players">
@@ -68,12 +84,14 @@ const Players = ({ user, team, players, importablePlayers, classes }) => {
         </Button>
       </CardActions>
       <Collapse in={showPlayers}>
-        {myPlayers}
-        <AddPlayer
-          importablePlayers={importablePlayers}
-          user={user}
-          team={team}
-        />
+        <Card>
+          {myPlayers}
+          <AddPlayer
+            importablePlayers={importablePlayers}
+            user={user}
+            team={team}
+          />
+        </Card>
       </Collapse>
     </CardContent>
   );

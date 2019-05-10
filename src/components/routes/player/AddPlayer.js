@@ -5,6 +5,8 @@ import { createId } from "../../../helpers/createId";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from "@material-ui/icons/Add";
 import Collapse from "@material-ui/core/Collapse";
 
 const styles = theme => ({
@@ -270,14 +272,14 @@ class AddPlayer extends Component {
               </div>
 
               <div>
-                <Button
+                <Fab
                   className={classes.button}
                   type="submit"
                   color="primary"
-                  variant="contained"
+                  variant="extended"
                 >
-                  Add New Player
-                </Button>
+                  <AddIcon /> Add New Player
+                </Fab>
               </div>
               {importPlayerFromAnotherTeam}
             </form>

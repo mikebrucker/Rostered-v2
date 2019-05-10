@@ -1,11 +1,16 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { Redirect } from "react-router-dom";
 import { firestoreConnect } from "react-redux-firebase";
 import { createId } from "../../../helpers/createId";
 
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import Collapse from "@material-ui/core/Collapse";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from "@material-ui/icons/Add";
+import Typography from "@material-ui/core/Typography";
+import Loading from "../utils/Loading";
 
 const styles = theme => ({
   root: {
@@ -26,8 +31,7 @@ class AddTeam extends Component {
     teamName: "",
     division: "",
     arena: "",
-    sport: "Hockey",
-    showForm: false
+    sport: "Hockey"
   };
 
   focusInput = React.createRef();
@@ -65,127 +69,127 @@ class AddTeam extends Component {
           teams: this.props.firestore.FieldValue.arrayUnion(teamToBeAdded)
         });
 
-      this.setState(
-        {
-          teamName: "",
-          division: "",
-          arena: "",
-          sport: "Hockey",
-          showForm: false
-        },
-        () => this.handleShowForm()
-      );
-    }
-  };
-
-  handleShowForm = () => {
-    if (this.state.showForm) {
-      this.setState({
-        showForm: false
-      });
-    } else {
-      this.focusInput.current.focus();
-
-      // Setting state when showing form is only way to make MUI labels work correctly on TextFields if display is initially none
       this.setState({
         teamName: "",
         division: "",
         arena: "",
         sport: "Hockey",
-        showForm: true
+        showForm: false
       });
+      if (this.props.location.pathname !== "/") {
+        this.props.history.push({ pathname: "/", createdTeam: teamId });
+      }
     }
   };
 
   render() {
-    const { user, classes } = this.props;
+    const { user, unauthorized, loaded, classes } = this.props;
+    if (loaded && unauthorized) return <Redirect to="/login" />;
 
     if (user) {
       return (
         <div className="AddTeam">
-          <Button
+          <Typography
             className={classes.button}
-            onClick={this.handleShowForm}
+            // onClick={this.handleShowForm}
             color="secondary"
-            variant="outlined"
+            variant="h4"
           >
-            Add Team
-          </Button>
-          <Collapse in={this.state.showForm}>
-            <form onSubmit={this.handleSubmit}>
-              <div className={classes.textField}>
-                <TextField
-                  inputProps={{ ref: this.focusInput }}
-                  fullWidth
-                  label="Team Name"
-                  placeholder="Team Name"
-                  type="text"
-                  name="teamName"
-                  variant="outlined"
-                  value={this.state.teamName}
-                  onChange={this.handleChange}
-                />
-              </div>
+            Add a New Team
+          </Typography>
 
-              <div className={classes.textField}>
-                <TextField
-                  fullWidth
-                  label="Division"
-                  placeholder="Division"
-                  type="text"
-                  name="division"
-                  variant="outlined"
-                  value={this.state.division}
-                  onChange={this.handleChange}
-                />
-              </div>
+          <form onSubmit={this.handleSubmit}>
+            <div className={classes.textField}>
+              <TextField
+                autoFocus
+                inputProps={{ ref: this.focusInput }}
+                fullWidth
+                label="Team Name"
+                placeholder="Team Name"
+                type="text"
+                name="teamName"
+                variant="outlined"
+                value={this.state.teamName}
+                onChange={this.handleChange}
+              />
+            </div>
 
-              <div className={classes.textField}>
-                <TextField
-                  fullWidth
-                  label="Arena"
-                  placeholder="Arena"
-                  type="text"
-                  name="arena"
-                  variant="outlined"
-                  value={this.state.arena}
-                  onChange={this.handleChange}
-                />
-              </div>
+            <div className={classes.textField}>
+              <TextField
+                fullWidth
+                label="Division"
+                placeholder="Division"
+                type="text"
+                name="division"
+                variant="outlined"
+                value={this.state.division}
+                onChange={this.handleChange}
+              />
+            </div>
 
-              <div className={classes.textField}>
-                <TextField
-                  fullWidth
-                  label="Sport"
-                  name="sport"
-                  variant="outlined"
-                  select
-                  SelectProps={{ native: true }}
-                  value={this.state.sport}
-                  onChange={this.handleChange}
-                >
-                  <option defaultValue="Hockey">Hockey</option>
-                </TextField>
-              </div>
+            <div className={classes.textField}>
+              <TextField
+                fullWidth
+                label="Arena"
+                placeholder="Arena"
+                type="text"
+                name="arena"
+                variant="outlined"
+                value={this.state.arena}
+                onChange={this.handleChange}
+              />
+            </div>
 
-              <div>
-                <Button
-                  className={classes.button}
-                  type="submit"
-                  color="primary"
-                  variant="contained"
-                >
-                  Add Team
-                </Button>
-              </div>
-            </form>
-          </Collapse>
+            <div className={classes.textField}>
+              <TextField
+                fullWidth
+                label="Sport"
+                name="sport"
+                variant="outlined"
+                select
+                SelectProps={{ native: true }}
+                value={this.state.sport}
+                onChange={this.handleChange}
+              >
+                <option defaultValue="Hockey">Hockey</option>
+              </TextField>
+            </div>
+
+            <div>
+              <Fab
+                className={classes.button}
+                type="submit"
+                color="primary"
+                variant="extended"
+              >
+                <AddIcon /> Add Team
+              </Fab>
+            </div>
+          </form>
         </div>
       );
     } else {
-      return <div className="AddTeam">Loading...</div>;
+      return <Loading fixed />;
     }
   }
 }
 
-export default firestoreConnect()(withStyles(styles)(AddTeam));
+const mapStateToProps = ({
+  firebase: { auth },
+  firestore: { ordered, status }
+}) => {
+  const user = ordered && ordered.users ? ordered.users[0] : null;
+  return {
+    auth,
+    loaded: auth.isLoaded,
+    unauthorized: auth.isEmpty,
+    user
+  };
+};
+
+export default compose(
+  connect(mapStateToProps),
+  firestoreConnect(props => {
+    return [{ collection: "users", doc: props.auth.uid }];
+  })
+)(withStyles(styles)(AddTeam));

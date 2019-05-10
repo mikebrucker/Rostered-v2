@@ -6,6 +6,8 @@ import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from "@material-ui/icons/Add";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Collapse from "@material-ui/core/Collapse";
 import { DatePicker } from "material-ui-pickers";
@@ -168,14 +170,14 @@ class AddSchedule extends Component {
               </div>
 
               <div>
-                <Button
+                <Fab
                   className={classes.button}
                   type="submit"
                   color="primary"
-                  variant="contained"
+                  variant="extended"
                 >
-                  Add Schedule
-                </Button>
+                  <AddIcon /> Add Schedule
+                </Fab>
               </div>
             </form>
           </Collapse>

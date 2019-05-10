@@ -9,6 +9,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Collapse from "@material-ui/core/Collapse";
+import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CardActions from "@material-ui/core/CardActions";
@@ -75,8 +76,10 @@ const Schedule = ({ user, team, schedule, classes }) => {
           </Button>
         </CardActions>
         <Collapse in={showGames}>
-          <Games user={user} team={team} schedule={schedule} />
-          <AddGame user={user} team={team} schedule={schedule} />
+          <Card>
+            <Games user={user} team={team} schedule={schedule} />
+            <AddGame user={user} team={team} schedule={schedule} />
+          </Card>
         </Collapse>
       </CardContent>
     );

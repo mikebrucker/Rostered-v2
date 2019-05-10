@@ -1,8 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+
 import { withStyles } from "@material-ui/core/styles";
-// import Tabs from "@material-ui/core/Tabs";
-// import Tab from "@material-ui/core/Tab";
 import Link from "@material-ui/core/Link";
 
 const styles = theme => ({
@@ -14,12 +13,9 @@ const styles = theme => ({
   navBarLink: {
     zIndex: "10",
     fontSize: "1.3em",
-    paddingTop: 20,
-    paddingBottom: 20,
     paddingLeft: 12,
     paddingRight: 12,
     "& svg": {
-      // fontSize: "1em"
       verticalAlign: "text-bottom"
     },
     "&:hover": {
@@ -28,17 +24,16 @@ const styles = theme => ({
   },
   activePage: {
     color: "antiquewhite",
-    backgroundColor: theme.palette.secondary.main,
-    display: "inline-block",
     "& svg": {
       fill: "antiquewhite"
     }
   }
 });
 
-const NavbarTabs = ({ classes, links, color, handleChange, value }) => {
+const NavbarLinks = ({ classes, links }) => {
   const tabLinks = links
     ? links.map(link => {
+        const func = link.func ? link.func : null;
         return (
           <Link
             color="secondary"
@@ -49,6 +44,7 @@ const NavbarTabs = ({ classes, links, color, handleChange, value }) => {
             to={link.to}
             component={NavLink}
             underline="none"
+            onClick={func}
           >
             <link.icon /> {link.label}
           </Link>
@@ -56,18 +52,7 @@ const NavbarTabs = ({ classes, links, color, handleChange, value }) => {
       })
     : null;
 
-  return (
-    // <Tabs
-    //   value={value}
-    //   onChange={handleChange}
-    //   variant="fullWidth"
-    //   indicatorColor={color}
-    //   textColor={color}
-    //   classes={{ root: classes.navBarLinks, indicator: classes.tabIndicator }}
-    // >
-    <div className={classes.navBarLinks}>{tabLinks}</div>
-    // </Tabs>
-  );
+  return <div className={classes.navBarLinks}>{tabLinks}</div>;
 };
 
-export default withStyles(styles)(NavbarTabs);
+export default withStyles(styles)(NavbarLinks);

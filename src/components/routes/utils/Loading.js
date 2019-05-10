@@ -15,6 +15,9 @@ const styles = theme => ({
 });
 
 const Loading = ({ classes, fixed }) => {
+  // fixed attribute in component i.e. <Loading fixed />
+  // makes loading circle appear in center of screen
+  // otherwise it will be treated as display block
   return (
     <Grid
       className={fixed ? classes.fixed : classes.block}

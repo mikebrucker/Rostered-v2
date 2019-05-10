@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { firebaseConnect } from "react-redux-firebase";
 
-import NavbarTabs from "./nav-components/NavbarTabs";
+import NavbarLinks from "./nav-components/NavbarLinks";
 import NavbarDrawer from "./nav-components/NavbarDrawer";
 
 import { withStyles } from "@material-ui/core/styles";
@@ -16,7 +16,6 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import {
   FaHockeyPuck,
-  FaUsers,
   FaSignOutAlt,
   FaSignInAlt,
   FaUserCheck
@@ -40,11 +39,7 @@ const styles = theme => ({
     }
   },
   appBar: {
-    overflow: "hidden",
-    position: "sticky",
-    top: 0,
-    bottom: "auto",
-    zIndex: "11"
+    overflow: "hidden"
   }
 });
 
@@ -54,15 +49,6 @@ class Navbar extends Component {
     value: 0
   };
 
-  componentDidMount() {
-    let navbarLocalStorageState = JSON.parse(
-      localStorage.getItem("rostered-navbar-state")
-    );
-    if (navbarLocalStorageState) {
-      this.setState(navbarLocalStorageState);
-    }
-  }
-
   scrollToTopOfPage = () => {
     document.getElementById("root").scrollIntoView({
       behavior: "smooth"
@@ -71,9 +57,7 @@ class Navbar extends Component {
   };
 
   handleChange = (e, value) => {
-    this.setState({ value }, () =>
-      localStorage.setItem("rostered-navbar-state", JSON.stringify(this.state))
-    );
+    this.setState({ value });
   };
 
   toggleDrawer = () => {
@@ -82,7 +66,7 @@ class Navbar extends Component {
     });
   };
 
-  signOutUser = () => {
+  logoutUser = () => {
     this.props.firebase.logout();
     this.setState({ value: 0 });
     this.props.history.push("/login");
@@ -97,21 +81,15 @@ class Navbar extends Component {
           { to: "/signup", label: "Sign Up", icon: FaUserCheck }
         ]
       : [
-          { to: "/", label: "Dashboard", icon: GiHockey },
-          { to: "/teams", label: "Teams", icon: GiThreeFriends },
-          { to: "/players", label: "Players", icon: FaUsers }
+          { to: "/", label: "Teams", icon: GiHockey },
+          { to: "/addteam", label: "Add Team", icon: GiThreeFriends },
+          {
+            to: "/login",
+            label: "Logout",
+            icon: FaSignOutAlt,
+            func: this.logoutUser
+          }
         ];
-
-    const signOutButton = (
-      <IconButton
-        className={classes.navMenuLink}
-        onClick={this.signOutUser}
-        color="secondary"
-        aria-label="Sign Out"
-      >
-        <FaSignOutAlt className={classes.navMenuSVG} />
-      </IconButton>
-    );
 
     return (
       <nav className={classes.appBar}>
@@ -128,13 +106,13 @@ class Navbar extends Component {
             >
               <FaHockeyPuck /> Rostered
             </Link>
-            <NavbarTabs
+            <NavbarLinks
               links={navbarLinks}
               color="secondary"
               value={this.state.value}
               handleChange={this.handleChange}
+              logoutUser={this.logoutUser}
             />
-            {signOutButton}
             <IconButton
               // Menu Icon opens Sidebar
               className={classes.navMenuLink}
@@ -150,7 +128,7 @@ class Navbar extends Component {
           color="secondary"
           links={navbarLinks}
           anchor="right"
-          handleChange={this.handleChange}
+          logoutUser={this.logoutUser}
           toggleDrawer={this.toggleDrawer}
           isDrawerOpen={this.state.isDrawerOpen}
         />
