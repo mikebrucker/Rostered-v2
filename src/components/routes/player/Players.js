@@ -5,6 +5,7 @@ import AddPlayer from "./AddPlayer";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Collapse from "@material-ui/core/Collapse";
@@ -20,16 +21,18 @@ const styles = theme => ({
   },
   card: {
     "&:nth-child(odd)": {
-      backgroundColor: theme.palette.primary[600]
+      backgroundColor: theme.palette.secondary[50]
     },
     "&:nth-child(even)": {
-      backgroundColor: theme.palette.primary[900]
+      backgroundColor: theme.palette.primary[100]
     }
   },
-  text: {
-    color: theme.palette.secondary[50]
+  players: {
+    backgroundColor: theme.palette.secondary[100]
   },
-
+  font: {
+    fontWeight: "bold"
+  },
   expand: {
     transform: "rotate(0deg)",
     transition: theme.transitions.create("transform", {
@@ -55,17 +58,13 @@ const Players = ({ user, team, players, importablePlayers, classes }) => {
       })
     ) : (
       <div className={classes.card}>
-        <Typography classes={{ root: classes.text }} variant="h6">
-          No Players Added
-        </Typography>
-        <Typography classes={{ root: classes.text }} variant="body1">
-          Add Player Below
-        </Typography>
+        <Typography variant="h6">No Players Added</Typography>
+        <Typography variant="body1">Add Player Below</Typography>
       </div>
     );
 
   return (
-    <CardContent className="Players">
+    <CardContent className={`Players ${classes.players}`}>
       <CardActions className={classes.actions}>
         <Button
           className={classes.button}
@@ -84,9 +83,14 @@ const Players = ({ user, team, players, importablePlayers, classes }) => {
         </Button>
       </CardActions>
       <Collapse in={showPlayers}>
-        <Card>
+        <Card raised>
+          <CardHeader
+            classes={{ root: classes.card, title: classes.font }}
+            title={`${team.teamName} Players`}
+          />
           {myPlayers}
           <AddPlayer
+            classes={{ root: classes.card }}
             importablePlayers={importablePlayers}
             user={user}
             team={team}

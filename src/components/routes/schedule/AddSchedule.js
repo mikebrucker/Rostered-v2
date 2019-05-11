@@ -78,28 +78,23 @@ class AddSchedule extends Component {
       const today = new Date();
       today.setHours(12, 0, 0, 0);
 
-      this.setState(
-        {
-          season: "",
-          startDate: today,
-          current: false,
-          showForm: false
-        },
-        () => this.handleShowForm()
-      );
+      this.handleShowForm();
     }
   };
 
   handleShowForm = () => {
+    const today = new Date();
+    today.setHours(12, 0, 0, 0);
+
     if (this.state.showForm) {
       this.setState({
+        season: "",
+        startDate: today,
+        current: false,
         showForm: false
       });
     } else {
       this.focusInput.current.focus();
-
-      const today = new Date();
-      today.setHours(12, 0, 0, 0);
 
       this.setState({
         season: "",
@@ -176,7 +171,8 @@ class AddSchedule extends Component {
                   color="primary"
                   variant="extended"
                 >
-                  <AddIcon /> Add Schedule
+                  <AddIcon />
+                  Add Schedule
                 </Fab>
               </div>
             </form>

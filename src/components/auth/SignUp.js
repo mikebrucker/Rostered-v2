@@ -1,14 +1,26 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
 import { firebaseConnect } from "react-redux-firebase";
 import { Redirect } from "react-router-dom";
 
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import deepOrange from "@material-ui/core/colors/deepOrange";
+import red from "@material-ui/core/colors/red";
+import pink from "@material-ui/core/colors/pink";
+import purple from "@material-ui/core/colors/purple";
+import deepPurple from "@material-ui/core/colors/deepPurple";
+import indigo from "@material-ui/core/colors/indigo";
+import blue from "@material-ui/core/colors/blue";
+import lightBlue from "@material-ui/core/colors/lightBlue";
+import cyan from "@material-ui/core/colors/cyan";
+import teal from "@material-ui/core/colors/teal";
+import green from "@material-ui/core/colors/green";
+import lightGreen from "@material-ui/core/colors/lightGreen";
+import lime from "@material-ui/core/colors/lime";
+import yellow from "@material-ui/core/colors/yellow";
+import amber from "@material-ui/core/colors/amber";
+import orange from "@material-ui/core/colors/orange";
 
 const styles = theme => ({
   root: {
@@ -31,26 +43,14 @@ class SignUp extends Component {
     passwordConfirm: "",
     firstName: "",
     lastName: "",
-    theme: "orangeRed",
-    setTheme: true,
+    themeColor: JSON.stringify(deepOrange),
     error: null
   };
 
   handleChange = e => {
-    const value =
-      e.target.type === "checkbox" ? e.target.checked : e.target.value;
-
-    if (
-      e.target.name !== "number" ||
-      (e.target.name === "number" &&
-        e.target.value < 100 &&
-        e.target.value > -1 &&
-        e.target.value !== "000")
-    ) {
-      this.setState({
-        [e.target.name]: value
-      });
-    }
+    this.setState({
+      [e.target.name]: e.target.value
+    });
   };
 
   handleSubmit = e => {
@@ -59,7 +59,8 @@ class SignUp extends Component {
       this.state.password === this.state.passwordConfirm &&
       this.state.email.length > 0 &&
       this.state.firstName.length > 0 &&
-      this.state.lastName.length > 0
+      this.state.lastName.length > 0 &&
+      this.state.themeColor
     ) {
       const newUser = {
         email: this.state.email,
@@ -69,8 +70,7 @@ class SignUp extends Component {
       const newProfile = {
         firstName: this.state.firstName,
         lastName: this.state.lastName,
-        theme: this.state.theme,
-        setTheme: this.state.setTheme
+        themeColor: this.state.themeColor
       };
 
       this.setState(
@@ -80,8 +80,7 @@ class SignUp extends Component {
           passwordConfirm: "",
           firstName: "",
           lastName: "",
-          theme: "orangeRed",
-          setTheme: true,
+          themeColor: JSON.stringify(deepOrange),
           error: null
         },
         () => {
@@ -100,14 +99,22 @@ class SignUp extends Component {
     if (loaded && !unauthorized) return <Redirect to="/" />;
 
     const themeColors = [
-      { value: "orange", label: "Orange" },
-      { value: "red", label: "Red" },
-      { value: "blue", label: "Blue" },
-      { value: "green", label: "Green" },
-      { value: "yellow", label: "Yellow" },
-      { value: "gold", label: "Gold" },
-      { value: "cyan", label: "Cyan" },
-      { value: "purple", label: "Purple" }
+      { value: deepOrange, label: "Deep Orange" },
+      { value: red, label: "Red" },
+      { value: pink, label: "Pink" },
+      { value: purple, label: "Purple" },
+      { value: deepPurple, label: "Deep Purple" },
+      { value: indigo, label: "Indigo" },
+      { value: blue, label: "Blue" },
+      { value: lightBlue, label: "Light Blue" },
+      { value: cyan, label: "Cyan" },
+      { value: teal, label: "Teal" },
+      { value: green, label: "Green" },
+      { value: lightGreen, label: "Light Green" },
+      { value: lime, label: "Lime" },
+      { value: yellow, label: "Yellow" },
+      { value: amber, label: "Amber" },
+      { value: orange, label: "Orange" }
     ];
 
     return (
@@ -116,6 +123,7 @@ class SignUp extends Component {
           <h2>Sign Up</h2>
           <div className={classes.textField}>
             <TextField
+              autoFocus
               fullWidth
               label="First Name"
               placeholder="First Name"
@@ -179,35 +187,23 @@ class SignUp extends Component {
             />
           </div>
 
-          <div>
-            <FormControlLabel
-              label="Tough Guy"
-              control={
-                <Checkbox
-                  type="checkbox"
-                  name="setTheme"
-                  color="primary"
-                  checked={this.state.setTheme}
-                  onChange={this.handleChange}
-                />
-              }
-            />
-          </div>
-
           <div className={classes.textField}>
             <TextField
               fullWidth
               label="Theme Color"
-              name="theme"
+              name="themeColor"
               variant="outlined"
               select
               SelectProps={{ native: true }}
-              value={this.state.theme}
+              value={this.state.themeColor}
               onChange={this.handleChange}
             >
               {themeColors
                 ? themeColors.map(color => (
-                    <option key={color.value} value={color.value}>
+                    <option
+                      key={color.label}
+                      value={JSON.stringify(color.value)}
+                    >
                       {color.label}
                     </option>
                   ))
@@ -230,13 +226,4 @@ class SignUp extends Component {
   }
 }
 
-const mapStateToProps = ({ firebase: { auth, authError } }) => ({
-  loaded: auth.isLoaded,
-  unauthorized: auth.isEmpty,
-  authError
-});
-
-export default compose(
-  firebaseConnect(),
-  connect(mapStateToProps)
-)(withStyles(styles)(SignUp));
+export default firebaseConnect()(withStyles(styles)(SignUp));

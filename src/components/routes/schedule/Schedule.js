@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import Moment from "react-moment";
-import AddGame from "../game/AddGame";
 import Games from "../game/Games";
 import DeleteItem from "../utils/DeleteItem";
 import Loading from "../utils/Loading";
 
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Collapse from "@material-ui/core/Collapse";
 import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CardActions from "@material-ui/core/CardActions";
@@ -20,6 +19,9 @@ const styles = theme => ({
   },
   actions: {
     display: "flex"
+  },
+  font: {
+    fontWeight: "bold"
   },
   expand: {
     transform: "rotate(0deg)",
@@ -46,17 +48,22 @@ const Schedule = ({ user, team, schedule, classes }) => {
   if (schedule) {
     return (
       <CardContent className="Schedule">
-        <Typography variant="h6">
-          {schedule.current
-            ? `Current Season - ${schedule.season}`
-            : `${schedule.season} Season`}
-        </Typography>
-        <Typography variant="subtitle1">
-          Starts{" "}
-          <Moment format="MMM Do, YYYY">
-            {schedule.startDate.seconds * 1000}
-          </Moment>
-        </Typography>
+        <CardHeader
+          classes={{ title: classes.font }}
+          title={
+            schedule.current
+              ? `Current Season - ${schedule.season}`
+              : `${schedule.season} Season`
+          }
+          subheader={
+            <span>
+              Starts{" "}
+              <Moment format="MMM Do, YYYY">
+                {schedule.startDate.seconds * 1000}
+              </Moment>
+            </span>
+          }
+        />
         <CardActions className={classes.actions}>
           <DeleteItem user={user} item={schedule} />
           <Button
@@ -76,9 +83,8 @@ const Schedule = ({ user, team, schedule, classes }) => {
           </Button>
         </CardActions>
         <Collapse in={showGames}>
-          <Card>
+          <Card raised>
             <Games user={user} team={team} schedule={schedule} />
-            <AddGame user={user} team={team} schedule={schedule} />
           </Card>
         </Collapse>
       </CardContent>

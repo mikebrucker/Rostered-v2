@@ -68,20 +68,15 @@ class AddGame extends Component {
           games: this.props.firestore.FieldValue.arrayUnion(gameToBeAdded)
         });
 
-      this.setState(
-        {
-          opponent: "",
-          dateTime: new Date(),
-          showForm: false
-        },
-        () => this.handleShowForm()
-      );
+      this.handleShowForm();
     }
   };
 
   handleShowForm = () => {
     if (this.state.showForm) {
       this.setState({
+        opponent: "",
+        dateTime: new Date(),
         showForm: false
       });
     } else {
@@ -147,7 +142,8 @@ class AddGame extends Component {
                   color="primary"
                   variant="extended"
                 >
-                  <AddIcon /> Add Game
+                  <AddIcon />
+                  Add Game
                 </Fab>
               </div>
             </form>

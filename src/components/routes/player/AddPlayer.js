@@ -97,17 +97,7 @@ class AddPlayer extends Component {
           players: this.props.firestore.FieldValue.arrayUnion(playerToBeAdded)
         });
 
-      this.setState(
-        {
-          firstName: "",
-          lastName: "",
-          number: "",
-          position: "C",
-          shoots: "Right",
-          showForm: false
-        },
-        () => this.handleShowForm()
-      );
+      this.handleShowForm();
     }
   };
 
@@ -116,6 +106,11 @@ class AddPlayer extends Component {
     // if form is not hidden from the start this behavior does not happen
     if (this.state.showForm) {
       this.setState({
+        firstName: "",
+        lastName: "",
+        number: "",
+        position: "C",
+        shoots: "Right",
         showForm: false
       });
     } else {
@@ -278,7 +273,8 @@ class AddPlayer extends Component {
                   color="primary"
                   variant="extended"
                 >
-                  <AddIcon /> Add New Player
+                  <AddIcon />
+                  Add New Player
                 </Fab>
               </div>
               {importPlayerFromAnotherTeam}

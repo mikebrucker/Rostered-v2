@@ -52,6 +52,7 @@ class Login extends Component {
         <form ref={this.showForm} onSubmit={this.handleSubmit}>
           <div className={classes.textField}>
             <TextField
+              autoFocus
               fullWidth
               label="Email"
               placeholder="Email"

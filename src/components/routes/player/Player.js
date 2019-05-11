@@ -9,9 +9,6 @@ const styles = theme => ({
   button: {
     marginLeft: "auto"
   },
-  text: {
-    color: theme.palette.secondary[50]
-  },
   actions: {
     display: "flex"
   },
@@ -33,10 +30,10 @@ const Player = ({ player, user, classes }) => {
     return (
       <div className="Player">
         <div onClick={() => setshowActions(!showActions)}>
-          <Typography classes={{ root: classes.text }} variant="h6">
+          <Typography variant="h6">
             #{player.number} {player.firstName} {player.lastName}
           </Typography>
-          <Typography classes={{ root: classes.text }} variant="body1">
+          <Typography variant="body1">
             {player.position}
             {" - "}
             {player.position === "G" ? "Catches" : "Shoots"} {player.shoots}

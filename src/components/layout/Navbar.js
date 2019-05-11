@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { NavLink } from "react-router-dom";
-import { connect } from "react-redux";
-import { compose } from "redux";
 import { firebaseConnect } from "react-redux-firebase";
+import { actionTypes } from "redux-firestore";
 
 import NavbarLinks from "./nav-components/NavbarLinks";
 import NavbarDrawer from "./nav-components/NavbarDrawer";
@@ -18,7 +17,8 @@ import {
   FaHockeyPuck,
   FaSignOutAlt,
   FaSignInAlt,
-  FaUserCheck
+  FaUserCheck,
+  FaUserAlt
 } from "react-icons/fa";
 import { GiHockey, GiThreeFriends } from "react-icons/gi";
 
@@ -27,7 +27,7 @@ const styles = theme => ({
     flex: 1,
     textAlign: "left",
     fontSize: "2.4em",
-    fontFamily: "Metal Mania, serif",
+    fontFamily: "Righteous, sans-serif",
     [theme.breakpoints.down("xs")]: {
       fontSize: "1.7em"
     },
@@ -39,6 +39,7 @@ const styles = theme => ({
     }
   },
   appBar: {
+    zIndex: "1200",
     overflow: "hidden"
   }
 });
@@ -67,7 +68,10 @@ class Navbar extends Component {
   };
 
   logoutUser = () => {
-    this.props.firebase.logout();
+    this.props.firebase.logout().then(() => {
+      // Clear redux-firestore state on logout
+      this.props.dispatch({ type: actionTypes.CLEAR_DATA });
+    });
     this.setState({ value: 0 });
     this.props.history.push("/login");
   };
@@ -83,6 +87,7 @@ class Navbar extends Component {
       : [
           { to: "/", label: "Teams", icon: GiHockey },
           { to: "/addteam", label: "Add Team", icon: GiThreeFriends },
+          { to: "/profile", label: "Profile", icon: FaUserAlt },
           {
             to: "/login",
             label: "Logout",
@@ -137,15 +142,4 @@ class Navbar extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  unauthorized: state.firebase.auth.isEmpty
-});
-
-export default compose(
-  firebaseConnect(),
-
-  connect(
-    mapStateToProps,
-    null
-  )
-)(withStyles(styles)(withRouter(Navbar)));
+export default firebaseConnect()(withStyles(styles)(withRouter(Navbar)));

@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
 import { Redirect } from "react-router-dom";
 import { firestoreConnect } from "react-redux-firebase";
 import { createId } from "../../../helpers/createId";
@@ -33,8 +31,6 @@ class AddTeam extends Component {
     arena: "",
     sport: "Hockey"
   };
-
-  focusInput = React.createRef();
 
   handleChange = e => {
     this.setState({
@@ -76,6 +72,7 @@ class AddTeam extends Component {
         sport: "Hockey",
         showForm: false
       });
+
       if (this.props.location.pathname !== "/") {
         this.props.history.push({ pathname: "/", createdTeam: teamId });
       }
@@ -102,7 +99,6 @@ class AddTeam extends Component {
             <div className={classes.textField}>
               <TextField
                 autoFocus
-                inputProps={{ ref: this.focusInput }}
                 fullWidth
                 label="Team Name"
                 placeholder="Team Name"
@@ -162,7 +158,8 @@ class AddTeam extends Component {
                 color="primary"
                 variant="extended"
               >
-                <AddIcon /> Add Team
+                <AddIcon />
+                Add Team
               </Fab>
             </div>
           </form>
@@ -174,22 +171,4 @@ class AddTeam extends Component {
   }
 }
 
-const mapStateToProps = ({
-  firebase: { auth },
-  firestore: { ordered, status }
-}) => {
-  const user = ordered && ordered.users ? ordered.users[0] : null;
-  return {
-    auth,
-    loaded: auth.isLoaded,
-    unauthorized: auth.isEmpty,
-    user
-  };
-};
-
-export default compose(
-  connect(mapStateToProps),
-  firestoreConnect(props => {
-    return [{ collection: "users", doc: props.auth.uid }];
-  })
-)(withStyles(styles)(AddTeam));
+export default firestoreConnect()(withStyles(styles)(AddTeam));

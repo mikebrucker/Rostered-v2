@@ -1,16 +1,16 @@
 import React from "react";
 import Game from "./Game";
+import AddGame from "./AddGame";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import Card from "@material-ui/core/Card";
 
 const styles = theme => ({
   card: {
     "&:nth-child(odd)": {
-      backgroundColor: theme.palette.primary[200]
+      backgroundColor: theme.palette.secondary[50]
     },
     "&:nth-child(even)": {
-      backgroundColor: theme.palette.secondary[50]
+      backgroundColor: theme.palette.primary[100]
     }
   }
 });
@@ -35,13 +35,28 @@ const Games = ({ user, team, schedule, classes }) => {
         </div>
       ))
     ) : (
-      <div className={classes.card}>
-        <Typography variant="h6">No Games Added</Typography>
-        <Typography variant="subtitle1">Add Game Below</Typography>
+      <div>
+        <div className={classes.card}>
+          <Typography variant="h6">No Games Added</Typography>
+          <Typography variant="subtitle1">Add Game Below</Typography>
+        </div>
+        <div className={classes.card}>
+          <AddGame user={user} team={team} schedule={schedule} />
+        </div>
       </div>
     );
 
-  return <div className="Games">{myGames}</div>;
+  return (
+    <div className="Games">
+      {myGames}
+      <AddGame
+        classes={{ root: classes.card }}
+        user={user}
+        team={team}
+        schedule={schedule}
+      />
+    </div>
+  );
 };
 
 export default withStyles(styles)(Games);

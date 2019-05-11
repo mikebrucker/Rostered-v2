@@ -3,12 +3,16 @@ import { firestoreConnect } from "react-redux-firebase";
 
 import { withStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
+import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Fab from "@material-ui/core/Fab";
 import DeleteIcon from "@material-ui/icons/Delete";
 
 const styles = theme => ({
   button: {
+    background: "linear-gradient(45deg, maroon, crimson)"
+  },
+  deleteButton: {
     margin: theme.spacing.unit,
     background: "linear-gradient(45deg, maroon, crimson)"
   },
@@ -95,12 +99,12 @@ const DeleteItem = props => {
         </Button>
         <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
           <div style={getModalStyle()} className={classes.paper}>
-            <div>
+            <Typography gutterBottom variant="h6">
               Are You Sure You Want To Permanently Delete This{" "}
               {type.charAt(0).toUpperCase() + type.slice(1)}?
-            </div>
+            </Typography>
             <Fab
-              className={classes.button}
+              className={classes.deleteButton}
               onClick={deleteItem}
               color="secondary"
               variant="extended"

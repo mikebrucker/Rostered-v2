@@ -12,7 +12,7 @@ const styles = theme => ({
   },
   footerTitle: {
     fontSize: "1.2em",
-    fontFamily: "Metal Mania, serif",
+    fontFamily: "Righteous, sans-serif",
     cursor: "pointer",
 
     "&:hover": {

@@ -1,9 +1,11 @@
-import { createMuiTheme } from "@material-ui/core/styles";
 import deepOrange from "@material-ui/core/colors/deepOrange";
 import red from "@material-ui/core/colors/red";
 import grey from "@material-ui/core/colors/grey";
 
-const theme = createMuiTheme({
+// const primaryColor =
+//   profile && profile.themeColor ? profile.themeColor : deepOrange;
+
+const theme = {
   typography: {
     useNextVariants: true
   },
@@ -20,6 +22,9 @@ const theme = createMuiTheme({
     // E.g., shift from Red 500 to Red 300 or Red 700.
     tonalOffset: 0.2
   }
-});
+};
 
+// export default firestoreConnect(props => {
+//   return [{ collection: "users", doc: props.auth.uid }];
+// })(theme);
 export default theme;

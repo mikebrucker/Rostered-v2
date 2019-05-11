@@ -20,16 +20,15 @@ const styles = theme => ({
 
   card: {
     "&:nth-child(odd)": {
-      backgroundColor: theme.palette.secondary[400]
+      backgroundColor: theme.palette.secondary[100]
     },
     "&:nth-child(even)": {
-      backgroundColor: theme.palette.secondary[200]
+      backgroundColor: theme.palette.secondary[300]
     }
   },
   title: {
-    backgroundColor: theme.palette.secondary[400]
+    backgroundColor: theme.palette.secondary[300]
   },
-
   expand: {
     transform: "rotate(0deg)",
     transition: theme.transitions.create("transform", {
@@ -49,7 +48,10 @@ const Schedules = ({ user, team, schedules, current, classes }) => {
   const mySchedules =
     schedules && schedules.length > 0 ? (
       schedules.map(schedule => (
-        <div key={schedule.id} className={classes.card}>
+        <div
+          key={schedule.id}
+          className={current ? classes.title : classes.card}
+        >
           <Schedule user={user} team={team} schedule={schedule} />
         </div>
       ))
@@ -89,7 +91,11 @@ const Schedules = ({ user, team, schedules, current, classes }) => {
         </CardContent>
         <Collapse in={showSchedules}>
           {mySchedules}
-          <AddSchedule user={user} team={team} />
+          <AddSchedule
+            classes={{ root: classes.card }}
+            user={user}
+            team={team}
+          />
         </Collapse>
       </div>
     );

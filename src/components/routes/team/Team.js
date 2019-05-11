@@ -18,12 +18,22 @@ const styles = theme => ({
     width: "100%"
   },
   card: {
-    margin: theme.spacing.unit
+    margin: theme.spacing.unit,
+    marginTop: theme.spacing.unit * 2
   },
-  deleteItem: {},
-  deleteItemArea: {
+  font: {
+    fontWeight: "bold"
+  },
+  deleteItem: {
+    margin: theme.spacing.unit,
     marginTop: theme.spacing.unit * 20,
     backgroundColor: theme.palette.error[300]
+  },
+  deleteItemAction: {
+    paddingTop: 0,
+    "&:last-child": {
+      paddingBottom: 0
+    }
   }
 });
 
@@ -119,7 +129,9 @@ const Team = ({ team, user, setValue, currentValue, classes }) => {
       <div className={`Team ${classes.root}`}>
         <Card raised className={classes.card}>
           <CardHeader
+            classes={{ title: classes.font }}
             titleTypographyProps={{ variant: "h4" }}
+            subheaderTypographyProps={{ variant: "h6" }}
             title={team.teamName}
             subheader={`Division ${team.division} at ${team.arena}`}
           />
@@ -136,8 +148,10 @@ const Team = ({ team, user, setValue, currentValue, classes }) => {
             team={team}
           />
           <Schedules schedules={notCurrentSchedules} user={user} team={team} />
-          <CardContent className={classes.deleteItemArea}>
-            <CardActions className={classes.deleteItem}>
+        </Card>
+        <Card className={classes.deleteItem}>
+          <CardContent className={classes.deleteItemAction}>
+            <CardActions>
               <DeleteItem
                 user={user}
                 item={team}
