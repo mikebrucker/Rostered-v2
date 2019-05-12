@@ -21,6 +21,8 @@ const styles = theme => ({
 // Try class component with state to see if swipe on first load
 const Teams = ({ user, unauthorized, loaded, authError, classes }) => {
   const [value, setValue] = useState(0);
+  const handleChange = (e, i) => setValue(i);
+  const handleChangeIndex = i => setValue(i);
 
   const teams = user && user.teams && user.teams.length > 0 ? user.teams : null;
 
@@ -42,10 +44,21 @@ const Teams = ({ user, unauthorized, loaded, authError, classes }) => {
       ))
     : null;
 
-  const handleChange = (e, i) => setValue(i);
-  const handleChangeIndex = i => setValue(i);
+  const swipeableViews =
+    teams && teamMap ? (
+      <SwipeableViews index={value} onChangeIndex={handleChangeIndex}>
+        <Profile user={user} />
+        {teamMap}
+        <AddTeam user={user} />
+      </SwipeableViews>
+    ) : (
+      <SwipeableViews index={value} onChangeIndex={handleChangeIndex}>
+        <Profile user={user} />
+        <AddTeam user={user} />
+      </SwipeableViews>
+    );
 
-  if (loaded && teams) {
+  if (loaded) {
     return (
       <div className="Teams">
         <AppBar position="sticky" color="primary">
@@ -65,11 +78,7 @@ const Teams = ({ user, unauthorized, loaded, authError, classes }) => {
             <Tab color="secondary" label="Add Team" />
           </Tabs>
         </AppBar>
-        <SwipeableViews index={value} onChangeIndex={handleChangeIndex}>
-          <Profile user={user} />
-          {teamMap}
-          <AddTeam user={user} />
-        </SwipeableViews>
+        {swipeableViews}
       </div>
     );
   } else if (loaded && unauthorized) {

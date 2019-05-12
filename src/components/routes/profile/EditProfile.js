@@ -55,6 +55,8 @@ class EditProfile extends Component {
       };
 
       this.props.firebase.updateProfile(updatedProfile);
+
+      this.handleShowForm();
     } else {
       this.setState({
         error: "Fields cannot be blank"

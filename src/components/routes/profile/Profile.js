@@ -23,20 +23,21 @@ const styles = theme => ({
 });
 
 const Profile = ({ user, classes }) => {
-  const myTeams = user.teams
-    ? user.teams.map((team, i, arr) => {
-        return arr.length - 1 !== i ? (
-          arr.length === 2 ? (
-            <span key={team.id}>{team.teamName} </span>
+  const myTeams =
+    user && user.teams
+      ? user.teams.map((team, i, arr) => {
+          return arr.length - 1 !== i ? (
+            arr.length === 2 ? (
+              <span key={team.id}>{team.teamName} </span>
+            ) : (
+              <span key={team.id}>{team.teamName}, </span>
+            )
           ) : (
-            <span key={team.id}>{team.teamName}, </span>
-          )
-        ) : (
-          // last item
-          <span key={team.id}>and {team.teamName}.</span>
-        );
-      })
-    : "";
+            // last item
+            <span key={team.id}>and {team.teamName}.</span>
+          );
+        })
+      : "";
 
   if (user) {
     return (
