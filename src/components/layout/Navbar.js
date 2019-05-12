@@ -8,57 +8,57 @@ import NavbarLinks from "./nav-components/NavbarLinks";
 import NavbarDrawer from "./nav-components/NavbarDrawer";
 
 import { withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Link from "@material-ui/core/Link";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
-import {
-  FaHockeyPuck,
-  FaSignOutAlt,
-  FaSignInAlt,
-  FaUserCheck,
-  FaUserAlt
-} from "react-icons/fa";
-import { GiHockey, GiThreeFriends } from "react-icons/gi";
+import LibraryAddIcon from "@material-ui/icons/LibraryAdd";
+import { FaHockeyPuck } from "react-icons/fa";
+import { GiHockey } from "react-icons/gi";
+import { IoMdLogOut, IoMdLogIn } from "react-icons/io";
 
 const styles = theme => ({
+  navbarLinks: {
+    [theme.breakpoints.down("sm")]: {
+      display: "none"
+    }
+  },
+  menuIcon: {
+    [theme.breakpoints.up("md")]: {
+      display: "none"
+    }
+  },
   title: {
     flex: 1,
     textAlign: "left",
-    fontSize: "2.4em",
-    fontFamily: "Righteous, sans-serif",
-    [theme.breakpoints.down("xs")]: {
-      fontSize: "1.7em"
-    },
-    "&:hover": {
-      color: "antiquewhite"
-    },
-    "& svg": {
-      verticalAlign: "-10%"
-    }
+    fontFamily: "Righteous, sans-serif"
   },
   appBar: {
     zIndex: "1200",
     overflow: "hidden"
+  },
+  font: {
+    fontFamily: "Righteous, sans-serif",
+    "& svg": {
+      verticalAlign: "-12.5%"
+    },
+    "&:hover": {
+      color: "antiquewhite"
+    }
   }
 });
 
 class Navbar extends Component {
   state = {
-    isDrawerOpen: false,
-    value: 0
+    isDrawerOpen: false
   };
 
   scrollToTopOfPage = () => {
     document.getElementById("root").scrollIntoView({
       behavior: "smooth"
     });
-    this.handleChange(null, 0);
-  };
-
-  handleChange = (e, value) => {
-    this.setState({ value });
   };
 
   toggleDrawer = () => {
@@ -72,8 +72,6 @@ class Navbar extends Component {
       // Clear redux-firestore state on logout
       this.props.dispatch({ type: actionTypes.CLEAR_DATA });
     });
-    this.setState({ value: 0 });
-    this.props.history.push("/login");
   };
 
   render() {
@@ -81,17 +79,18 @@ class Navbar extends Component {
 
     const navbarLinks = unauthorized
       ? [
-          { to: "/login", label: "Login", icon: FaSignInAlt },
-          { to: "/signup", label: "Sign Up", icon: FaUserCheck }
+          { to: "/signup", label: "Sign Up", icon: LibraryAddIcon },
+          { to: "/", label: "Login", icon: IoMdLogIn }
         ]
       : [
-          { to: "/", label: "Teams", icon: GiHockey },
-          { to: "/addteam", label: "Add Team", icon: GiThreeFriends },
-          { to: "/profile", label: "Profile", icon: FaUserAlt },
           {
-            to: "/login",
+            label: "Dashboard",
+            icon: GiHockey,
+            to: "/"
+          },
+          {
             label: "Logout",
-            icon: FaSignOutAlt,
+            icon: IoMdLogOut,
             func: this.logoutUser
           }
         ];
@@ -109,18 +108,26 @@ class Navbar extends Component {
               underline="none"
               to="/"
             >
-              <FaHockeyPuck /> Rostered
+              <Typography
+                className={classes.font}
+                variant="h4"
+                color="secondary"
+              >
+                <FaHockeyPuck /> Rostered
+              </Typography>
             </Link>
-            <NavbarLinks
-              links={navbarLinks}
-              color="secondary"
-              value={this.state.value}
-              handleChange={this.handleChange}
-              logoutUser={this.logoutUser}
-            />
+
+            <div className={classes.navbarLinks}>
+              <NavbarLinks
+                links={navbarLinks}
+                color="secondary"
+                logoutUser={this.logoutUser}
+              />
+            </div>
+
             <IconButton
               // Menu Icon opens Sidebar
-              className={classes.navMenuLink}
+              className={classes.menuIcon}
               onClick={this.toggleDrawer}
               color="secondary"
               aria-label="Open drawer"
@@ -129,6 +136,7 @@ class Navbar extends Component {
             </IconButton>
           </Toolbar>
         </AppBar>
+
         <NavbarDrawer
           color="secondary"
           links={navbarLinks}

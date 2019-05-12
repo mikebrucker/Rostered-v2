@@ -1,12 +1,10 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
 import { firebaseConnect } from "react-redux-firebase";
-import { Redirect } from "react-router-dom";
 
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
 
 const styles = theme => ({
   root: {
@@ -19,6 +17,11 @@ const styles = theme => ({
   },
   button: {
     padding: theme.spacing.unit
+  },
+  font: {
+    fontFamily: "Righteous, sans-serif",
+    paddingTop: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing.unit * 2
   }
 });
 
@@ -43,13 +46,14 @@ class Login extends Component {
   };
 
   render() {
-    const { unauthorized, loaded, authError, classes } = this.props;
-    if (loaded && !unauthorized) return <Redirect to="/" />;
+    const { authError, classes } = this.props;
 
     return (
       <div className={`Login ${classes.root}`}>
-        <h2>Login</h2>
-        <form ref={this.showForm} onSubmit={this.handleSubmit}>
+        <Typography className={classes.font} variant="h4">
+          Login
+        </Typography>
+        <form onSubmit={this.handleSubmit}>
           <div className={classes.textField}>
             <TextField
               autoFocus
@@ -89,13 +93,4 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = ({ firebase: { auth, authError } }) => ({
-  loaded: auth.isLoaded,
-  unauthorized: auth.isEmpty,
-  authError
-});
-
-export default compose(
-  firebaseConnect(),
-  connect(mapStateToProps)
-)(withStyles(styles)(Login));
+export default firebaseConnect()(withStyles(styles)(Login));

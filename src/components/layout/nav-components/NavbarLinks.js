@@ -3,29 +3,20 @@ import { NavLink } from "react-router-dom";
 
 import { withStyles } from "@material-ui/core/styles";
 import Link from "@material-ui/core/Link";
+import Typography from "@material-ui/core/Typography";
 
 const styles = theme => ({
-  navBarLinks: {
-    [theme.breakpoints.down("sm")]: {
-      display: "none"
-    }
-  },
-  navBarLink: {
-    zIndex: "10",
-    fontSize: "1.3em",
-    paddingLeft: 12,
-    paddingRight: 12,
+  navbarLink: {
+    paddingLeft: theme.spacing.unit,
+    paddingRight: theme.spacing.unit,
+    fontFamily: "Righteous, sans-serif",
     "& svg": {
+      height: "24px",
+      width: "24px",
       verticalAlign: "text-bottom"
     },
     "&:hover": {
       color: "antiquewhite"
-    }
-  },
-  activePage: {
-    color: "antiquewhite",
-    "& svg": {
-      fill: "antiquewhite"
     }
   }
 });
@@ -34,25 +25,44 @@ const NavbarLinks = ({ classes, links }) => {
   const tabLinks = links
     ? links.map(link => {
         const func = link.func ? link.func : null;
-        return (
-          <Link
-            color="secondary"
-            key={link.to}
-            className={classes.navBarLink}
-            exact
-            activeClassName={classes.activePage}
-            to={link.to}
-            component={NavLink}
-            underline="none"
-            onClick={func}
-          >
-            <link.icon /> {link.label}
-          </Link>
-        );
+        if (func) {
+          return (
+            <Typography
+              key={link.label}
+              inline
+              className={classes.navbarLink}
+              variant="h6"
+              color="secondary"
+              onClick={func}
+            >
+              <link.icon /> {link.label}
+            </Typography>
+          );
+        } else {
+          return (
+            <Link
+              color="secondary"
+              key={link.label}
+              exact
+              to={link.to}
+              component={NavLink}
+              underline="none"
+            >
+              <Typography
+                inline
+                className={classes.navbarLink}
+                variant="h6"
+                color="secondary"
+              >
+                <link.icon /> {link.label}
+              </Typography>
+            </Link>
+          );
+        }
       })
     : null;
 
-  return <div className={classes.navBarLinks}>{tabLinks}</div>;
+  return <div>{tabLinks}</div>;
 };
 
 export default withStyles(styles)(NavbarLinks);

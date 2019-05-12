@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Moment from "react-moment";
 import DeleteItem from "../utils/DeleteItem";
+import Loading from "../utils/Loading";
 
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -8,9 +9,11 @@ import CardActions from "@material-ui/core/CardActions";
 import Collapse from "@material-ui/core/Collapse";
 
 const styles = theme => ({
-  // button: {
-  //   marginLeft: "auto"
-  // },
+  gameInfo: {
+    display: "inline-block",
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit
+  },
   actions: {
     display: "flex"
   }
@@ -43,6 +46,12 @@ const Game = ({ game, team, user, classes }) => {
           </Typography>
         </div>
         <Collapse in={showActions}>
+          <Typography classes={{ root: classes.gameInfo }} variant="body2">
+            Division: {team.division}
+          </Typography>
+          <Typography classes={{ root: classes.gameInfo }} variant="body2">
+            Location: {team.arena}
+          </Typography>
           <CardActions className={classes.actions}>
             <DeleteItem user={user} item={game} />
           </CardActions>
@@ -50,7 +59,7 @@ const Game = ({ game, team, user, classes }) => {
       </div>
     );
   } else {
-    return <div className="Game">Loading...</div>;
+    return <Loading />;
   }
 };
 

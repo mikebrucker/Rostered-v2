@@ -26,7 +26,7 @@ const styles = theme => ({
   },
   deleteItem: {
     margin: theme.spacing.unit,
-    marginTop: theme.spacing.unit * 20,
+    marginTop: theme.spacing.unit * 16,
     backgroundColor: theme.palette.error[300]
   },
   deleteItemAction: {

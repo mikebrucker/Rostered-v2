@@ -1,14 +1,22 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
+
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Link from "@material-ui/core/Link";
+import Typography from "@material-ui/core/Typography";
 
 const styles = theme => ({
-  background: {
-    backgroundColor: theme.palette.primary.main
+  listSubheader: {
+    color: theme.palette.secondary.main,
+    fontFamily: "Righteous, sans-serif",
+    padding: theme.spacing.unit * 2,
+    "& svg": {
+      height: theme.spacing.unit * 3,
+      width: theme.spacing.unit * 3
+    }
   },
   openDrawer: {
     backgroundColor: theme.palette.primary.main,
@@ -16,16 +24,19 @@ const styles = theme => ({
     minWidth: "240px",
     width: "30vw"
   },
-  listSubHeader: {
-    borderBottom: `1px solid ${theme.palette.secondary.main}`,
-    padding: "20px 0 6px 36px",
-    textAlign: "left",
-    margin: "0 auto"
-  },
   sideMenuItem: {
     "&:hover": {
       color: "antiquewhite",
       backgroundColor: theme.palette.secondary.main
+    }
+  },
+  activePage: {
+    "& li": {
+      color: theme.palette.primary.main,
+      backgroundColor: theme.palette.secondary.main
+    },
+    "& svg": {
+      fill: "currentColor"
     }
   }
 });
@@ -36,26 +47,40 @@ const NavbarDrawer = ({
   color,
   anchor,
   toggleDrawer,
-  isDrawerOpen,
-  logoutUser
+  isDrawerOpen
 }) => {
   const drawerLinks = links
     ? links.map(link => {
         const func = link.func ? link.func : null;
-        return (
-          <Link
-            key={link.to}
-            to={link.to}
-            onClick={func}
-            component={NavLink}
-            color={color}
-          >
-            <ListItem className={classes.sideMenuItem}>
+        if (func) {
+          return (
+            <ListItem
+              key={link.label}
+              onClick={func}
+              color={color}
+              className={classes.sideMenuItem}
+            >
               <link.icon />
               &nbsp;{link.label}
             </ListItem>
-          </Link>
-        );
+          );
+        } else {
+          return (
+            <Link
+              key={link.label}
+              to={link.to}
+              exact
+              activeClassName={classes.activePage}
+              component={NavLink}
+              color={color}
+            >
+              <ListItem className={classes.sideMenuItem}>
+                <link.icon />
+                &nbsp;{link.label}
+              </ListItem>
+            </Link>
+          );
+        }
       })
     : null;
 
@@ -68,7 +93,17 @@ const NavbarDrawer = ({
         onClick={toggleDrawer}
         onKeyDown={toggleDrawer}
       >
-        <List>{drawerLinks}</List>
+        <List component="nav" disablePadding>
+          <Typography
+            className={classes.listSubheader}
+            align="left"
+            variant="h5"
+            color="secondary"
+          >
+            &nbsp;Rostered
+          </Typography>
+          {drawerLinks}
+        </List>
       </div>
     </Drawer>
   );

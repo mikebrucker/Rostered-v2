@@ -35,14 +35,9 @@ const Games = ({ user, team, schedule, classes }) => {
         </div>
       ))
     ) : (
-      <div>
-        <div className={classes.card}>
-          <Typography variant="h6">No Games Added</Typography>
-          <Typography variant="subtitle1">Add Game Below</Typography>
-        </div>
-        <div className={classes.card}>
-          <AddGame user={user} team={team} schedule={schedule} />
-        </div>
+      <div className={classes.card}>
+        <Typography variant="h6">No Games Added</Typography>
+        <Typography variant="subtitle1">Add Game Below</Typography>
       </div>
     );
 

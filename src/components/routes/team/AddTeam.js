@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
 import { firestoreConnect } from "react-redux-firebase";
 import { createId } from "../../../helpers/createId";
 
@@ -21,6 +20,11 @@ const styles = theme => ({
   },
   button: {
     margin: theme.spacing.unit
+  },
+  font: {
+    fontFamily: "Righteous, sans-serif",
+    paddingTop: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing.unit * 2
   }
 });
 
@@ -72,33 +76,21 @@ class AddTeam extends Component {
         sport: "Hockey",
         showForm: false
       });
-
-      if (this.props.location.pathname !== "/") {
-        this.props.history.push({ pathname: "/", createdTeam: teamId });
-      }
     }
   };
 
   render() {
-    const { user, unauthorized, loaded, classes } = this.props;
-    if (loaded && unauthorized) return <Redirect to="/login" />;
-
+    const { user, classes } = this.props;
     if (user) {
       return (
         <div className="AddTeam">
-          <Typography
-            className={classes.button}
-            // onClick={this.handleShowForm}
-            color="secondary"
-            variant="h4"
-          >
+          <Typography className={classes.font} color="secondary" variant="h4">
             Add a New Team
           </Typography>
 
           <form onSubmit={this.handleSubmit}>
             <div className={classes.textField}>
               <TextField
-                autoFocus
                 fullWidth
                 label="Team Name"
                 placeholder="Team Name"

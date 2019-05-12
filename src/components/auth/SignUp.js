@@ -5,22 +5,9 @@ import { Redirect } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
 import deepOrange from "@material-ui/core/colors/deepOrange";
-import red from "@material-ui/core/colors/red";
-import pink from "@material-ui/core/colors/pink";
-import purple from "@material-ui/core/colors/purple";
-import deepPurple from "@material-ui/core/colors/deepPurple";
-import indigo from "@material-ui/core/colors/indigo";
-import blue from "@material-ui/core/colors/blue";
-import lightBlue from "@material-ui/core/colors/lightBlue";
-import cyan from "@material-ui/core/colors/cyan";
-import teal from "@material-ui/core/colors/teal";
-import green from "@material-ui/core/colors/green";
-import lightGreen from "@material-ui/core/colors/lightGreen";
-import lime from "@material-ui/core/colors/lime";
-import yellow from "@material-ui/core/colors/yellow";
-import amber from "@material-ui/core/colors/amber";
-import orange from "@material-ui/core/colors/orange";
+import { themeColors } from "../../material-ui-theme/theme";
 
 const styles = theme => ({
   root: {
@@ -33,6 +20,11 @@ const styles = theme => ({
   },
   button: {
     padding: theme.spacing.unit
+  },
+  font: {
+    fontFamily: "Righteous, sans-serif",
+    paddingTop: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing.unit * 2
   }
 });
 
@@ -98,29 +90,12 @@ class SignUp extends Component {
     const { unauthorized, loaded, authError, classes } = this.props;
     if (loaded && !unauthorized) return <Redirect to="/" />;
 
-    const themeColors = [
-      { value: deepOrange, label: "Deep Orange" },
-      { value: red, label: "Red" },
-      { value: pink, label: "Pink" },
-      { value: purple, label: "Purple" },
-      { value: deepPurple, label: "Deep Purple" },
-      { value: indigo, label: "Indigo" },
-      { value: blue, label: "Blue" },
-      { value: lightBlue, label: "Light Blue" },
-      { value: cyan, label: "Cyan" },
-      { value: teal, label: "Teal" },
-      { value: green, label: "Green" },
-      { value: lightGreen, label: "Light Green" },
-      { value: lime, label: "Lime" },
-      { value: yellow, label: "Yellow" },
-      { value: amber, label: "Amber" },
-      { value: orange, label: "Orange" }
-    ];
-
     return (
       <div className={`SignUp ${classes.root}`}>
+        <Typography className={classes.font} variant="h4" color="secondary">
+          Sign Up
+        </Typography>
         <form onSubmit={this.handleSubmit}>
-          <h2>Sign Up</h2>
           <div className={classes.textField}>
             <TextField
               autoFocus

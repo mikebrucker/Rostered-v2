@@ -6,15 +6,15 @@ import { firestoreConnect } from "react-redux-firebase";
 import { MuiThemeProvider, withStyles } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
 import { createMuiTheme } from "@material-ui/core/styles";
-import theme from "./material-ui-theme/theme";
 
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
-import Login from "./components/auth/Login";
 import SignUp from "./components/auth/SignUp";
 import Teams from "./components/routes/team/Teams";
-import AddTeam from "./components/routes/team/AddTeam";
-import Profile from "./components/routes/profile/Profile";
+import WrongPage from "./components/routes/utils/WrongPage";
+
+import { theme } from "./material-ui-theme/theme";
+import { themeColors } from "./material-ui-theme/theme";
 
 const styles = theme => ({
   App: {
@@ -27,24 +27,28 @@ const styles = theme => ({
   }
 });
 
-function App({ user, authError, unauthorized, loaded, requesting, classes }) {
-  const myTheme =
-    user && user.themeColor
-      ? createMuiTheme({
-          ...theme,
-          palette: {
-            ...theme.palette,
-            primary: JSON.parse(user.themeColor)
-          }
-        })
-      : createMuiTheme(theme);
+function App({ user, authError, unauthorized, loaded, classes }) {
+  const myThemeColors = themeColors.map(color => color.value);
+
+  const myThemeColor =
+    user && user.themeColor && myThemeColors
+      ? JSON.parse(user.themeColor)
+      : myThemeColors[Math.floor(Math.random() * myThemeColors.length)];
+
+  const myTheme = createMuiTheme({
+    ...theme,
+    palette: {
+      ...theme.palette,
+      primary: myThemeColor
+    }
+  });
 
   return (
     <BrowserRouter>
       <MuiThemeProvider theme={myTheme}>
         <CssBaseline />
         <div className={classes.App}>
-          <Navbar unauthorized={unauthorized} />
+          <Navbar unauthorized={unauthorized} user={user} />
           <Switch>
             <Route
               exact
@@ -55,47 +59,23 @@ function App({ user, authError, unauthorized, loaded, requesting, classes }) {
                   user={user}
                   unauthorized={unauthorized}
                   loaded={loaded}
-                  requesting={requesting}
-                />
-              )}
-            />
-            <Route exact path="/login" component={Login} />
-            <Route
-              exact
-              path="/signup"
-              render={props => (
-                <SignUp
-                  {...props}
-                  user={user}
-                  unauthorized={unauthorized}
                   authError={authError}
                 />
               )}
             />
             <Route
               exact
-              path="/addteam"
+              path="/signup"
               render={props => (
-                <AddTeam
+                <SignUp
                   {...props}
-                  user={user}
                   unauthorized={unauthorized}
                   loaded={loaded}
+                  authError={authError}
                 />
               )}
             />
-            <Route
-              exact
-              path="/profile"
-              render={props => (
-                <Profile
-                  {...props}
-                  user={user}
-                  unauthorized={unauthorized}
-                  loaded={loaded}
-                />
-              )}
-            />
+            <Route exact path="/:id" component={WrongPage} />
           </Switch>
           <div className={classes.footerGrow} />
           <Footer />
@@ -107,19 +87,15 @@ function App({ user, authError, unauthorized, loaded, requesting, classes }) {
 
 const mapStateToProps = ({
   firebase: { auth, authError },
-  firestore: { ordered, status }
+  firestore: { ordered }
 }) => {
   const user = ordered && ordered.users ? ordered.users[0] : null;
-  // Check if firestore is requesting. It is false when done.
-  // If done and no team with that id display No Team With That Id text
-  const requesting = user ? status.requesting[`users/${user.id}`] : null;
   return {
     auth,
     authError,
     loaded: auth.isLoaded,
     unauthorized: auth.isEmpty,
-    user,
-    requesting
+    user
   };
 };
 

@@ -7,6 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Fab from "@material-ui/core/Fab";
 import DeleteIcon from "@material-ui/icons/Delete";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 
 const styles = theme => ({
   button: {
@@ -70,7 +71,7 @@ const DeleteItem = props => {
     if (type === "schedule" && userId) {
       removeAssociatedData(["games"]);
     } else if (type === "team" && userId) {
-      if (setValue && currentValue) setValue(currentValue - 1);
+      if (setValue && currentValue) setValue(0);
       removeAssociatedData(["players", "schedules", "games"]);
     }
 
@@ -111,7 +112,7 @@ const DeleteItem = props => {
               aria-label="Delete"
               size="medium"
             >
-              <DeleteIcon /> Delete {type}
+              <DeleteForeverIcon /> Delete {type}
             </Fab>
           </div>
         </Modal>
