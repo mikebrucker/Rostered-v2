@@ -10,7 +10,6 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Collapse from "@material-ui/core/Collapse";
-import { DatePicker } from "material-ui-pickers";
 
 const styles = theme => ({
   root: {
@@ -29,7 +28,6 @@ const styles = theme => ({
 class AddSchedule extends Component {
   state = {
     season: "",
-    startDate: new Date(),
     current: false,
     showForm: false
   };
@@ -37,16 +35,11 @@ class AddSchedule extends Component {
   focusInput = React.createRef();
 
   handleChange = e => {
-    const value = e.target
-      ? e.target.type === "checkbox"
-        ? e.target.checked
-        : e.target.value
-      : e._d;
-
-    const name = e.target ? e.target.name : "startDate";
+    const value =
+      e.target.type === "checkbox" ? e.target.checked : e.target.value;
 
     this.setState({
-      [name]: value
+      [e.target.name]: value
     });
   };
 
@@ -62,34 +55,66 @@ class AddSchedule extends Component {
         id: scheduleId,
         teamId,
         season: this.state.season,
-        startDate: this.state.startDate,
         current: this.state.current
       };
 
-      this.props.firestore
-        .collection("users")
-        .doc(userId)
-        .update({
-          schedules: this.props.firestore.FieldValue.arrayUnion(
-            scheduleToBeAdded
-          )
-        });
+      if (this.state.current) {
+        this.props.firestore
+          .collection("users")
+          .doc(userId)
+          .get()
+          .then(doc => {
+            const user = doc.data();
 
-      const today = new Date();
-      today.setHours(12, 0, 0, 0);
+            const otherSchedules = user.schedules
+              ? user.schedules.filter(schedule => schedule.teamId !== teamId)
+              : [];
+
+            const teamSchedules = user.schedules
+              ? user.schedules.filter(schedule => schedule.teamId === teamId)
+              : [];
+
+            const teamSchedulesRemoveCurrent =
+              teamSchedules.length > 0
+                ? teamSchedules.map(schedule => ({
+                    ...schedule,
+                    current: false
+                  }))
+                : [];
+
+            this.props.firestore
+              .collection("users")
+              .doc(userId)
+              .update({
+                schedules: [
+                  ...otherSchedules,
+                  ...teamSchedulesRemoveCurrent,
+                  scheduleToBeAdded
+                ]
+                // schedules: this.props.firestore.FieldValue.arrayUnion(
+                //   scheduleToBeAdded
+                // )
+              });
+          });
+      } else {
+        this.props.firestore
+          .collection("users")
+          .doc(userId)
+          .update({
+            schedules: this.props.firestore.FieldValue.arrayUnion(
+              scheduleToBeAdded
+            )
+          });
+      }
 
       this.handleShowForm();
     }
   };
 
   handleShowForm = () => {
-    const today = new Date();
-    today.setHours(12, 0, 0, 0);
-
     if (this.state.showForm) {
       this.setState({
         season: "",
-        startDate: today,
         current: false,
         showForm: false
       });
@@ -98,7 +123,6 @@ class AddSchedule extends Component {
 
       this.setState({
         season: "",
-        startDate: today,
         current: false,
         showForm: true
       });
@@ -131,20 +155,6 @@ class AddSchedule extends Component {
                   name="season"
                   variant="outlined"
                   value={this.state.season}
-                  onChange={this.handleChange}
-                />
-              </div>
-
-              <div className={classes.textField}>
-                <DatePicker
-                  fullWidth
-                  keyboard
-                  autoOk
-                  label="Start Date"
-                  name="startDate"
-                  format="MM-DD-YYYY"
-                  variant="outlined"
-                  value={this.state.startDate}
                   onChange={this.handleChange}
                 />
               </div>

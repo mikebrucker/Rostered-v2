@@ -14,7 +14,7 @@ import CardActions from "@material-ui/core/CardActions";
 const styles = theme => ({
   root: {
     margin: "0 auto",
-    maxWidth: 756,
+    maxWidth: 600,
     width: "100%"
   },
   card: {

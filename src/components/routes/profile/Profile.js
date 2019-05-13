@@ -4,7 +4,7 @@ import EditProfile from "./EditProfile";
 
 import { withStyles } from "@material-ui/core/styles";
 // import Typography from "@material-ui/core/Typography";
-import UpcomingGames from "./UpcomingGames";
+import UpComingOrRecentGames from "./UpcomingOrRecentGames";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
@@ -13,7 +13,7 @@ import CardContent from "@material-ui/core/CardContent";
 const styles = theme => ({
   root: {
     margin: "0 auto",
-    maxWidth: 756,
+    maxWidth: 600,
     width: "100%"
   },
   card: {
@@ -53,7 +53,10 @@ const Profile = ({ user, classes }) => {
             subheader={<span>Plays for {myTeams}</span>}
           />
           <CardContent>
-            <UpcomingGames user={user} />
+            <UpComingOrRecentGames user={user} />
+          </CardContent>
+          <CardContent>
+            <UpComingOrRecentGames user={user} recent />
           </CardContent>
           <EditProfile user={user} />
         </Card>

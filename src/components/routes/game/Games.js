@@ -15,18 +15,7 @@ const styles = theme => ({
   }
 });
 
-const Games = ({ user, team, schedule, classes }) => {
-  const games =
-    user && user.games
-      ? user.games
-          .filter(game => game.scheduleId === schedule.id)
-          .sort(
-            (a, b) =>
-              new Date(a.dateTime.seconds * 1000) -
-              new Date(b.dateTime.seconds * 1000)
-          )
-      : null;
-
+const Games = ({ user, team, schedule, games, classes }) => {
   const myGames =
     games && games.length > 0 ? (
       games.map(game => (

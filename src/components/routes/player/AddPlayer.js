@@ -4,6 +4,7 @@ import { createId } from "../../../helpers/createId";
 
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
+import InputAdornment from "@material-ui/core/InputAdornment";
 import Button from "@material-ui/core/Button";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
@@ -59,11 +60,17 @@ class AddPlayer extends Component {
             shoots: this.state.shoots
           })
       );
+    } else if (e.target.type === "number") {
+      if (e.target.value >= 0 && e.target.value < 100)
+        this.setState({
+          [e.target.name]: e.target.value
+        });
     } else {
       this.setState({
         [e.target.name]: e.target.value
       });
     }
+    console.log(this.state.number);
   };
 
   handleSubmit = e => {
@@ -226,6 +233,11 @@ class AddPlayer extends Component {
                   max="99"
                   value={this.state.number}
                   onChange={this.handleChange}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">#</InputAdornment>
+                    )
+                  }}
                 />
               </div>
 

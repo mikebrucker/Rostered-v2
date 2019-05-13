@@ -38,6 +38,29 @@ const Schedule = ({ user, team, schedule, classes }) => {
   const [showOrHideText, setShowOrHideText] = useState("Show");
   const [showGames, setShowGames] = useState(schedule.current);
 
+  const games =
+    user && user.games
+      ? user.games
+          .filter(game => game.scheduleId === schedule.id)
+          .sort(
+            (a, b) =>
+              new Date(a.dateTime.seconds * 1000) -
+              new Date(b.dateTime.seconds * 1000)
+          )
+      : null;
+
+  const startDate =
+    games && games.length > 0 ? (
+      <span>
+        Starts{" "}
+        <Moment format="MMM Do, YYYY">
+          {games[0].dateTime.seconds * 1000}
+        </Moment>
+      </span>
+    ) : (
+      ""
+    );
+
   const handleShowGames = () => {
     setShowGames(!showGames);
     showOrHideText === "Show"
@@ -55,14 +78,7 @@ const Schedule = ({ user, team, schedule, classes }) => {
               ? `Current Season - ${schedule.season}`
               : `${schedule.season} Season`
           }
-          subheader={
-            <span>
-              Starts{" "}
-              <Moment format="MMM Do, YYYY">
-                {schedule.startDate.seconds * 1000}
-              </Moment>
-            </span>
-          }
+          subheader={startDate}
         />
         <CardActions className={classes.actions}>
           <DeleteItem user={user} item={schedule} />
@@ -84,7 +100,7 @@ const Schedule = ({ user, team, schedule, classes }) => {
         </CardActions>
         <Collapse in={showGames}>
           <Card raised>
-            <Games user={user} team={team} schedule={schedule} />
+            <Games user={user} team={team} schedule={schedule} games={games} />
           </Card>
         </Collapse>
       </CardContent>

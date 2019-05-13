@@ -29,7 +29,7 @@ const styles = theme => ({
 
 function App({ user, authError, unauthorized, loaded, classes }) {
   const myThemeColors = themeColors.map(color => color.value);
-  if (user && user.themeColor) console.log(user.themeColor);
+
   const myThemeColor =
     user && user.themeColor && user.themeColor !== "RANDOM" && myThemeColors
       ? JSON.parse(user.themeColor)
