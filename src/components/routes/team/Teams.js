@@ -58,7 +58,7 @@ const Teams = ({ user, unauthorized, loaded, authError, classes }) => {
       </SwipeableViews>
     );
 
-  if (loaded) {
+  if (loaded && user) {
     return (
       <div className="Teams">
         <AppBar position="sticky" color="primary">
@@ -73,7 +73,7 @@ const Teams = ({ user, unauthorized, loaded, authError, classes }) => {
               indicator: classes.tabIndicator
             }}
           >
-            <Tab color="secondary" label="Profile" />
+            <Tab color="secondary" label="Dashboard" />
             {tabs}
             <Tab color="secondary" label="Add Team" />
           </Tabs>

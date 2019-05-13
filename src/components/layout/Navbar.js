@@ -16,7 +16,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import LibraryAddIcon from "@material-ui/icons/LibraryAdd";
 import { FaHockeyPuck } from "react-icons/fa";
-import { GiHockey } from "react-icons/gi";
+// import { GiHockey } from "react-icons/gi";
 import { IoMdLogOut, IoMdLogIn } from "react-icons/io";
 
 const styles = theme => ({
@@ -83,11 +83,6 @@ class Navbar extends Component {
           { to: "/", label: "Login", icon: IoMdLogIn }
         ]
       : [
-          {
-            label: "Dashboard",
-            icon: GiHockey,
-            to: "/"
-          },
           {
             label: "Logout",
             icon: IoMdLogOut,

@@ -32,8 +32,10 @@ const Profile = ({ user, classes }) => {
             ) : (
               <span key={team.id}>{team.teamName}, </span>
             )
+          ) : // last item
+          arr.length === 1 ? (
+            <span key={team.id}>{team.teamName}.</span>
           ) : (
-            // last item
             <span key={team.id}>and {team.teamName}.</span>
           );
         })

@@ -183,6 +183,7 @@ class SignUp extends Component {
                     </option>
                   ))
                 : null}
+              <option value={"RANDOM"}>Random</option>
             </TextField>
           </div>
 
