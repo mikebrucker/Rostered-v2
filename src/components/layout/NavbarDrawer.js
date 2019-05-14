@@ -2,10 +2,10 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 
+import { IoMdLogOut, IoMdLogIn, IoMdPersonAdd } from "react-icons/io";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 
 const styles = theme => ({
@@ -26,15 +26,13 @@ const styles = theme => ({
   },
   sideMenuItem: {
     "&:hover": {
-      color: "antiquewhite",
+      color: theme.palette.primary.main,
       backgroundColor: theme.palette.secondary.main
     }
   },
   activePage: {
-    "& li": {
-      color: theme.palette.primary.main,
-      backgroundColor: theme.palette.secondary.main
-    },
+    color: theme.palette.primary.main,
+    backgroundColor: theme.palette.secondary.main,
     "& svg": {
       fill: "currentColor"
     }
@@ -43,12 +41,26 @@ const styles = theme => ({
 
 const NavbarDrawer = ({
   classes,
-  links,
   color,
   anchor,
+  unauthorized,
+  logoutUser,
   toggleDrawer,
   isDrawerOpen
 }) => {
+  const links = unauthorized
+    ? [
+        { to: "/signup", label: "Sign Up", icon: IoMdPersonAdd },
+        { to: "/", label: "Login", icon: IoMdLogIn }
+      ]
+    : [
+        {
+          label: "Logout",
+          icon: IoMdLogOut,
+          func: logoutUser
+        }
+      ];
+
   const drawerLinks = links
     ? links.map(link => {
         const func = link.func ? link.func : null;
@@ -66,19 +78,18 @@ const NavbarDrawer = ({
           );
         } else {
           return (
-            <Link
+            <ListItem
               key={link.label}
               to={link.to}
               exact
               activeClassName={classes.activePage}
               component={NavLink}
               color={color}
+              className={classes.sideMenuItem}
             >
-              <ListItem className={classes.sideMenuItem}>
-                <link.icon />
-                &nbsp;{link.label}
-              </ListItem>
-            </Link>
+              <link.icon />
+              &nbsp;{link.label}
+            </ListItem>
           );
         }
       })

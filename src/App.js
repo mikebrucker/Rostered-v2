@@ -11,7 +11,7 @@ import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import SignUp from "./components/auth/SignUp";
 import Teams from "./components/routes/team/Teams";
-import WrongPage from "./components/routes/utils/WrongPage";
+import WrongPage from "./components/utils/WrongPage";
 
 import { theme } from "./material-ui-theme/theme";
 import { themeColors } from "./material-ui-theme/theme";
@@ -33,7 +33,9 @@ function App({ user, authError, unauthorized, loaded, classes }) {
   const myThemeColor =
     user && user.themeColor && user.themeColor !== "RANDOM" && myThemeColors
       ? JSON.parse(user.themeColor)
-      : myThemeColors[Math.floor(Math.random() * myThemeColors.length)];
+      : user && user.themeColor && user.themeColor === "RANDOM" && myThemeColors
+      ? myThemeColors[Math.floor(Math.random() * myThemeColors.length)]
+      : myThemeColors[0];
 
   const myTheme = createMuiTheme({
     ...theme,

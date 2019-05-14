@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Loading from "../utils/Loading";
+import Loading from "../../utils/Loading";
 import Team from "./Team";
 import AddTeam from "./AddTeam";
 import Profile from "../profile/Profile";

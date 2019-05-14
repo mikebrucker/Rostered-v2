@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import DeleteItem from "../utils/DeleteItem";
+import DeleteItem from "../../utils/DeleteItem";
 import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
 import { withStyles } from "@material-ui/core/styles";

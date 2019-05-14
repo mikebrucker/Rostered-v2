@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Moment from "react-moment";
 import Games from "../game/Games";
-import DeleteItem from "../utils/DeleteItem";
-import Loading from "../utils/Loading";
+import DeleteItem from "../../utils/DeleteItem";
+import Loading from "../../utils/Loading";
 
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";

@@ -1,5 +1,5 @@
 import React from "react";
-import Loading from "../utils/Loading";
+import Loading from "../../utils/Loading";
 import EditProfile from "./EditProfile";
 
 import { withStyles } from "@material-ui/core/styles";
@@ -19,6 +19,12 @@ const styles = theme => ({
   card: {
     margin: theme.spacing.unit,
     marginTop: theme.spacing.unit * 2
+  },
+  cardHeader: {
+    backgroundColor: theme.palette.primary.main
+  },
+  font: {
+    fontWeight: "bold"
   }
 });
 
@@ -46,7 +52,7 @@ const Profile = ({ user, classes }) => {
       <div className={`Profile ${classes.root}`}>
         <Card raised className={classes.card}>
           <CardHeader
-            classes={{ title: classes.font }}
+            classes={{ root: classes.cardHeader, title: classes.font }}
             titleTypographyProps={{ variant: "h4" }}
             subheaderTypographyProps={{ variant: "h6" }}
             title={`${user.firstName} ${user.lastName}`}

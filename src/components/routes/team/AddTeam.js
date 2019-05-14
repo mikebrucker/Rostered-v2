@@ -7,7 +7,7 @@ import TextField from "@material-ui/core/TextField";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import Typography from "@material-ui/core/Typography";
-import Loading from "../utils/Loading";
+import Loading from "../../utils/Loading";
 
 const styles = theme => ({
   root: {

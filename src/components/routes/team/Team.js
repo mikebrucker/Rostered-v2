@@ -2,8 +2,8 @@ import React from "react";
 import { firestoreConnect } from "react-redux-firebase";
 import Schedules from "../schedule/Schedules";
 import Players from "../player/Players";
-import DeleteItem from "../utils/DeleteItem";
-import Loading from "../utils/Loading";
+import DeleteItem from "../../utils/DeleteItem";
+import Loading from "../../utils/Loading";
 
 import { withStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -20,6 +20,9 @@ const styles = theme => ({
   card: {
     margin: theme.spacing.unit,
     marginTop: theme.spacing.unit * 2
+  },
+  cardHeader: {
+    backgroundColor: theme.palette.primary.main
   },
   font: {
     fontWeight: "bold"
@@ -129,7 +132,7 @@ const Team = ({ team, user, setValue, currentValue, classes }) => {
       <div className={`Team ${classes.root}`}>
         <Card raised className={classes.card}>
           <CardHeader
-            classes={{ title: classes.font }}
+            classes={{ root: classes.cardHeader, title: classes.font }}
             titleTypographyProps={{ variant: "h4" }}
             subheaderTypographyProps={{ variant: "h6" }}
             title={team.teamName}
