@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import GameDate from "../../utils/GameDate";
-import DeleteItem from "../../utils/DeleteItem";
 import Loading from "../../utils/Loading";
+import Settings from "../../utils/Settings";
 
 import { withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import CardActions from "@material-ui/core/CardActions";
 import Collapse from "@material-ui/core/Collapse";
 
 const styles = theme => ({
@@ -22,19 +21,6 @@ const styles = theme => ({
   actions: {
     display: "flex"
   }
-  // title: {
-  //   display: "flex"
-  // }
-  // Add results in future with expand button like schedule has
-  // expand: {
-  //   transform: "rotate(0deg)",
-  //   transition: theme.transitions.create("transform", {
-  //     duration: theme.transitions.duration.shortest
-  //   })
-  // },
-  // expandOpen: {
-  //   transform: "rotate(180deg)"
-  // }
 });
 
 const Game = ({ game, team, user, classes }) => {
@@ -81,9 +67,7 @@ const Game = ({ game, team, user, classes }) => {
           <Typography classes={{ root: classes.gameInfo }} variant="body2">
             Location: {team.arena}
           </Typography>
-          <CardActions className={classes.actions}>
-            <DeleteItem user={user} item={game} />
-          </CardActions>
+          <Settings user={user} item={game} />
         </Collapse>
       </div>
     );

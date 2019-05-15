@@ -4,7 +4,7 @@ import Team from "./Team";
 import AddTeam from "./AddTeam";
 import Profile from "../profile/Profile";
 
-import SwipeableViews from "react-swipeable-views";
+// import SwipeableViews from "react-swipeable-views";
 import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
@@ -18,11 +18,9 @@ const styles = theme => ({
   }
 });
 
-// Try class component with state to see if swipe on first load
 const Teams = ({ user, unauthorized, loaded, authError, classes }) => {
-  const [value, setValue] = useState(0);
-  const handleChange = (e, i) => setValue(i);
-  const handleChangeIndex = i => setValue(i);
+  const [tabValue, setTabValue] = useState(0);
+  // const handleChangeIndex = i => setValue(i);
 
   const teams = user && user.teams && user.teams.length > 0 ? user.teams : null;
 
@@ -33,38 +31,40 @@ const Teams = ({ user, unauthorized, loaded, authError, classes }) => {
     : null;
 
   const teamMap = teams
-    ? teams.map(team => (
-        <Team
-          key={team.id}
-          team={team}
-          user={user}
-          setValue={setValue}
-          currentValue={value}
-        />
-      ))
+    ? teams.map((team, index) =>
+        tabValue === index + 1 ? (
+          <Team
+            key={team.id}
+            team={team}
+            user={user}
+            setTabValue={setTabValue}
+            currentTabValue={tabValue}
+          />
+        ) : null
+      )
     : null;
 
-  const swipeableViews =
-    teams && teamMap ? (
-      <SwipeableViews index={value} onChangeIndex={handleChangeIndex}>
-        <Profile user={user} />
-        {teamMap}
-        <AddTeam user={user} />
-      </SwipeableViews>
-    ) : (
-      <SwipeableViews index={value} onChangeIndex={handleChangeIndex}>
-        <Profile user={user} />
-        <AddTeam user={user} />
-      </SwipeableViews>
-    );
+  // const swipeableViews =
+  //   teams && teamMap ? (
+  //     <SwipeableViews index={value} onChangeIndex={handleChangeIndex}>
+  //       <Profile user={user} />
+  //       {teamMap}
+  //       <AddTeam user={user} />
+  //     </SwipeableViews>
+  //   ) : (
+  //     <SwipeableViews index={value} onChangeIndex={handleChangeIndex}>
+  //       <Profile user={user} />
+  //       <AddTeam user={user} />
+  //     </SwipeableViews>
+  //   );
 
   if (loaded && user) {
     return (
       <div className="Teams">
         <AppBar position="sticky" color="primary">
           <Tabs
-            value={value}
-            onChange={handleChange}
+            value={tabValue}
+            onChange={(e, i) => setTabValue(i)}
             variant="scrollable"
             scrollButtons="auto"
             indicatorColor="secondary"
@@ -78,7 +78,9 @@ const Teams = ({ user, unauthorized, loaded, authError, classes }) => {
             <Tab color="secondary" label="Add Team" />
           </Tabs>
         </AppBar>
-        {swipeableViews}
+        {tabValue === 0 && <Profile user={user} />}
+        {teamMap}
+        {tabValue === teams.length + 1 && <AddTeam user={user} />}
       </div>
     );
   } else if (loaded && unauthorized) {

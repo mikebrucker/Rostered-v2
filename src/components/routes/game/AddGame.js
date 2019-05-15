@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { firestoreConnect } from "react-redux-firebase";
-import { createId } from "../../../helpers/createId";
+import createId from "../../../helpers/createId";
 import Loading from "../../utils/Loading";
 
 import { withStyles } from "@material-ui/core/styles";

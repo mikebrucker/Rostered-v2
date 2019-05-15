@@ -46,8 +46,15 @@ const Schedules = ({ user, team, schedules, current, classes }) => {
   );
 
   const mySchedules =
-    schedules && schedules.length > 0 ? (
-      schedules.map(schedule => (
+    team && schedules
+      ? current
+        ? schedules.filter(schedule => schedule.current)
+        : schedules.filter(schedule => !schedule.current)
+      : null;
+
+  const myScheduleList =
+    mySchedules && mySchedules.length > 0 ? (
+      mySchedules.map(schedule => (
         <div
           key={schedule.id}
           className={current ? classes.title : classes.card}
@@ -66,7 +73,7 @@ const Schedules = ({ user, team, schedules, current, classes }) => {
     );
 
   if (current) {
-    return <div className={`Schedules ${classes.title}`}>{mySchedules}</div>;
+    return <div className={`Schedules ${classes.title}`}>{myScheduleList}</div>;
   } else {
     return (
       <div className="Schedules">
@@ -90,7 +97,7 @@ const Schedules = ({ user, team, schedules, current, classes }) => {
           </CardActions>
         </CardContent>
         <Collapse in={showSchedules}>
-          {mySchedules}
+          {myScheduleList}
           <AddSchedule
             classes={{ root: classes.card }}
             user={user}

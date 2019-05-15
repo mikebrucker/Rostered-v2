@@ -2,14 +2,13 @@ import React from "react";
 import { firestoreConnect } from "react-redux-firebase";
 import Schedules from "../schedule/Schedules";
 import Players from "../player/Players";
-import DeleteItem from "../../utils/DeleteItem";
 import Loading from "../../utils/Loading";
+import Settings from "../../utils/Settings";
 
 import { withStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
 
 const styles = theme => ({
   root: {
@@ -29,8 +28,7 @@ const styles = theme => ({
   },
   deleteItem: {
     margin: theme.spacing.unit,
-    marginTop: theme.spacing.unit * 16,
-    backgroundColor: theme.palette.error[300]
+    marginTop: theme.spacing.unit * 2
   },
   deleteItemAction: {
     paddingTop: 0,
@@ -40,20 +38,10 @@ const styles = theme => ({
   }
 });
 
-const Team = ({ team, user, setValue, currentValue, classes }) => {
+const Team = ({ team, user, setTabValue, currentTabValue, classes }) => {
   const mySchedules =
     team && user && user.schedules
       ? user.schedules.filter(schedule => schedule.teamId === team.id)
-      : null;
-
-  const currentSchedules =
-    team && mySchedules
-      ? mySchedules.filter(schedule => schedule.current)
-      : null;
-
-  const notCurrentSchedules =
-    team && mySchedules
-      ? mySchedules.filter(schedule => !schedule.current)
       : null;
 
   // Separate players by position and then sorts by number
@@ -138,30 +126,23 @@ const Team = ({ team, user, setValue, currentValue, classes }) => {
             title={team.teamName}
             subheader={`Division ${team.division} at ${team.arena}`}
           />
-          <Schedules
-            schedules={currentSchedules}
-            user={user}
-            team={team}
-            current
-          />
+          <Schedules schedules={mySchedules} user={user} team={team} current />
           <Players
             importablePlayers={importablePlayers}
             players={myPlayers}
             user={user}
             team={team}
           />
-          <Schedules schedules={notCurrentSchedules} user={user} team={team} />
+          <Schedules schedules={mySchedules} user={user} team={team} />
         </Card>
         <Card className={classes.deleteItem}>
           <CardContent className={classes.deleteItemAction}>
-            <CardActions>
-              <DeleteItem
-                user={user}
-                item={team}
-                setValue={setValue}
-                currentValue={currentValue}
-              />
-            </CardActions>
+            <Settings
+              user={user}
+              item={team}
+              setTabValue={setTabValue}
+              currentTabValue={currentTabValue}
+            />
           </CardContent>
         </Card>
       </div>

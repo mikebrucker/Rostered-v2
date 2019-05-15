@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Moment from "react-moment";
 import Games from "../game/Games";
-import DeleteItem from "../../utils/DeleteItem";
 import Loading from "../../utils/Loading";
+import Settings from "../../utils/Settings";
 
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -10,8 +10,8 @@ import Collapse from "@material-ui/core/Collapse";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CardActions from "@material-ui/core/CardActions";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const styles = theme => ({
   button: {
@@ -80,8 +80,8 @@ const Schedule = ({ user, team, schedule, classes }) => {
           }
           subheader={startDate}
         />
+
         <CardActions className={classes.actions}>
-          <DeleteItem user={user} item={schedule} />
           <Button
             className={classes.button}
             onClick={handleShowGames}
@@ -103,6 +103,8 @@ const Schedule = ({ user, team, schedule, classes }) => {
             <Games user={user} team={team} schedule={schedule} games={games} />
           </Card>
         </Collapse>
+
+        <Settings user={user} item={schedule} />
       </CardContent>
     );
   } else {

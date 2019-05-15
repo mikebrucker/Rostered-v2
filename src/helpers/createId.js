@@ -16,28 +16,53 @@
 // Must be a string, not an array
 
 // createId() => "x8HZPoiMRUhQzygXegAK"
-// createId("myPrefix-", 10, "1234567890") => "myPrefix-1217738484"
+// createId("myPrefix-", "_mySuffix", 10, "1234567890") => "myPrefix-1217738484_mySuffix"
 // createId("game-") + createId("_", "#import", 6) => "game-z6QFnS3wr21dt8pe66J6_XIySVz#import"
 
-export const createId = (prefix, suffix, length, chars) => {
-  const randomNum = () => Math.floor(Math.random() * characters.length);
+// If returned id is an empty string the default method occurs
 
-  const characters =
-    chars && typeof chars === "string"
-      ? chars
-      : "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+module.exports = createId;
 
-  const idLength = length && typeof length === "number" ? length : 20;
+function createId(prefix, suffix, length, chars) {
+  var idLength = 20;
+  var characters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
-  let id = "";
-
-  for (let i = 0; i < idLength; i++) {
-    id = id.concat(characters[randomNum()]);
+  if (typeof chars !== "string" || !chars || chars.length === 0) {
+    chars = characters;
   }
 
-  id = prefix && typeof prefix === "string" ? prefix + id : id;
+  if (typeof length !== "number" || length < 0) {
+    length = idLength;
+  }
 
-  id = suffix && typeof suffix === "string" ? id + suffix : id;
+  function randomNum(len) {
+    return Math.floor(Math.random() * len);
+  }
+
+  function concatCharToId(leng, chrs) {
+    var id = "";
+
+    for (let i = 0; i < leng; i++) {
+      id = id.concat(chrs[randomNum(chrs.length)]);
+    }
+
+    return id;
+  }
+
+  let id = concatCharToId(length, chars);
+
+  if (typeof prefix === "string" && prefix.length > 0) {
+    id = prefix + id;
+  }
+
+  if (typeof suffix === "string" && suffix.length > 0) {
+    id = id + suffix;
+  }
+
+  if (id === "") {
+    id = concatCharToId(idLength, characters);
+  }
 
   return id;
-};
+}

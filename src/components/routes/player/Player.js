@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import DeleteItem from "../../utils/DeleteItem";
-import Typography from "@material-ui/core/Typography";
-import CardActions from "@material-ui/core/CardActions";
+import Settings from "../../utils/Settings";
+
 import { withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 import Collapse from "@material-ui/core/Collapse";
 
 const styles = theme => ({
@@ -40,9 +40,7 @@ const Player = ({ player, user, classes }) => {
           </Typography>
         </div>
         <Collapse in={showActions}>
-          <CardActions className={classes.actions}>
-            <DeleteItem user={user} item={player} />
-          </CardActions>
+          <Settings user={user} item={player} />
         </Collapse>
       </div>
     );
