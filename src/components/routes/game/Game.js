@@ -34,10 +34,7 @@ const Game = ({ game, team, user, classes }) => {
   if (game) {
     return (
       <div className={`Game ${classes.game}`}>
-        <div
-          className={classes.title}
-          onClick={() => setshowActions(!showActions)}
-        >
+        <div onClick={() => setshowActions(!showActions)}>
           <Grid
             container
             direction="row"

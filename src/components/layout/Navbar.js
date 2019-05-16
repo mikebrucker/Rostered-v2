@@ -9,7 +9,6 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import Link from "@material-ui/core/Link";
 import IconButton from "@material-ui/core/IconButton";
 import { FaHockeyPuck } from "react-icons/fa";
 import { IoMdLogOut, IoMdLogIn, IoMdPersonAdd, IoMdMenu } from "react-icons/io";
@@ -63,14 +62,19 @@ class Navbar extends Component {
   };
 
   logoutUser = () => {
+    this.props.setTabValue(0);
     this.props.firebase.logout().then(() => {
       // Clear redux-firestore state on logout
       this.props.dispatch({ type: actionTypes.CLEAR_DATA });
     });
   };
 
+  setTeamsTabValue = index => {
+    this.props.setTabValue(index);
+  };
+
   render() {
-    const { classes, unauthorized } = this.props;
+    const { unauthorized, teams, classes } = this.props;
 
     const navbarLinks = unauthorized ? (
       <span>
@@ -79,8 +83,7 @@ class Navbar extends Component {
           className={`${classes.font} ${classes.desktopLink}`}
           variant="h6"
           color="primary"
-          to="/"
-          component={NavLink}
+          onClick={this.setTeamsTabValue.bind(null, 0)}
         >
           <IoMdLogIn /> Login
         </Typography>
@@ -90,8 +93,7 @@ class Navbar extends Component {
           className={`${classes.font} ${classes.desktopLink}`}
           variant="h6"
           color="primary"
-          to="/signup"
-          component={NavLink}
+          onClick={this.setTeamsTabValue.bind(null, 1)}
         >
           <IoMdPersonAdd /> Signup
         </Typography>
@@ -99,8 +101,7 @@ class Navbar extends Component {
         <IconButton
           // Login Icon
           className={classes.mobileLink}
-          to="/"
-          component={NavLink}
+          onClick={this.setTeamsTabValue.bind(null, 0)}
           color="primary"
           aria-label="Log In"
         >
@@ -110,8 +111,7 @@ class Navbar extends Component {
         <IconButton
           // Sign Up Icon
           className={classes.mobileLink}
-          to="/signup"
-          component={NavLink}
+          onClick={this.setTeamsTabValue.bind(null, 1)}
           color="primary"
           aria-label="Sign Up"
         >
@@ -154,29 +154,30 @@ class Navbar extends Component {
       <nav className="Navbar">
         <AppBar position="static" color="default">
           <Toolbar>
-            <Link
-              // Navbar Title
-              className={classes.title}
-              onClick={this.scrollToTopOfPage}
-              component={NavLink}
-              underline="none"
-              to="/"
-            >
-              <Typography className={classes.font} variant="h4" color="primary">
+            <div className={classes.title}>
+              <Typography
+                // Navbar Title
+                component={NavLink}
+                to="/"
+                onClick={this.scrollToTopOfPage}
+                className={classes.font}
+                variant="h4"
+                color="primary"
+              >
                 <FaHockeyPuck /> Rostered
               </Typography>
-            </Link>
-
+            </div>
             {navbarLinks}
           </Toolbar>
         </AppBar>
 
         <NavbarDrawer
           unauthorized={unauthorized}
-          color="secondary"
           anchor="right"
+          teams={teams}
           logoutUser={this.logoutUser}
           toggleDrawer={this.toggleDrawer}
+          setTeamsTabValue={this.setTeamsTabValue}
           isDrawerOpen={this.state.isDrawerOpen}
         />
       </nav>

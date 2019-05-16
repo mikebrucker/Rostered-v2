@@ -1,23 +1,15 @@
 import React, { Component } from "react";
 import { firestoreConnect } from "react-redux-firebase";
 import createId from "../../../helpers/createId";
+import PlayerForm from "./PlayerForm";
 
 import { withStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import Button from "@material-ui/core/Button";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
 import Collapse from "@material-ui/core/Collapse";
 
 const styles = theme => ({
   root: {
     padding: theme.spacing.unit
-  },
-  textField: {
-    margin: "0 auto",
-    padding: theme.spacing.unit,
-    maxWidth: 520
   },
   button: {
     margin: theme.spacing.unit
@@ -33,8 +25,6 @@ class AddPlayer extends Component {
     shoots: "Right",
     showForm: false
   };
-
-  focusInput = React.createRef();
 
   handleChange = e => {
     // This is only done to make the label on material ui component not overlap outline
@@ -121,8 +111,6 @@ class AddPlayer extends Component {
         showForm: false
       });
     } else {
-      this.focusInput.current.focus();
-
       this.setState({
         firstName: "",
         lastName: "",
@@ -152,35 +140,6 @@ class AddPlayer extends Component {
   render() {
     const { team, importablePlayers, classes } = this.props;
 
-    const importPlayerFromAnotherTeam = (
-      <div className={classes.textField}>
-        <TextField
-          fullWidth
-          label="Import Player"
-          name="import"
-          variant="outlined"
-          helperText="Import Player From Another Team"
-          select
-          SelectProps={{ native: true }}
-          defaultValue="default"
-          onChange={this.handleImportPlayerFromAnotherTeam}
-        >
-          <option value="default">Import Other Player</option>
-          {importablePlayers && importablePlayers.length > 0 ? (
-            importablePlayers.map(player => (
-              <option key={player.id} value={JSON.stringify(player)}>
-                {player.firstName} {player.lastName}
-              </option>
-            ))
-          ) : (
-            <option value="none" disabled>
-              No Other Players
-            </option>
-          )}
-        </TextField>
-      </div>
-    );
-
     if (team) {
       return (
         <div className={`AddPlayer ${classes.root}`}>
@@ -193,104 +152,16 @@ class AddPlayer extends Component {
             Add Player to {team.teamName}
           </Button>
           <Collapse in={this.state.showForm}>
-            <form onSubmit={this.handleSubmit}>
-              <div className={classes.textField}>
-                <TextField
-                  inputProps={{ ref: this.focusInput }}
-                  fullWidth
-                  label="First Name"
-                  variant="outlined"
-                  placeholder="First Name"
-                  type="text"
-                  name="firstName"
-                  value={this.state.firstName}
-                  onChange={this.handleChange}
-                />
-              </div>
-
-              <div className={classes.textField}>
-                <TextField
-                  fullWidth
-                  label="Last Name"
-                  variant="outlined"
-                  placeholder="Last Name"
-                  type="text"
-                  name="lastName"
-                  value={this.state.lastName}
-                  onChange={this.handleChange}
-                />
-              </div>
-
-              <div className={classes.textField}>
-                <TextField
-                  fullWidth
-                  label="Number"
-                  variant="outlined"
-                  placeholder="Number"
-                  type="number"
-                  name="number"
-                  min="0"
-                  max="99"
-                  value={this.state.number}
-                  onChange={this.handleChange}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">#</InputAdornment>
-                    )
-                  }}
-                />
-              </div>
-
-              <div className={classes.textField}>
-                <TextField
-                  fullWidth
-                  label="Position"
-                  name="position"
-                  variant="outlined"
-                  helperText="Select Position"
-                  select
-                  SelectProps={{ native: true }}
-                  value={this.state.position}
-                  onChange={this.handleChange}
-                >
-                  <option defaultValue="C">C</option>
-                  <option value="RW">RW</option>
-                  <option value="LW">LW</option>
-                  <option value="D">D</option>
-                  <option value="G">G</option>
-                </TextField>
-              </div>
-
-              <div className={classes.textField}>
-                <TextField
-                  fullWidth
-                  label={this.state.position === "G" ? "Catches" : "Shoots"}
-                  name="shoots"
-                  variant="outlined"
-                  helperText="Right-handed or Left-handed"
-                  select
-                  SelectProps={{ native: true }}
-                  value={this.state.shoots}
-                  onChange={this.handleChange}
-                >
-                  <option defaultValue="Right">Right</option>
-                  <option value="Left">Left</option>
-                </TextField>
-              </div>
-
-              <div>
-                <Fab
-                  className={classes.button}
-                  type="submit"
-                  color="primary"
-                  variant="extended"
-                >
-                  <AddIcon />
-                  Add New Player
-                </Fab>
-              </div>
-              {importPlayerFromAnotherTeam}
-            </form>
+            <PlayerForm
+              add
+              state={this.state}
+              handleChange={this.handleChange}
+              handleSubmit={this.handleSubmit}
+              importablePlayers={importablePlayers}
+              handleImportPlayerFromAnotherTeam={
+                this.handleImportPlayerFromAnotherTeam
+              }
+            />
           </Collapse>
         </div>
       );

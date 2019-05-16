@@ -7,9 +7,7 @@ import { MuiThemeProvider, withStyles } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
 import { createMuiTheme } from "@material-ui/core/styles";
 
-import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
-import SignUp from "./components/auth/SignUp";
 import Teams from "./components/routes/team/Teams";
 import WrongPage from "./components/utils/WrongPage";
 
@@ -50,7 +48,6 @@ function App({ user, authError, unauthorized, loaded, classes }) {
       <MuiThemeProvider theme={myTheme}>
         <CssBaseline />
         <div className={classes.App}>
-          <Navbar unauthorized={unauthorized} user={user} />
           <Switch>
             <Route
               exact
@@ -59,18 +56,6 @@ function App({ user, authError, unauthorized, loaded, classes }) {
                 <Teams
                   {...props}
                   user={user}
-                  unauthorized={unauthorized}
-                  loaded={loaded}
-                  authError={authError}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/signup"
-              render={props => (
-                <SignUp
-                  {...props}
                   unauthorized={unauthorized}
                   loaded={loaded}
                   authError={authError}

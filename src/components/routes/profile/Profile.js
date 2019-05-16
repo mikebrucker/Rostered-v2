@@ -56,7 +56,13 @@ const Profile = ({ user, classes }) => {
             titleTypographyProps={{ variant: "h4" }}
             subheaderTypographyProps={{ variant: "h6" }}
             title={`${user.firstName} ${user.lastName}`}
-            subheader={<span>Plays for {myTeams}</span>}
+            subheader={
+              myTeams && myTeams.length > 0 ? (
+                <span>Plays for {myTeams}</span>
+              ) : (
+                ""
+              )
+            }
           />
           <CardContent>
             <UpComingOrRecentGames user={user} />

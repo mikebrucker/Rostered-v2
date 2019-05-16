@@ -3,16 +3,14 @@ import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import { FaHockeyPuck } from "react-icons/fa";
-import { GiHockey } from "react-icons/gi";
+import { GiHockey, GiJasonMask } from "react-icons/gi";
 
 const styles = theme => ({
   root: {
     width: "100%",
-    // textAlign: "center",
     padding: theme.spacing.unit * 2
   },
   footerTitle: {
-    // fontSize: "1.2em",
     fontFamily: "Righteous, sans-serif",
     cursor: "pointer",
 
@@ -49,10 +47,11 @@ const Footer = ({ classes }) => {
           <FaHockeyPuck className={classes.icons} /> Rostered
           <div className={classes.icon}>
             <GiHockey />
+            <GiJasonMask />
           </div>
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          Created by Mike Brucker
+          Created by Mike Brucker&nbsp;
         </Typography>
       </AppBar>
     </footer>

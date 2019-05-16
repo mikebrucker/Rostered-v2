@@ -7,6 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Fab from "@material-ui/core/Fab";
 import DeleteIcon from "@material-ui/icons/Delete";
+import CloseIcon from "@material-ui/icons/Close";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 
 const styles = theme => ({
@@ -16,6 +17,13 @@ const styles = theme => ({
   deleteButton: {
     margin: theme.spacing.unit,
     background: "linear-gradient(45deg, maroon, crimson)"
+  },
+  close: {
+    position: "absolute",
+    top: theme.spacing.unit,
+    right: theme.spacing.unit,
+    cursor: "pointer",
+    "&:hover": { color: "firebrick" }
   },
   paper: {
     position: "absolute",
@@ -100,6 +108,10 @@ const DeleteItem = props => {
         </Button>
         <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
           <div style={getModalStyle()} className={classes.paper}>
+            <CloseIcon
+              onClick={() => setModalOpen(false)}
+              className={classes.close}
+            />
             <Typography gutterBottom variant="h6">
               Are You Sure You Want To Permanently Delete This{" "}
               {type.charAt(0).toUpperCase() + type.slice(1)}?

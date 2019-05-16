@@ -2,14 +2,16 @@ import React, { useState } from "react";
 import Loading from "../../utils/Loading";
 import Team from "./Team";
 import AddTeam from "./AddTeam";
+import Navbar from "../../layout/Navbar";
 import Profile from "../profile/Profile";
 
-// import SwipeableViews from "react-swipeable-views";
+import SwipeableViews from "react-swipeable-views";
 import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Login from "../../auth/Login";
+import SignUp from "../../auth/SignUp";
 
 const styles = theme => ({
   tabIndicator: {
@@ -20,9 +22,8 @@ const styles = theme => ({
 
 const Teams = ({ user, unauthorized, loaded, authError, classes }) => {
   const [tabValue, setTabValue] = useState(0);
-  // const handleChangeIndex = i => setValue(i);
 
-  const teams = user && user.teams && user.teams.length > 0 ? user.teams : null;
+  const teams = user && user.teams && user.teams.length > 0 ? user.teams : [];
 
   const tabs = teams
     ? teams.map(team => {
@@ -30,7 +31,7 @@ const Teams = ({ user, unauthorized, loaded, authError, classes }) => {
       })
     : null;
 
-  const teamMap = teams
+  const teamsMap = teams
     ? teams.map((team, index) =>
         tabValue === index + 1 ? (
           <Team
@@ -44,23 +45,14 @@ const Teams = ({ user, unauthorized, loaded, authError, classes }) => {
       )
     : null;
 
-  // const swipeableViews =
-  //   teams && teamMap ? (
-  //     <SwipeableViews index={value} onChangeIndex={handleChangeIndex}>
-  //       <Profile user={user} />
-  //       {teamMap}
-  //       <AddTeam user={user} />
-  //     </SwipeableViews>
-  //   ) : (
-  //     <SwipeableViews index={value} onChangeIndex={handleChangeIndex}>
-  //       <Profile user={user} />
-  //       <AddTeam user={user} />
-  //     </SwipeableViews>
-  //   );
-
   if (loaded && user) {
     return (
       <div className="Teams">
+        <Navbar
+          unauthorized={unauthorized}
+          teams={teams}
+          setTabValue={setTabValue}
+        />
         <AppBar position="sticky" color="primary">
           <Tabs
             value={tabValue}
@@ -79,12 +71,48 @@ const Teams = ({ user, unauthorized, loaded, authError, classes }) => {
           </Tabs>
         </AppBar>
         {tabValue === 0 && <Profile user={user} />}
-        {teamMap}
+        {teamsMap}
         {tabValue === teams.length + 1 && <AddTeam user={user} />}
       </div>
     );
   } else if (loaded && unauthorized) {
-    return <Login authError={authError} />;
+    return (
+      <div className="Teams">
+        <Navbar
+          unauthorized={unauthorized}
+          teams={teams}
+          setTabValue={setTabValue}
+        />
+        <AppBar position="sticky" color="primary">
+          <Tabs
+            value={tabValue}
+            onChange={(e, i) => setTabValue(i)}
+            variant="fullWidth"
+            scrollButtons="auto"
+            indicatorColor="secondary"
+            textColor="secondary"
+            classes={{
+              indicator: classes.tabIndicator
+            }}
+          >
+            <Tab color="secondary" label="Login" />
+            <Tab color="secondary" label="Sign Up" />
+          </Tabs>
+        </AppBar>
+        <SwipeableViews
+          disableLazyLoading
+          index={tabValue}
+          onSwitching={i => setTabValue(Math.round(i))}
+        >
+          <Login authError={authError} />
+          <SignUp
+            unauthorized={unauthorized}
+            loaded={loaded}
+            authError={authError}
+          />
+        </SwipeableViews>
+      </div>
+    );
   } else {
     return <Loading fixed />;
   }

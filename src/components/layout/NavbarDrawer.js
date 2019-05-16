@@ -1,22 +1,24 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 
-import { IoMdLogOut, IoMdLogIn, IoMdPersonAdd } from "react-icons/io";
+import { IoMdLogOut, IoMdAddCircleOutline } from "react-icons/io";
+import { GiHockey } from "react-icons/gi";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Typography from "@material-ui/core/Typography";
 
 const styles = theme => ({
+  title: {
+    color: theme.palette.secondary.main,
+    fontFamily: "Righteous, sans-serif",
+    padding: theme.spacing.unit * 2
+  },
   listSubheader: {
     color: theme.palette.secondary.main,
     fontFamily: "Righteous, sans-serif",
-    padding: theme.spacing.unit * 2,
-    "& svg": {
-      height: theme.spacing.unit * 3,
-      width: theme.spacing.unit * 3
-    }
+    paddingLeft: theme.spacing.unit * 2,
+    cursor: "pointer"
   },
   openDrawer: {
     backgroundColor: theme.palette.primary.main,
@@ -30,6 +32,16 @@ const styles = theme => ({
       backgroundColor: theme.palette.secondary.main
     }
   },
+  team: {
+    paddingLeft: theme.spacing.unit * 4,
+    color: theme.palette.primary.main,
+    backgroundColor: theme.palette.secondary.main,
+    borderBottom: `1px solid ${theme.palette.primary.main}`,
+    "&:hover": {
+      color: theme.palette.secondary.main,
+      backgroundColor: theme.palette.primary.main
+    }
+  },
   activePage: {
     color: theme.palette.primary.main,
     backgroundColor: theme.palette.secondary.main,
@@ -41,59 +53,30 @@ const styles = theme => ({
 
 const NavbarDrawer = ({
   classes,
-  color,
   anchor,
-  unauthorized,
+  teams,
   logoutUser,
   toggleDrawer,
-  isDrawerOpen
+  isDrawerOpen,
+  setTeamsTabValue
 }) => {
-  const links = unauthorized
-    ? [
-        { to: "/signup", label: "Sign Up", icon: IoMdPersonAdd },
-        { to: "/", label: "Login", icon: IoMdLogIn }
-      ]
-    : [
-        {
-          label: "Logout",
-          icon: IoMdLogOut,
-          func: logoutUser
-        }
-      ];
+  const addTeamIndex = teams && teams.length > 0 ? teams.length + 1 : 1;
 
-  const drawerLinks = links
-    ? links.map(link => {
-        const func = link.func ? link.func : null;
-        if (func) {
+  const teamsMap =
+    teams && teams.length > 0
+      ? teams.map((team, index) => {
           return (
             <ListItem
-              key={link.label}
-              onClick={func}
-              color={color}
-              className={classes.sideMenuItem}
+              key={team.id}
+              button
+              onClick={setTeamsTabValue.bind(this, index + 1)}
+              className={`${classes.sideMenuItem} ${classes.team}`}
             >
-              <link.icon />
-              &nbsp;{link.label}
+              &nbsp;{team.teamName}
             </ListItem>
           );
-        } else {
-          return (
-            <ListItem
-              key={link.label}
-              to={link.to}
-              exact
-              activeClassName={classes.activePage}
-              component={NavLink}
-              color={color}
-              className={classes.sideMenuItem}
-            >
-              <link.icon />
-              &nbsp;{link.label}
-            </ListItem>
-          );
-        }
-      })
-    : null;
+        })
+      : null;
 
   return (
     <Drawer anchor={anchor} open={isDrawerOpen} onClose={toggleDrawer}>
@@ -106,14 +89,51 @@ const NavbarDrawer = ({
       >
         <List component="nav" disablePadding>
           <Typography
-            className={classes.listSubheader}
+            className={classes.title}
             align="left"
             variant="h5"
             color="secondary"
           >
             &nbsp;Rostered
           </Typography>
-          {drawerLinks}
+
+          <ListItem
+            button
+            onClick={setTeamsTabValue.bind(this, 0)}
+            className={classes.sideMenuItem}
+          >
+            <GiHockey />
+            &nbsp;Dashboard
+          </ListItem>
+          <ListItem
+            button
+            onClick={setTeamsTabValue.bind(this, addTeamIndex)}
+            className={classes.sideMenuItem}
+          >
+            <IoMdAddCircleOutline />
+            &nbsp;Add Team
+          </ListItem>
+
+          <List component="div">
+            <Typography
+              className={classes.listSubheader}
+              align="left"
+              variant="h5"
+              color="secondary"
+            >
+              &nbsp;Teams
+            </Typography>
+            {teamsMap}
+          </List>
+
+          <ListItem
+            button
+            onClick={logoutUser}
+            className={classes.sideMenuItem}
+          >
+            <IoMdLogOut />
+            &nbsp;Logout
+          </ListItem>
         </List>
       </div>
     </Drawer>
