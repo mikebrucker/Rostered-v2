@@ -1,8 +1,9 @@
 import React from "react";
+
 import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
-import { FaHockeyPuck } from "react-icons/fa";
+import { FaHockeyPuck, FaGithub, FaLinkedin } from "react-icons/fa";
 import { GiHockey, GiJasonMask } from "react-icons/gi";
 
 const styles = theme => ({
@@ -24,6 +25,9 @@ const styles = theme => ({
   },
   icon: {
     fontSize: "3em"
+  },
+  footerLink: {
+    margin: theme.spacing.unit / 2
   }
 });
 
@@ -51,8 +55,38 @@ const Footer = ({ classes }) => {
           </div>
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          Created by Mike Brucker&nbsp;
+          Created by Mike Brucker
         </Typography>
+        <div>
+          <a
+            href="http://github.com/mikebrucker/Rostered-v2"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Typography
+              className={classes.footerLink}
+              inline
+              variant="h6"
+              color="textSecondary"
+            >
+              <FaGithub />
+            </Typography>
+          </a>
+          <a
+            href="http://linkedin.com/in/mike-brucker"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Typography
+              className={classes.footerLink}
+              inline
+              variant="h6"
+              color="textSecondary"
+            >
+              <FaLinkedin />
+            </Typography>
+          </a>
+        </div>
       </AppBar>
     </footer>
   );

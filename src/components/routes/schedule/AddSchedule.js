@@ -1,14 +1,10 @@
 import React, { Component } from "react";
 import { firestoreConnect } from "react-redux-firebase";
 import createId from "../../../helpers/createId";
+import ScheduleForm from "./ScheduleForm";
 
 import { withStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Collapse from "@material-ui/core/Collapse";
 
 const styles = theme => ({
@@ -31,8 +27,6 @@ class AddSchedule extends Component {
     current: false,
     showForm: false
   };
-
-  focusInput = React.createRef();
 
   handleChange = e => {
     const value =
@@ -91,9 +85,6 @@ class AddSchedule extends Component {
                   ...teamSchedulesRemoveCurrent,
                   scheduleToBeAdded
                 ]
-                // schedules: this.props.firestore.FieldValue.arrayUnion(
-                //   scheduleToBeAdded
-                // )
               });
           });
       } else {
@@ -119,8 +110,6 @@ class AddSchedule extends Component {
         showForm: false
       });
     } else {
-      this.focusInput.current.focus();
-
       this.setState({
         season: "",
         current: false,
@@ -144,48 +133,12 @@ class AddSchedule extends Component {
             Add Schedule
           </Button>
           <Collapse in={this.state.showForm}>
-            <form onSubmit={this.handleSubmit}>
-              <div className={classes.textField}>
-                <TextField
-                  inputProps={{ ref: this.focusInput }}
-                  fullWidth
-                  label="Season Name"
-                  placeholder="Season Name"
-                  type="text"
-                  name="season"
-                  variant="outlined"
-                  value={this.state.season}
-                  onChange={this.handleChange}
-                />
-              </div>
-
-              <div className={classes.textField}>
-                <FormControlLabel
-                  label="Current Season"
-                  control={
-                    <Checkbox
-                      color="primary"
-                      type="checkbox"
-                      name="current"
-                      checked={this.state.current}
-                      onChange={this.handleChange}
-                    />
-                  }
-                />
-              </div>
-
-              <div>
-                <Fab
-                  className={classes.button}
-                  type="submit"
-                  color="primary"
-                  variant="extended"
-                >
-                  <AddIcon />
-                  Add Schedule
-                </Fab>
-              </div>
-            </form>
+            <ScheduleForm
+              state={this.state}
+              team={team}
+              handleChange={this.handleChange}
+              handleSubmit={this.handleSubmit}
+            />
           </Collapse>
         </div>
       );

@@ -60,7 +60,6 @@ class AddPlayer extends Component {
         [e.target.name]: e.target.value
       });
     }
-    console.log(this.state.number);
   };
 
   handleSubmit = e => {

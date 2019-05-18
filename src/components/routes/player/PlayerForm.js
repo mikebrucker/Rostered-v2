@@ -5,6 +5,7 @@ import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
+import EditIcon from "@material-ui/icons/Edit";
 
 const styles = theme => ({
   textField: {
@@ -59,7 +60,6 @@ const PlayerForm = ({
     <form onSubmit={handleSubmit}>
       <div className={classes.textField}>
         <TextField
-          // inputProps={{ ref: focusInput }}
           fullWidth
           label="First Name"
           variant="outlined"
@@ -140,15 +140,27 @@ const PlayerForm = ({
       </div>
 
       <div>
-        <Fab
-          className={classes.button}
-          type="submit"
-          color="primary"
-          variant="extended"
-        >
-          <AddIcon />
-          Add New Player
-        </Fab>
+        {add ? (
+          <Fab
+            className={classes.button}
+            type="submit"
+            color="primary"
+            variant="extended"
+          >
+            <AddIcon />
+            Add New Player
+          </Fab>
+        ) : (
+          <Fab
+            className={classes.button}
+            type="submit"
+            color="primary"
+            variant="extended"
+          >
+            <EditIcon />
+            Edit Player
+          </Fab>
+        )}
       </div>
       {importPlayerFromAnotherTeam}
     </form>

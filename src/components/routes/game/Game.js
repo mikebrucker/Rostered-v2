@@ -10,8 +10,8 @@ import Collapse from "@material-ui/core/Collapse";
 
 const styles = theme => ({
   game: {
-    paddingLeft: theme.spacing.unit,
-    paddingRight: theme.spacing.unit
+    paddingLeft: theme.spacing.unit / 2,
+    paddingRight: theme.spacing.unit / 2
   },
   gameInfo: {
     display: "inline-block",
@@ -33,7 +33,7 @@ const Game = ({ game, team, user, classes }) => {
 
   if (game) {
     return (
-      <div className={`Game ${classes.game}`}>
+      <div className="Game">
         <div onClick={() => setshowActions(!showActions)}>
           <Grid
             container
@@ -42,15 +42,19 @@ const Game = ({ game, team, user, classes }) => {
             alignItems="flex-start"
           >
             <Grid xs={5} item>
-              <Typography variant="h6">{team.teamName}</Typography>
+              <Typography className={classes.game} variant="subtitle1">
+                {team.teamName}
+              </Typography>
             </Grid>
             <Grid xs={2} item>
-              <Typography variant="h6" color="textSecondary">
+              <Typography variant="subtitle1" color="textSecondary">
                 {score}
               </Typography>
             </Grid>
             <Grid xs={5} item>
-              <Typography variant="h6">{game.opponent}</Typography>
+              <Typography className={classes.game} variant="subtitle1">
+                {game.opponent}
+              </Typography>
             </Grid>
           </Grid>
           <Typography variant="subtitle1" color="textSecondary">

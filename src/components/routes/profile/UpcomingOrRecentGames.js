@@ -20,8 +20,8 @@ const styles = theme => ({
 });
 
 const UpcomingOrRecentGames = ({ user, recent, classes }) => {
-  const recentGames =
-    user && user.games
+  const gamesToShow =
+    user && user.games && recent
       ? user.games
           .filter(game => new Date() > new Date(game.dateTime.seconds * 1000))
           .sort(
@@ -41,10 +41,7 @@ const UpcomingOrRecentGames = ({ user, recent, classes }) => {
               </div>
             );
           })
-      : null;
-
-  const upcomingGames =
-    user && user.games
+      : user && user.games && !recent
       ? user.games
           .filter(game => new Date() < new Date(game.dateTime.seconds * 1000))
           .sort(
@@ -52,7 +49,7 @@ const UpcomingOrRecentGames = ({ user, recent, classes }) => {
               new Date(a.dateTime.seconds * 1000) -
               new Date(b.dateTime.seconds * 1000)
           )
-          .slice(0, 5)
+          .slice(0, 3)
           .map(game => {
             const team =
               user && user.teams
@@ -73,14 +70,14 @@ const UpcomingOrRecentGames = ({ user, recent, classes }) => {
         title={
           recent
             ? `${
-                recentGames && recentGames.length > 0 ? "" : "No "
+                gamesToShow && gamesToShow.length > 0 ? "" : "No "
               }Recent Games`
             : `${
-                upcomingGames && upcomingGames.length > 0 ? "" : "No "
+                gamesToShow && gamesToShow.length > 0 ? "" : "No "
               }Upcoming Games`
         }
       />
-      {recent ? recentGames : upcomingGames}
+      {gamesToShow}
     </Card>
   );
 };

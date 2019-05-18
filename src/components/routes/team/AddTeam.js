@@ -3,24 +3,11 @@ import { firestoreConnect } from "react-redux-firebase";
 import createId from "../../../helpers/createId";
 
 import { withStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
 import Typography from "@material-ui/core/Typography";
 import Loading from "../../utils/Loading";
+import TeamForm from "./TeamForm";
 
 const styles = theme => ({
-  root: {
-    padding: theme.spacing.unit
-  },
-  textField: {
-    margin: "0 auto",
-    padding: theme.spacing.unit,
-    maxWidth: 520
-  },
-  button: {
-    margin: theme.spacing.unit
-  },
   font: {
     fontFamily: "Righteous, sans-serif",
     paddingTop: theme.spacing.unit * 2,
@@ -87,74 +74,13 @@ class AddTeam extends Component {
           <Typography className={classes.font} color="secondary" variant="h4">
             Add a New Team
           </Typography>
-
-          <form onSubmit={this.handleSubmit}>
-            <div className={classes.textField}>
-              <TextField
-                fullWidth
-                label="Team Name"
-                placeholder="Team Name"
-                type="text"
-                name="teamName"
-                variant="outlined"
-                value={this.state.teamName}
-                onChange={this.handleChange}
-              />
-            </div>
-
-            <div className={classes.textField}>
-              <TextField
-                fullWidth
-                label="Division"
-                placeholder="Division"
-                type="text"
-                name="division"
-                variant="outlined"
-                value={this.state.division}
-                onChange={this.handleChange}
-              />
-            </div>
-
-            <div className={classes.textField}>
-              <TextField
-                fullWidth
-                label="Arena"
-                placeholder="Arena"
-                type="text"
-                name="arena"
-                variant="outlined"
-                value={this.state.arena}
-                onChange={this.handleChange}
-              />
-            </div>
-
-            <div className={classes.textField}>
-              <TextField
-                fullWidth
-                label="Sport"
-                name="sport"
-                variant="outlined"
-                select
-                SelectProps={{ native: true }}
-                value={this.state.sport}
-                onChange={this.handleChange}
-              >
-                <option defaultValue="Hockey">Hockey</option>
-              </TextField>
-            </div>
-
-            <div>
-              <Fab
-                className={classes.button}
-                type="submit"
-                color="primary"
-                variant="extended"
-              >
-                <AddIcon />
-                Add Team
-              </Fab>
-            </div>
-          </form>
+          <TeamForm
+            add
+            state={this.state}
+            user={user}
+            handleChange={this.handleChange}
+            handleSubmit={this.handleSubmit}
+          />
         </div>
       );
     } else {

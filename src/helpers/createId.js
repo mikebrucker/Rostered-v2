@@ -40,17 +40,17 @@ function createId(prefix, suffix, length, chars) {
     return Math.floor(Math.random() * len);
   }
 
-  function concatCharToId(leng, chrs) {
-    var id = "";
+  function addCharsToId(leng, chrs) {
+    var newId = "";
 
-    for (let i = 0; i < leng; i++) {
-      id = id.concat(chrs[randomNum(chrs.length)]);
+    for (var i = 0; i < leng; i++) {
+      newId += chrs[randomNum(chrs.length)];
     }
 
-    return id;
+    return newId;
   }
 
-  let id = concatCharToId(length, chars);
+  var id = addCharsToId(length, chars);
 
   if (typeof prefix === "string" && prefix.length > 0) {
     id = prefix + id;
@@ -61,7 +61,7 @@ function createId(prefix, suffix, length, chars) {
   }
 
   if (id === "") {
-    id = concatCharToId(idLength, characters);
+    id = addCharsToId(idLength, characters);
   }
 
   return id;

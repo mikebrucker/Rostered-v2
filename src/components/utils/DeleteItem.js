@@ -12,7 +12,8 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 
 const styles = theme => ({
   button: {
-    background: "linear-gradient(45deg, maroon, crimson)"
+    background: "linear-gradient(45deg, maroon, crimson)",
+    marginLeft: theme.spacing.unit / 2
   },
   deleteButton: {
     margin: theme.spacing.unit,
@@ -48,8 +49,7 @@ const getModalStyle = () => ({
 
 const DeleteItem = props => {
   const [modalOpen, setModalOpen] = useState(false);
-  const { item, user, setValue, currentValue, classes } = props;
-  const type = item.id.split("-")[0];
+  const { type, item, user, setValue, currentValue, classes } = props;
 
   const deleteItem = () => {
     const userId = user ? user.id : null;
