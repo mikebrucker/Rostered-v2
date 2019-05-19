@@ -1,18 +1,21 @@
 import React, { useState } from "react";
+import moment from "moment";
 import DeleteItem from "./DeleteItem";
 import EditPlayer from "../routes/player/EditPlayer";
-import EditGame from "../routes/game/EditGame";
 import EditSchedule from "../routes/schedule/EditSchedule";
 import EditTeam from "../routes/team/EditTeam";
-import AddResult from "../routes/game/AddResult";
+import EditGame from "../routes/game/EditGame";
+import AddScore from "../routes/game/AddScore";
 
 import { withStyles } from "@material-ui/core/styles";
+import Snackbar from "@material-ui/core/Snackbar";
 import Collapse from "@material-ui/core/Collapse";
 import CardActions from "@material-ui/core/CardActions";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import EditIcon from "@material-ui/icons/Edit";
 import AddIcon from "@material-ui/icons/Add";
+import FileCopyIcon from "@material-ui/icons/FileCopyOutlined";
 import { IoMdSettings } from "react-icons/io";
 
 const styles = theme => ({
@@ -22,20 +25,32 @@ const styles = theme => ({
   actions: {
     display: "flex"
   },
+  copyButton: {
+    background: "linear-gradient(45deg, goldenrod, yellow)"
+  },
   editButton: {
     marginLeft: "auto",
     background: "linear-gradient(45deg, green, lime)"
   },
-  addResultButton: {
+  addScoreButton: {
     marginLeft: theme.spacing.unit / 2,
-    background: "linear-gradient(45deg, blue, cyan)"
+    background: "linear-gradient(45deg, cadetblue, aquamarine)"
   }
 });
 
-const Settings = ({ user, item, setTabValue, currentTabValue, classes }) => {
+const Settings = ({
+  user,
+  scheduleGames,
+  item,
+  setTabValue,
+  currentTabValue,
+  classes
+}) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
-  const [showResultForm, setShowResultForm] = useState(false);
+  const [showScoreForm, setShowScoreForm] = useState(false);
+  const [successSnackbar, setSuccessSnackbar] = useState(false);
+  const [failureSnackbar, setFailureSnackbar] = useState(false);
 
   const type = item.id.split("-")[0];
 
@@ -50,33 +65,75 @@ const Settings = ({ user, item, setTabValue, currentTabValue, classes }) => {
       <EditTeam user={user} team={item} showForm={showEditForm} />
     ) : null;
 
-  const editGameResultsButton =
+  const editGameScoreButton =
     type === "game" ? (
       <Button
-        className={classes.addResultButton}
+        className={classes.addScoreButton}
         onClick={() => {
-          setShowResultForm(!showResultForm);
+          setShowScoreForm(!showScoreForm);
           setShowEditForm(false);
         }}
         variant="outlined"
         color="secondary"
         size="small"
       >
-        <AddIcon /> Result
+        <AddIcon /> Score
       </Button>
     ) : null;
 
-  const editGameResults =
+  const editGameScore =
     type === "game" ? (
-      <AddResult user={user} game={item} showForm={showResultForm} />
+      <AddScore user={user} game={item} showForm={showScoreForm} />
+    ) : null;
+
+  const copyText = e => {
+    const textArea = document.createElement("textarea");
+    const gametext = scheduleGames
+      ? scheduleGames
+          .map(
+            game =>
+              `${game.teamName} vs ${game.opponent}\n@ ${moment(
+                new Date(game.dateTime.seconds * 1000)
+              ).format("hh:mma MM-DD-YYYY")}\n\n`
+          )
+          .join("")
+      : "No Games";
+    textArea.value = gametext;
+    document.body.appendChild(textArea);
+    textArea.select();
+
+    try {
+      document.execCommand("copy");
+      setSuccessSnackbar(true);
+    } catch (err) {
+      setFailureSnackbar(true);
+    }
+
+    document.body.removeChild(textArea);
+  };
+
+  const copyTextButton =
+    type === "schedule" ? (
+      <Button
+        className={classes.copyButton}
+        onClick={copyText}
+        color="secondary"
+        variant="outlined"
+        aria-label="Copy Schedule to Clipboard"
+        size="small"
+      >
+        <FileCopyIcon />
+        Copy Schedule
+      </Button>
     ) : null;
 
   return (
     <div className="Settings">
-      {editGameResults}
+      {editGameScore}
       {editForm}
       <CardActions className={classes.actions}>
-        {editGameResultsButton}
+        {editGameScoreButton}
+        {copyTextButton}
         <IconButton
           className={classes.settings}
           color="secondary"
@@ -99,7 +156,7 @@ const Settings = ({ user, item, setTabValue, currentTabValue, classes }) => {
             className={classes.editButton}
             onClick={() => {
               setShowEditForm(!showEditForm);
-              setShowResultForm(false);
+              setShowScoreForm(false);
             }}
             variant="outlined"
             color="secondary"
@@ -109,6 +166,22 @@ const Settings = ({ user, item, setTabValue, currentTabValue, classes }) => {
           </Button>
         </CardActions>
       </Collapse>
+      <Snackbar
+        autoHideDuration={4000}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={successSnackbar}
+        onClose={() => setSuccessSnackbar(false)}
+        message={<span id="snackbar">Schedule Copied to Clipboard</span>}
+      />
+      <Snackbar
+        autoHideDuration={4000}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={failureSnackbar}
+        onClose={() => setFailureSnackbar(false)}
+        message={
+          <span id="snackbar">Unable to Copy Schedule to Clipboard</span>
+        }
+      />
     </div>
   );
 };

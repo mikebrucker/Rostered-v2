@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { firestoreConnect } from "react-redux-firebase";
+import ScoreForm from "./ScoreForm";
 import Collapse from "@material-ui/core/Collapse";
-import ResultForm from "./ResultForm";
 
-class AddResult extends Component {
+class AddScore extends Component {
   state = {
     gameOver: this.props.game.gameOver,
     myScore: this.props.game.myScore,
@@ -81,7 +81,7 @@ class AddResult extends Component {
 
     return (
       <Collapse in={showForm}>
-        <ResultForm
+        <ScoreForm
           state={this.state}
           game={game}
           handleChange={this.handleChange}
@@ -92,4 +92,4 @@ class AddResult extends Component {
   }
 }
 
-export default firestoreConnect()(AddResult);
+export default firestoreConnect()(AddScore);

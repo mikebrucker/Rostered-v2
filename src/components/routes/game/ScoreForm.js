@@ -7,7 +7,7 @@ import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
+import EditIcon from "@material-ui/icons/Edit";
 
 const styles = theme => ({
   textField: {
@@ -34,7 +34,7 @@ const styles = theme => ({
   }
 });
 
-const ResultForm = ({ game, state, handleChange, handleSubmit, classes }) => {
+const ScoreForm = ({ game, state, handleChange, handleSubmit, classes }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className={classes.textField}>
@@ -120,11 +120,11 @@ const ResultForm = ({ game, state, handleChange, handleSubmit, classes }) => {
           color="primary"
           variant="extended"
         >
-          <AddIcon /> Add Result
+          <EditIcon /> Edit Score
         </Fab>
       </div>
     </form>
   );
 };
 
-export default withStyles(styles)(ResultForm);
+export default withStyles(styles)(ScoreForm);

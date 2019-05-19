@@ -43,7 +43,7 @@ const Game = ({ game, team, user, classes }) => {
           >
             <Grid xs={5} item>
               <Typography className={classes.game} variant="subtitle1">
-                {team.teamName}
+                {game.teamName}
               </Typography>
             </Grid>
             <Grid xs={2} item>

@@ -159,7 +159,7 @@ class Navbar extends Component {
                 // Navbar Title
                 component={NavLink}
                 to="/"
-                onClick={this.scrollToTopOfPage}
+                onClick={this.setTeamsTabValue.bind(null, 0)}
                 className={classes.font}
                 variant="h4"
                 color="primary"

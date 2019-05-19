@@ -70,7 +70,7 @@ const Schedule = ({ user, team, schedule, classes }) => {
 
   if (schedule) {
     return (
-      <CardContent className="Schedule">
+      <CardContent id="sched" className="Schedule">
         <CardHeader
           classes={{ title: classes.font }}
           title={
@@ -104,7 +104,7 @@ const Schedule = ({ user, team, schedule, classes }) => {
           </Card>
         </Collapse>
 
-        <Settings user={user} item={schedule} />
+        <Settings user={user} item={schedule} scheduleGames={games} />
       </CardContent>
     );
   } else {

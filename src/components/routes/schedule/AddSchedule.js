@@ -134,6 +134,7 @@ class AddSchedule extends Component {
           </Button>
           <Collapse in={this.state.showForm}>
             <ScheduleForm
+              add
               state={this.state}
               team={team}
               handleChange={this.handleChange}
