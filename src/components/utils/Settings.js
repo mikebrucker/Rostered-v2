@@ -86,21 +86,43 @@ const Settings = ({
       <AddScore user={user} game={item} showForm={showScoreForm} />
     ) : null;
 
-  const copyText = e => {
-    const textArea = document.createElement("textarea");
-    const gametext = scheduleGames
-      ? scheduleGames
-          .map(
-            game =>
-              `${game.teamName} vs ${game.opponent}\n@ ${moment(
-                new Date(game.dateTime.seconds * 1000)
-              ).format("hh:mma MM-DD-YYYY")}\n\n`
-          )
+  const copyText = itemsToCopy => {
+    const itemsToCopyArray =
+      itemsToCopy.length > 0 ? itemsToCopy : [itemsToCopy];
+    const textToCopy = itemsToCopyArray
+      ? itemsToCopyArray
+          .map((game, i, arr) => {
+            const result = game.gameOver
+              ? `${
+                  parseInt(game.myScore) === parseInt(game.enemyScore)
+                    ? "Tie"
+                    : parseInt(game.myScore) > parseInt(game.enemyScore)
+                    ? "W"
+                    : "L"
+                } ${game.myScore} - ${game.enemyScore}\n`
+              : "";
+            return `${arr.length > 1 ? `Game ${i + 1}\n` : ""}${
+              game.teamName
+            } vs ${game.opponent}\n${result}${moment(
+              new Date(game.dateTime.seconds * 1000)
+            ).format("h:mma ddd MM-DD-YYYY")}${
+              arr.length - 1 !== i ? "\n\n" : ""
+            }`;
+          })
           .join("")
       : "No Games";
-    textArea.value = gametext;
+
+    const textArea = document.createElement("textarea");
+    textArea.value = textToCopy;
+    textArea.contentEditable = true;
+    textArea.readOnly = false;
+    textArea.setAttribute("contenteditable", true); // Make it editable for iOS
+    textArea.setAttribute("readonly", false); // Make it readonly false for iOS compatability
+    textArea.style.position = "absolute";
+    textArea.style.left = "-9999px";
     document.body.appendChild(textArea);
     textArea.select();
+    textArea.setSelectionRange(0, 999999);
 
     try {
       document.execCommand("copy");
@@ -113,10 +135,10 @@ const Settings = ({
   };
 
   const copyTextButton =
-    type === "schedule" ? (
+    type === "schedule" && scheduleGames && scheduleGames.length > 0 ? (
       <Button
         className={classes.copyButton}
-        onClick={copyText}
+        onClick={() => copyText(scheduleGames)}
         color="secondary"
         variant="outlined"
         aria-label="Copy Schedule to Clipboard"
@@ -124,6 +146,18 @@ const Settings = ({
       >
         <FileCopyIcon />
         Copy Schedule
+      </Button>
+    ) : type === "game" ? (
+      <Button
+        className={classes.copyButton}
+        onClick={() => copyText(item)}
+        color="secondary"
+        variant="outlined"
+        aria-label="Copy Schedule to Clipboard"
+        size="small"
+      >
+        <FileCopyIcon />
+        Copy
       </Button>
     ) : null;
 
@@ -171,7 +205,11 @@ const Settings = ({
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         open={successSnackbar}
         onClose={() => setSuccessSnackbar(false)}
-        message={<span id="snackbar">Schedule Copied to Clipboard</span>}
+        message={
+          <span id="snackbar">
+            {type === "game" ? "Game" : "Schedule"} Copied to Clipboard
+          </span>
+        }
       />
       <Snackbar
         autoHideDuration={4000}
@@ -179,7 +217,9 @@ const Settings = ({
         open={failureSnackbar}
         onClose={() => setFailureSnackbar(false)}
         message={
-          <span id="snackbar">Unable to Copy Schedule to Clipboard</span>
+          <span id="snackbar">
+            Unable to Copy {type === "game" ? "Game" : "Schedule"} to Clipboard
+          </span>
         }
       />
     </div>

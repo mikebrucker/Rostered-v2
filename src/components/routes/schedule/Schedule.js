@@ -49,14 +49,53 @@ const Schedule = ({ user, team, schedule, classes }) => {
           )
       : null;
 
+  const wins =
+    games && games.length > 0
+      ? games.reduce((acc, cur) => {
+          if (
+            cur.gameOver &&
+            parseInt(cur.myScore) > parseInt(cur.enemyScore)
+          ) {
+            acc++;
+          }
+          return acc;
+        }, 0)
+      : "";
+  const losses =
+    games && games.length > 0
+      ? games.reduce((acc, cur) => {
+          if (
+            cur.gameOver &&
+            parseInt(cur.myScore) < parseInt(cur.enemyScore)
+          ) {
+            acc++;
+          }
+          return acc;
+        }, 0)
+      : "";
+  const ties =
+    games && games.length > 0
+      ? games.reduce((acc, cur) => {
+          if (cur.gameOver && cur.myScore === cur.enemyScore) {
+            acc++;
+          }
+          return acc;
+        }, 0)
+      : "";
+
   const startDate =
     games && games.length > 0 ? (
-      <span>
-        Starts{" "}
-        <Moment format="MMM Do, YYYY">
-          {games[0].dateTime.seconds * 1000}
-        </Moment>
-      </span>
+      <div>
+        <span>
+          Starts{" "}
+          <Moment format="MMM Do, YYYY">
+            {games[0].dateTime.seconds * 1000}
+          </Moment>
+        </span>
+        <div>
+          Record {wins}-{losses}-{ties}
+        </div>
+      </div>
     ) : (
       ""
     );
@@ -80,7 +119,6 @@ const Schedule = ({ user, team, schedule, classes }) => {
           }
           subheader={startDate}
         />
-
         <CardActions className={classes.actions}>
           <Button
             className={classes.button}

@@ -28,8 +28,18 @@ const Game = ({ game, team, user, classes }) => {
 
   const score =
     game && game.myScore && game.enemyScore
-      ? ` ${game.myScore} - ${game.enemyScore} `
-      : " vs ";
+      ? `${
+          parseInt(game.myScore) === parseInt(game.enemyScore)
+            ? "Tie"
+            : parseInt(game.myScore) > parseInt(game.enemyScore)
+            ? "W"
+            : "L"
+        } ${game.myScore} - ${game.enemyScore}`
+      : null;
+
+  const displayScore = score ? (
+    <Typography variant="subtitle1">{score}</Typography>
+  ) : null;
 
   if (game) {
     return (
@@ -39,7 +49,7 @@ const Game = ({ game, team, user, classes }) => {
             container
             direction="row"
             justify="space-evenly"
-            alignItems="flex-start"
+            alignItems="center"
           >
             <Grid xs={5} item>
               <Typography className={classes.game} variant="subtitle1">
@@ -48,7 +58,7 @@ const Game = ({ game, team, user, classes }) => {
             </Grid>
             <Grid xs={2} item>
               <Typography variant="subtitle1" color="textSecondary">
-                {score}
+                vs
               </Typography>
             </Grid>
             <Grid xs={5} item>
@@ -57,6 +67,7 @@ const Game = ({ game, team, user, classes }) => {
               </Typography>
             </Grid>
           </Grid>
+          {displayScore}
           <Typography variant="subtitle1" color="textSecondary">
             <GameDate date={new Date(game.dateTime.seconds * 1000)} />
           </Typography>

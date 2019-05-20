@@ -3,12 +3,12 @@ import Moment from "react-moment";
 
 const GameDate = ({ date }) => {
   const calendarStrings = {
-    lastDay: "[Yesterday at] LT",
-    sameDay: "[Today at] LT",
-    nextDay: "[Tomorrow at] LT",
-    lastWeek: "[Last] dddd [at] LT",
-    nextWeek: "dddd [at] LT",
-    sameElse: "ddd MMM Do, YYYY [at] LT"
+    lastDay: "[Yesterday at] h:mma",
+    sameDay: "[Today at] h:mma",
+    nextDay: "[Tomorrow at] h:mma",
+    lastWeek: "[Last] dddd [at] h:mma",
+    nextWeek: "dddd [at] h:mma",
+    sameElse: "ddd MMM Do, YYYY [at] h:mma"
   };
 
   return <Moment calendar={calendarStrings}>{date}</Moment>;
