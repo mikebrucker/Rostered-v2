@@ -49,7 +49,7 @@ const getModalStyle = () => ({
 
 const DeleteItem = props => {
   const [modalOpen, setModalOpen] = useState(false);
-  const { type, item, user, setValue, currentValue, classes } = props;
+  const { type, item, user, exportId, setValue, currentValue, classes } = props;
 
   const deleteItem = () => {
     const userId = user ? user.id : null;
@@ -83,13 +83,18 @@ const DeleteItem = props => {
       removeAssociatedData(["players", "schedules", "games"]);
     }
 
-    if (userId) {
+    if (userId && type !== "export") {
       props.firestore
         .collection("users")
         .doc(userId)
         .update({
           [typeArray]: props.firestore.FieldValue.arrayRemove(item)
         });
+    } else if (type === "export") {
+      props.firestore
+        .collection("teamExports")
+        .doc(exportId)
+        .delete();
     }
   };
 

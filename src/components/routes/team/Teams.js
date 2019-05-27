@@ -72,7 +72,7 @@ const Teams = ({ user, unauthorized, loaded, authError, classes }) => {
         </AppBar>
         {tabValue === 0 && <Profile user={user} />}
         {teamsMap}
-        {tabValue === teams.length + 1 && <AddTeam user={user} />}
+        {tabValue === teams.length + 1 && <AddTeam user={user} teams={teams} />}
       </div>
     );
   } else if (loaded && unauthorized) {

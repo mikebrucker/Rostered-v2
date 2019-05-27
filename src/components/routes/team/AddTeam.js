@@ -1,17 +1,30 @@
 import React, { Component } from "react";
 import { firestoreConnect } from "react-redux-firebase";
+import { connect } from "react-redux";
+import { compose } from "redux";
 import createId from "../../../helpers/createId";
+import Loading from "../../utils/Loading";
+import TeamForm from "./TeamForm";
 
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import Loading from "../../utils/Loading";
-import TeamForm from "./TeamForm";
+import TextField from "@material-ui/core/TextField";
+import Fab from "@material-ui/core/Fab";
+import ImportExportIcon from "@material-ui/icons/ImportExport";
 
 const styles = theme => ({
   font: {
     fontFamily: "Righteous, sans-serif",
     paddingTop: theme.spacing.unit * 2,
     paddingBottom: theme.spacing.unit * 2
+  },
+  textField: {
+    margin: "0 auto",
+    padding: theme.spacing.unit,
+    maxWidth: 520
+  },
+  button: {
+    margin: theme.spacing.unit
   }
 });
 
@@ -20,12 +33,15 @@ class AddTeam extends Component {
     teamName: "",
     division: "",
     arena: "",
-    sport: "Hockey"
+    sport: "Hockey",
+    importTeam: "",
+    error: ""
   };
 
   handleChange = e => {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
+      error: ""
     });
   };
 
@@ -61,7 +77,48 @@ class AddTeam extends Component {
         division: "",
         arena: "",
         sport: "Hockey",
-        showForm: false
+        importTeam: "",
+        error: ""
+      });
+    }
+  };
+
+  handleImportSubmit = e => {
+    e.preventDefault();
+    const userId = this.props.user ? this.props.user.id : null;
+    const teams = this.props.teams ? this.props.teams : null;
+
+    const teamToImport = this.props.teamExports
+      ? this.props.teamExports.filter(
+          item => item.code === this.state.importTeam && item.ownerId !== userId
+        )[0]
+      : null;
+
+    const teamAlreadyExists =
+      teams && teamToImport
+        ? teams.filter(item => item.id === teamToImport.teams[0].id).length
+        : null;
+
+    if (teamToImport && !teamAlreadyExists) {
+      const types = ["teams", "schedules", "games", "players"];
+
+      types.forEach(type => {
+        teamToImport[type].forEach(item => {
+          this.props.firestore
+            .collection("users")
+            .doc(userId)
+            .update({
+              [type]: this.props.firestore.FieldValue.arrayUnion(item)
+            });
+        });
+      });
+    } else if (teamAlreadyExists) {
+      this.setState({
+        error: "Team Already Imported"
+      });
+    } else {
+      this.setState({
+        error: "Invalid Code"
       });
     }
   };
@@ -81,6 +138,34 @@ class AddTeam extends Component {
             handleChange={this.handleChange}
             handleSubmit={this.handleSubmit}
           />
+
+          <form onSubmit={this.handleImportSubmit}>
+            <div className={classes.textField}>
+              <TextField
+                fullWidth
+                label="Import Team"
+                placeholder="Import Team"
+                helperText="Enter Code to Import Team"
+                type="text"
+                name="importTeam"
+                variant="outlined"
+                value={this.state.importTeam}
+                onChange={this.handleChange}
+              />
+
+              <Typography color="error">{this.state.error}</Typography>
+
+              <Fab
+                className={classes.button}
+                type="submit"
+                color="primary"
+                variant="extended"
+              >
+                <ImportExportIcon />
+                Import Team
+              </Fab>
+            </div>
+          </form>
         </div>
       );
     } else {
@@ -89,4 +174,19 @@ class AddTeam extends Component {
   }
 }
 
-export default firestoreConnect()(withStyles(styles)(AddTeam));
+const mapStateToProps = ({ firebase: { auth }, firestore: { ordered } }) => {
+  const teamExports =
+    ordered && ordered.teamExports ? ordered.teamExports : null;
+  return {
+    auth,
+    teamExports
+  };
+};
+
+export default compose(
+  connect(mapStateToProps),
+  firestoreConnect(props => {
+    if (!props.auth.uid) return [];
+    return [{ collection: "teamExports" }];
+  })
+)(withStyles(styles)(AddTeam));

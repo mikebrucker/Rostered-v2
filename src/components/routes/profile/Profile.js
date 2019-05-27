@@ -3,12 +3,11 @@ import Loading from "../../utils/Loading";
 import EditProfile from "./EditProfile";
 
 import { withStyles } from "@material-ui/core/styles";
-// import Typography from "@material-ui/core/Typography";
 import UpComingOrRecentGames from "./UpcomingOrRecentGames";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
-// import Collapse from "@material-ui/core/Collapse";
+import ExportTeam from "./ExportTeam";
 
 const styles = theme => ({
   root: {
@@ -29,23 +28,24 @@ const styles = theme => ({
 });
 
 const Profile = ({ user, classes }) => {
-  const myTeams =
-    user && user.teams
-      ? user.teams.map((team, i, arr) => {
-          return arr.length - 1 !== i ? (
-            arr.length === 2 ? (
-              <span key={team.id}>{team.teamName} </span>
-            ) : (
-              <span key={team.id}>{team.teamName}, </span>
-            )
-          ) : // last item
-          arr.length === 1 ? (
-            <span key={team.id}>{team.teamName}.</span>
+  const teams = user && user.teams && user.teams.length > 0 ? user.teams : [];
+
+  const myTeams = teams
+    ? teams.map((team, i, arr) => {
+        return arr.length - 1 !== i ? (
+          arr.length === 2 ? (
+            <span key={team.id}>{team.teamName} </span>
           ) : (
-            <span key={team.id}>and {team.teamName}.</span>
-          );
-        })
-      : "";
+            <span key={team.id}>{team.teamName}, </span>
+          )
+        ) : // last item
+        arr.length === 1 ? (
+          <span key={team.id}>{team.teamName}.</span>
+        ) : (
+          <span key={team.id}>and {team.teamName}.</span>
+        );
+      })
+    : "";
 
   if (user) {
     return (
@@ -70,6 +70,7 @@ const Profile = ({ user, classes }) => {
           <CardContent>
             <UpComingOrRecentGames user={user} recent />
           </CardContent>
+          <ExportTeam user={user} />
           <EditProfile user={user} />
         </Card>
       </div>
