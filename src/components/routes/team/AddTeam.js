@@ -35,6 +35,7 @@ class AddTeam extends Component {
     arena: "",
     sport: "Hockey",
     importTeam: "",
+    loading: false,
     error: ""
   };
 
@@ -78,6 +79,7 @@ class AddTeam extends Component {
         arena: "",
         sport: "Hockey",
         importTeam: "",
+        loading: false,
         error: ""
       });
     }
@@ -90,29 +92,58 @@ class AddTeam extends Component {
 
     const teamToImport = this.props.teamExports
       ? this.props.teamExports.filter(
-          item => item.code === this.state.importTeam && item.ownerId !== userId
+          item => item.code === this.state.importTeam
         )[0]
       : null;
 
-    const teamAlreadyExists =
+    const teamAlreadyImported =
       teams && teamToImport
         ? teams.filter(item => item.id === teamToImport.teams[0].id).length
         : null;
 
-    if (teamToImport && !teamAlreadyExists) {
-      const types = ["teams", "schedules", "games", "players"];
+    if (teamToImport.ownerId === userId) {
+      this.setState({
+        error: "Cannot Import Your Own Team"
+      });
+    } else if (teamToImport && !teamAlreadyImported) {
+      this.setState({ loading: true });
 
-      types.forEach(type => {
-        teamToImport[type].forEach(item => {
+      this.props.firestore
+        .collection("users")
+        .doc(userId)
+        .get()
+        .then(doc => {
+          const user = doc.data();
+          const teams = user && user.teams ? user.teams : [];
+          const schedules = user && user.schedules ? user.schedules : [];
+          const games = user && user.games ? user.games : [];
+          const players = user && user.players ? user.players : [];
+
           this.props.firestore
             .collection("users")
             .doc(userId)
             .update({
-              [type]: this.props.firestore.FieldValue.arrayUnion(item)
-            });
+              teams: [...teams, ...teamToImport.teams],
+              schedules: [...schedules, ...teamToImport.schedules],
+              games: [...games, ...teamToImport.games],
+              players: [...players, ...teamToImport.players]
+            })
+            .then(() => this.setState({ loading: false }));
         });
-      });
-    } else if (teamAlreadyExists) {
+
+      // const types = ["teams", "schedules", "games", "players"];
+
+      // types.forEach(type => {
+      //   teamToImport[type].forEach(item => {
+      //     this.props.firestore
+      //       .collection("users")
+      //       .doc(userId)
+      //       .update({
+      //         [type]: this.props.firestore.FieldValue.arrayUnion(item)
+      //       });
+      //   });
+      // });
+    } else if (teamAlreadyImported) {
       this.setState({
         error: "Team Already Imported"
       });
@@ -125,6 +156,9 @@ class AddTeam extends Component {
 
   render() {
     const { user, classes } = this.props;
+
+    const importLoading = this.state.loading ? <Loading /> : "";
+
     if (user) {
       return (
         <div className="AddTeam">
@@ -151,12 +185,14 @@ class AddTeam extends Component {
                 variant="outlined"
                 value={this.state.importTeam}
                 onChange={this.handleChange}
+                disabled={this.state.loading}
               />
 
               <Typography color="error">{this.state.error}</Typography>
 
               <Fab
                 className={classes.button}
+                disabled={this.state.loading}
                 type="submit"
                 color="primary"
                 variant="extended"
@@ -164,6 +200,7 @@ class AddTeam extends Component {
                 <ImportExportIcon />
                 Import Team
               </Fab>
+              {importLoading}
             </div>
           </form>
         </div>

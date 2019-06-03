@@ -23,13 +23,17 @@ const UpcomingOrRecentGames = ({ user, recent, classes }) => {
   const gamesToShow =
     user && user.games && recent
       ? user.games
-          .filter(game => new Date() > new Date(game.dateTime.seconds * 1000))
+          .filter(
+            game =>
+              Math.round(new Date().getTime() / 1000) > game.dateTime.seconds &&
+              Math.round(new Date().getTime() / 1000) - 604800 <
+                game.dateTime.seconds
+          )
           .sort(
             (a, b) =>
               new Date(b.dateTime.seconds * 1000) -
               new Date(a.dateTime.seconds * 1000)
           )
-          .slice(0, 3)
           .map(game => {
             const team =
               user && user.teams
@@ -43,13 +47,17 @@ const UpcomingOrRecentGames = ({ user, recent, classes }) => {
           })
       : user && user.games && !recent
       ? user.games
-          .filter(game => new Date() < new Date(game.dateTime.seconds * 1000))
+          .filter(
+            game =>
+              Math.round(new Date().getTime() / 1000) < game.dateTime.seconds &&
+              Math.round(new Date().getTime() / 1000) + 604800 >
+                game.dateTime.seconds
+          )
           .sort(
             (a, b) =>
               new Date(a.dateTime.seconds * 1000) -
               new Date(b.dateTime.seconds * 1000)
           )
-          .slice(0, 3)
           .map(game => {
             const team =
               user && user.teams

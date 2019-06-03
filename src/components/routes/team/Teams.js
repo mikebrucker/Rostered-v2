@@ -26,9 +26,9 @@ const Teams = ({ user, unauthorized, loaded, authError, classes }) => {
   const teams = user && user.teams && user.teams.length > 0 ? user.teams : [];
 
   const tabs = teams
-    ? teams.map(team => {
-        return <Tab color="secondary" key={team.id} label={team.teamName} />;
-      })
+    ? teams.map(team => (
+        <Tab color="secondary" key={team.id} label={team.teamName} />
+      ))
     : null;
 
   const teamsMap = teams
@@ -77,7 +77,7 @@ const Teams = ({ user, unauthorized, loaded, authError, classes }) => {
     );
   } else if (loaded && unauthorized) {
     return (
-      <div className="Teams">
+      <div className="Auth">
         <Navbar
           unauthorized={unauthorized}
           teams={teams}

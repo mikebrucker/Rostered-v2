@@ -40,10 +40,13 @@ const styles = theme => ({
   }
 });
 
-const Schedules = ({ user, team, schedules, current, classes }) => {
-  const [showSchedules, setshowSchedules] = useState(
-    schedules && schedules.length === 0 ? true : false
-  );
+const Schedules = ({ user, team, current, classes }) => {
+  const [showSchedules, setshowSchedules] = useState(current);
+
+  const schedules =
+    team && user && user.schedules
+      ? user.schedules.filter(schedule => schedule.teamId === team.id)
+      : null;
 
   const mySchedules =
     team && schedules

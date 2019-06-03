@@ -64,7 +64,6 @@ const GameForm = ({
         <DateTimePicker
           fullWidth
           autoOk
-          // keyboard
           label="Date and Time"
           name="time"
           format="MM-DD-YYYY hh:mm A"
@@ -91,6 +90,32 @@ const GameForm = ({
       </div>
 
       <Collapse in={add ? state.gameOver : true}>
+        <div className={classes.textField}>
+          <FormControlLabel
+            label="Overtime"
+            control={
+              <Checkbox
+                color="primary"
+                type="checkbox"
+                name="overTime"
+                checked={state.overTime}
+                onChange={handleChange}
+              />
+            }
+          />
+          <FormControlLabel
+            label="Shootout"
+            control={
+              <Checkbox
+                color="primary"
+                type="checkbox"
+                name="shootOut"
+                checked={state.shootOut}
+                onChange={handleChange}
+              />
+            }
+          />
+        </div>
         <Grid
           container
           direction="row"

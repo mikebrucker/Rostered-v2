@@ -53,6 +53,23 @@ const ScheduleForm = ({ add, state, handleChange, handleSubmit, classes }) => {
         />
       </div>
 
+      <div className={classes.textField}>
+        <TextField
+          fullWidth
+          label="Point System"
+          name="pointSystem"
+          variant="outlined"
+          helperText="Ties will always be counted as 1 point."
+          select
+          SelectProps={{ native: true }}
+          value={state.pointSystem}
+          onChange={handleChange}
+        >
+          <option defaultValue="210">W-2, OT/SO L-1, L-0</option>
+          <option value="3210">W-3, OT/SO W-2, OT/SO L-1, L-0</option>
+        </TextField>
+      </div>
+
       <div>
         {add ? (
           <Fab

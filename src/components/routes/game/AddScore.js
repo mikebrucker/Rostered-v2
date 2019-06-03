@@ -6,6 +6,8 @@ import Collapse from "@material-ui/core/Collapse";
 class AddScore extends Component {
   state = {
     gameOver: this.props.game.gameOver,
+    overTime: this.props.game.overTime,
+    shootOut: this.props.game.shootOut,
     myScore: this.props.game.myScore,
     enemyScore: this.props.game.enemyScore
   };

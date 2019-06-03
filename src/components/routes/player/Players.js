@@ -44,8 +44,74 @@ const styles = theme => ({
   }
 });
 
-const Players = ({ user, team, players, importablePlayers, classes }) => {
+const Players = ({ user, team, classes }) => {
   const [showPlayers, setShowPlayers] = useState(true);
+
+  // Separate players by position and then sorts by number
+  const sortPlayersByNumber = players =>
+    players.sort((a, b) => a.number - b.number);
+
+  const myPlayersToBeSorted =
+    user && team && user.players
+      ? user.players.filter(player => player.teamId === team.id)
+      : null;
+
+  const centers = myPlayersToBeSorted
+    ? sortPlayersByNumber(
+        myPlayersToBeSorted.filter(center => center.position === "C")
+      )
+    : null;
+
+  const leftwings = myPlayersToBeSorted
+    ? sortPlayersByNumber(
+        myPlayersToBeSorted.filter(leftwing => leftwing.position === "LW")
+      )
+    : null;
+
+  const rightwings = myPlayersToBeSorted
+    ? sortPlayersByNumber(
+        myPlayersToBeSorted.filter(rightwing => rightwing.position === "RW")
+      )
+    : null;
+
+  const defensemans = myPlayersToBeSorted
+    ? sortPlayersByNumber(
+        myPlayersToBeSorted.filter(defenseman => defenseman.position === "D")
+      )
+    : null;
+
+  const goalies = myPlayersToBeSorted
+    ? sortPlayersByNumber(
+        myPlayersToBeSorted.filter(goalie => goalie.position === "G")
+      )
+    : null;
+
+  const players =
+    centers && leftwings && rightwings && defensemans && goalies
+      ? [...centers, ...leftwings, ...rightwings, ...defensemans, ...goalies]
+      : null;
+
+  const allOtherPlayers =
+    user && team && user.players
+      ? user.players.filter(player => player.teamId !== team.id)
+      : null;
+
+  // If user creates players on another team
+  // That does not share names with players on this team
+  // They can be selected for import in <AddPlayer />
+  // Selecting only fills input fields in <AddPlayer />
+  const importablePlayers =
+    players && allOtherPlayers
+      ? allOtherPlayers.filter(other =>
+          players.filter(
+            myPlayer =>
+              myPlayer.firstName === other.firstName &&
+              myPlayer.lastName === other.lastName
+          ).length > 0
+            ? false
+            : true
+        )
+      : null;
 
   const myPlayers =
     players && players.length > 0 ? (

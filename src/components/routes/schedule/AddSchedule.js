@@ -25,6 +25,7 @@ class AddSchedule extends Component {
   state = {
     season: "",
     current: false,
+    pointSystem: "210",
     showForm: false
   };
 
@@ -49,6 +50,7 @@ class AddSchedule extends Component {
         id: scheduleId,
         teamId,
         season: this.state.season,
+        pointSystem: this.state.pointSystem,
         current: this.state.current
       };
 
@@ -107,12 +109,14 @@ class AddSchedule extends Component {
       this.setState({
         season: "",
         current: false,
+        pointSystem: "210",
         showForm: false
       });
     } else {
       this.setState({
         season: "",
         current: false,
+        pointSystem: "210",
         showForm: true
       });
     }

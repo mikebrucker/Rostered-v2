@@ -6,6 +6,7 @@ import Collapse from "@material-ui/core/Collapse";
 class EditSchedule extends Component {
   state = {
     season: this.props.schedule.season,
+    pointSystem: this.props.schedule.pointSystem,
     current: this.props.schedule.current
   };
 

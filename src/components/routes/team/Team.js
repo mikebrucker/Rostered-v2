@@ -39,82 +39,6 @@ const styles = theme => ({
 });
 
 const Team = ({ team, user, setTabValue, currentTabValue, classes }) => {
-  const mySchedules =
-    team && user && user.schedules
-      ? user.schedules.filter(schedule => schedule.teamId === team.id)
-      : null;
-
-  // Separate players by position and then sorts by number
-  const myPlayersToBeSorted =
-    team && user && user.players
-      ? user.players.filter(player => player.teamId === team.id)
-      : null;
-
-  const sortPlayersByNumber = players =>
-    players.sort((a, b) => a.number - b.number);
-
-  const centers = myPlayersToBeSorted
-    ? sortPlayersByNumber(
-        myPlayersToBeSorted.filter(center => center.position === "C")
-      )
-    : null;
-
-  const leftwings = myPlayersToBeSorted
-    ? sortPlayersByNumber(
-        myPlayersToBeSorted.filter(leftwing => leftwing.position === "LW")
-      )
-    : null;
-
-  const rightwings = myPlayersToBeSorted
-    ? sortPlayersByNumber(
-        myPlayersToBeSorted.filter(rightwing => rightwing.position === "RW")
-      )
-    : null;
-
-  const defensemans = myPlayersToBeSorted
-    ? sortPlayersByNumber(
-        myPlayersToBeSorted.filter(defenseman => defenseman.position === "D")
-      )
-    : null;
-
-  const goalies = myPlayersToBeSorted
-    ? sortPlayersByNumber(
-        myPlayersToBeSorted.filter(goalie => goalie.position === "G")
-      )
-    : null;
-
-  // All players for this team sorted and put back into list
-  const myPlayers =
-    centers && leftwings && rightwings && defensemans && goalies
-      ? centers
-          .concat(leftwings)
-          .concat(rightwings)
-          .concat(defensemans)
-          .concat(goalies)
-      : null;
-
-  const allOtherPlayers =
-    team && user && user.players
-      ? user.players.filter(player => player.teamId !== team.id)
-      : null;
-
-  // If user creates players on another team
-  // That does not share names with players on this team
-  // They can be selected for import in <AddPlayer />
-  // Selecting only fills input fields in <AddPlayer />
-  const importablePlayers =
-    myPlayers && allOtherPlayers
-      ? allOtherPlayers.filter(other =>
-          myPlayers.filter(
-            myPlayer =>
-              myPlayer.firstName === other.firstName &&
-              myPlayer.lastName === other.lastName
-          ).length > 0
-            ? false
-            : true
-        )
-      : null;
-
   if (team) {
     return (
       <div className={`Team ${classes.root}`}>
@@ -126,14 +50,9 @@ const Team = ({ team, user, setTabValue, currentTabValue, classes }) => {
             title={team.teamName}
             subheader={`Division ${team.division} at ${team.arena}`}
           />
-          <Schedules schedules={mySchedules} user={user} team={team} current />
-          <Players
-            importablePlayers={importablePlayers}
-            players={myPlayers}
-            user={user}
-            team={team}
-          />
-          <Schedules schedules={mySchedules} user={user} team={team} />
+          <Schedules user={user} team={team} current />
+          <Players user={user} team={team} />
+          <Schedules user={user} team={team} />
         </Card>
         <Card className={classes.deleteItem}>
           <CardContent className={classes.deleteItemAction}>

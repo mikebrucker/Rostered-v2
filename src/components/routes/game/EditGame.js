@@ -8,6 +8,8 @@ class EditGame extends Component {
     opponent: this.props.game.opponent,
     dateTime: new Date(this.props.game.dateTime.seconds * 1000),
     gameOver: this.props.game.gameOver,
+    overTime: this.props.game.overTime,
+    shootOut: this.props.game.shootOut,
     myScore: this.props.game.myScore,
     enemyScore: this.props.game.enemyScore
   };
@@ -26,6 +28,7 @@ class EditGame extends Component {
       e.target &&
       e.target.type &&
       e.target.type === "checkbox" &&
+      e.target.name === "gameOver" &&
       !e.target.checked
     ) {
       this.setState({

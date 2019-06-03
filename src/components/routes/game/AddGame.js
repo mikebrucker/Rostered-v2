@@ -23,6 +23,8 @@ class AddGame extends Component {
     opponent: "",
     dateTime: new Date(),
     gameOver: false,
+    overTime: false,
+    shootOut: false,
     myScore: "",
     enemyScore: "",
     showForm: false
@@ -87,6 +89,8 @@ class AddGame extends Component {
         opponent: this.state.opponent,
         dateTime: this.state.dateTime,
         gameOver: this.state.gameOver,
+        overTime: this.state.overTime,
+        shootOut: this.state.shootOut,
         myScore: this.state.myScore,
         enemyScore: this.state.enemyScore
       };
@@ -111,6 +115,8 @@ class AddGame extends Component {
         opponent: "",
         dateTime: today,
         gameOver: false,
+        overTime: false,
+        shootOut: false,
         myScore: "",
         enemyScore: "",
         showForm: false
@@ -120,6 +126,8 @@ class AddGame extends Component {
         opponent: "",
         dateTime: today,
         gameOver: false,
+        overTime: false,
+        shootOut: false,
         myScore: "",
         enemyScore: "",
         showForm: true

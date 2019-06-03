@@ -54,6 +54,20 @@ const Schedule = ({ user, team, schedule, classes }) => {
       ? games.reduce((acc, cur) => {
           if (
             cur.gameOver &&
+            (!cur.overTime || !cur.shootOut) &&
+            parseInt(cur.myScore) > parseInt(cur.enemyScore)
+          ) {
+            acc++;
+          }
+          return acc;
+        }, 0)
+      : "";
+  const winsOT =
+    games && games.length > 0
+      ? games.reduce((acc, cur) => {
+          if (
+            cur.gameOver &&
+            (cur.overTime || cur.shootOut) &&
             parseInt(cur.myScore) > parseInt(cur.enemyScore)
           ) {
             acc++;
@@ -66,6 +80,20 @@ const Schedule = ({ user, team, schedule, classes }) => {
       ? games.reduce((acc, cur) => {
           if (
             cur.gameOver &&
+            (!cur.overTime || !cur.shootOut) &&
+            parseInt(cur.myScore) < parseInt(cur.enemyScore)
+          ) {
+            acc++;
+          }
+          return acc;
+        }, 0)
+      : "";
+  const lossesOT =
+    games && games.length > 0
+      ? games.reduce((acc, cur) => {
+          if (
+            cur.gameOver &&
+            (cur.overTime || cur.shootOut) &&
             parseInt(cur.myScore) < parseInt(cur.enemyScore)
           ) {
             acc++;
@@ -83,6 +111,13 @@ const Schedule = ({ user, team, schedule, classes }) => {
         }, 0)
       : "";
 
+  const points =
+    schedule && schedule.pointSystem
+      ? schedule.pointSystem === "3210"
+        ? `${wins * 3 + winsOT * 2 + lossesOT + ties} points`
+        : `${wins * 2 + winsOT * 2 + lossesOT + ties} points`
+      : "No Point System Added";
+
   const startDate =
     games && games.length > 0 ? (
       <div>
@@ -95,6 +130,7 @@ const Schedule = ({ user, team, schedule, classes }) => {
         <div>
           Record {wins}-{losses}-{ties}
         </div>
+        <div>{points}</div>
       </div>
     ) : (
       ""
@@ -109,7 +145,7 @@ const Schedule = ({ user, team, schedule, classes }) => {
 
   if (schedule) {
     return (
-      <CardContent id="sched" className="Schedule">
+      <CardContent className="Schedule">
         <CardHeader
           classes={{ title: classes.font }}
           title={

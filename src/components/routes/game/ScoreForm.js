@@ -52,6 +52,33 @@ const ScoreForm = ({ game, state, handleChange, handleSubmit, classes }) => {
         />
       </div>
 
+      <div className={classes.textField}>
+        <FormControlLabel
+          label="Overtime"
+          control={
+            <Checkbox
+              color="primary"
+              type="checkbox"
+              name="overTime"
+              checked={state.overTime}
+              onChange={handleChange}
+            />
+          }
+        />
+        <FormControlLabel
+          label="Shootout"
+          control={
+            <Checkbox
+              color="primary"
+              type="checkbox"
+              name="shootOut"
+              checked={state.shootOut}
+              onChange={handleChange}
+            />
+          }
+        />
+      </div>
+
       <Grid
         container
         direction="row"

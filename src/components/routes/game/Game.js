@@ -27,7 +27,7 @@ const Game = ({ game, team, user, classes }) => {
   const [showActions, setshowActions] = useState(false);
 
   const score =
-    game && game.myScore && game.enemyScore
+    game && game.gameOver && game.myScore && game.enemyScore
       ? `${
           parseInt(game.myScore) === parseInt(game.enemyScore)
             ? "Tie"
@@ -37,8 +37,19 @@ const Game = ({ game, team, user, classes }) => {
         } ${game.myScore} - ${game.enemyScore}`
       : null;
 
+  const overtimeGame =
+    game && game.gameOver
+      ? game.shootOut
+        ? "(SO)"
+        : game.overTime
+        ? "(OT)"
+        : ""
+      : "";
+
   const displayScore = score ? (
-    <Typography variant="subtitle1">{score}</Typography>
+    <Typography variant="subtitle1">
+      {score} {overtimeGame}
+    </Typography>
   ) : null;
 
   if (game) {
